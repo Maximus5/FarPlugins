@@ -11,3 +11,13 @@
 *.lai
 *.la
 *.a
+
+# Visual studio generated files
+*.sdf
+*.suo
+*.user
+*.filters
+*.exp
+*.lib
+*.map
+*.obj

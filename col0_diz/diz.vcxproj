@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_C0|Win32">
+      <Configuration>Debug_C0</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_C0|x64">
+      <Configuration>Debug_C0</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_C0|Win32">
+      <Configuration>Release_C0</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_C0|x64">
+      <Configuration>Release_C0</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D179531C-0F06-473A-A301-7FE8976046EC}</ProjectGuid>
+    <RootNamespace>diz</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|Win32'">
+    <OutDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</OutDir>
+    <IntDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|Win32'">
+    <OutDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</OutDir>
+    <IntDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;verc0_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>diz_c0.dll</OutputFile>
+      <ModuleDefinitionFile>diz_c0.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Manifest>
+      <OutputManifestFile>$(IntDir).manifest</OutputManifestFile>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN64;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>\\WIN7X64\FAR\FAR2x64\Plugins\ConEmu\Thumbs\diz.t64</OutputFile>
+      <ModuleDefinitionFile>diz.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;verc0_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>diz_c0.dll</OutputFile>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>diz_c0.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ProfileGuidedDatabase />
+      <EntryPointSymbol />
+      <ImportLibrary />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;diz_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\plugins\ConEmu\Thumbs\diz.t64</OutputFile>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>diz.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CachedWrite.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="cvtname.cpp" />
+    <ClCompile Include="dizlist.cpp" />
+    <ClCompile Include="diz_c0.cpp" />
+    <ClCompile Include="farrtl.cpp" />
+    <ClCompile Include="farwinapi.cpp" />
+    <ClCompile Include="filestr.cpp" />
+    <ClCompile Include="format.cpp" />
+    <ClCompile Include="headers.cpp" />
+    <ClCompile Include="keyboard.cpp" />
+    <ClCompile Include="local.cpp" />
+    <ClCompile Include="message.cpp" />
+    <ClCompile Include="pathmix.cpp" />
+    <ClCompile Include="registry.cpp" />
+    <ClCompile Include="strmix.cpp" />
+    <ClCompile Include="UCD\CharDistribution.cpp" />
+    <ClCompile Include="UCD\JpCntx.cpp" />
+    <ClCompile Include="UCD\LangBulgarianModel.cpp" />
+    <ClCompile Include="UCD\LangCyrillicModel.cpp" />
+    <ClCompile Include="UCD\LangGreekModel.cpp" />
+    <ClCompile Include="UCD\LangHebrewModel.cpp" />
+    <ClCompile Include="UCD\LangHungarianModel.cpp" />
+    <ClCompile Include="UCD\LangThaiModel.cpp" />
+    <ClCompile Include="UCD\nsBig5Prober.cpp" />
+    <ClCompile Include="UCD\nsCharSetProber.cpp" />
+    <ClCompile Include="UCD\nsEscCharsetProber.cpp" />
+    <ClCompile Include="UCD\nsEscSM.cpp" />
+    <ClCompile Include="UCD\nsEUCJPProber.cpp" />
+    <ClCompile Include="UCD\nsEUCKRProber.cpp" />
+    <ClCompile Include="UCD\nsEUCTWProber.cpp" />
+    <ClCompile Include="UCD\nsGB2312Prober.cpp" />
+    <ClCompile Include="UCD\nsHebrewProber.cpp" />
+    <ClCompile Include="UCD\nsLatin1Prober.cpp" />
+    <ClCompile Include="UCD\nsMBCSGroupProber.cpp" />
+    <ClCompile Include="UCD\nsMBCSSM.cpp" />
+    <ClCompile Include="UCD\nsSBCharSetProber.cpp" />
+    <ClCompile Include="UCD\nsSBCSGroupProber.cpp" />
+    <ClCompile Include="UCD\nsSJISProber.cpp" />
+    <ClCompile Include="UCD\nsUniversalDetector.cpp" />
+    <ClCompile Include="UCD\nsUTF8Prober.cpp" />
+    <ClCompile Include="UCD\prmem.c" />
+    <ClCompile Include="UnicodeString.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="diz_c0.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ThumbSDK.h" />
+    <ClInclude Include="CachedWrite.hpp" />
+    <ClInclude Include="codepage.hpp" />
+    <ClInclude Include="config.hpp" />
+    <ClInclude Include="cvtname.hpp" />
+    <ClInclude Include="dizlist.hpp" />
+    <ClInclude Include="farrtl.hpp" />
+    <ClInclude Include="farwinapi.hpp" />
+    <ClInclude Include="filestr.hpp" />
+    <ClInclude Include="format.hpp" />
+    <ClInclude Include="headers.hpp" />
+    <ClInclude Include="keyboard.hpp" />
+    <ClInclude Include="local.hpp" />
+    <ClInclude Include="message.hpp" />
+    <ClInclude Include="version.h" />
+    <CustomBuild Include="nsUniversalDetectorEx.h" />
+    <ClInclude Include="pathmix.hpp" />
+    <ClInclude Include="registry.hpp" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="strmix.hpp" />
+    <CustomBuild Include="UCD\nscore.h" />
+    <CustomBuild Include="UCD\nsMBCSGroupProber.h" />
+    <CustomBuild Include="UCD\nsUniversalDetector.h" />
+    <CustomBuild Include="UCD\prmem.h" />
+    <ClInclude Include="UCD\prtypes.h" />
+    <ClInclude Include="UnicodeString.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="diz_c0.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

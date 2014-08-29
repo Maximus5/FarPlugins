@@ -1,0 +1,17 @@
+enum {
+	MReadingDiz=0,
+	MCannotUpdateDiz,
+	MCannotUpdateRODiz,
+	MCfgDizTitle,
+	MCfgDizListNames,
+	MCfgDizSetHidden,
+	MCfgDizROUpdate,
+	MCfgDizStartPos,
+	MCfgDizNotUpdate,
+	MCfgDizUpdateIfDisplayed,
+	MCfgDizAlwaysUpdate,
+	MCfgDizAnsiByDefault,
+	MCfgDizSaveInUTF,
+	MError,
+	MOk,
+	};

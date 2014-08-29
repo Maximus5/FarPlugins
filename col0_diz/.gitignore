@@ -1,0 +1,7 @@
+*.lng
+*.dll
+*.pdb
+*.ini
+
+/!*.txt
+/*.log

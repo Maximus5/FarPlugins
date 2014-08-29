@@ -1,0 +1,172 @@
+﻿#hpp file name
+dizlang.hpp
+#number of languages
+6
+#id:0 language file name, language name, language description
+DizRus.lng Russian "Russian (Русский)"
+#id:1 language file name, language name, language description
+DizEng.lng English "English"
+#id:2 language file name, language name, language description
+DizCze.lng Czech "Czech (Čeština)"
+#id:3 language file name, language name, language description
+DizGer.lng German "German (Deutsch)"
+#id:4 language file name, language name, language description
+DizHun.lng Hungarian "Hungarian (Magyar)"
+#id:5 language file name, language name, language description
+DizPol.lng Polish "Polish (Polski)"
+
+#head of the hpp file
+#hhead:
+#hhead:
+
+#tail of the hpp file
+#htail:
+#htail:
+#and so on as much as needed
+
+#--------------------------------------------------------------------
+#now come the lng feeds
+#--------------------------------------------------------------------
+#first comes the text name from the enum which can be preceded with
+#comments that will go to the hpp file
+#h://This comment will appear before MYes
+#he://This comment will appear after MYes
+#MYes
+#now come the lng lines for all the languages in the order defined
+#above, they can be preceded with comments as shown below
+#l://This comment will appear in all the lng files before the lng line
+#le://This comment will appear in all the lng files after the lng line
+#ls://This comment will appear only in Russian lng file before the lng line
+#lse://This comment will appear only in Russian lng file after the lng line
+#"Да"
+#ls://This comment will appear only in English lng file before the lng line
+#lse://This comment will appear only in English lng file after the lng line
+#"Yes"
+#ls://This comment will appear only in Czech lng file before the lng line
+#lse://This comment will appear only in Czech lng file after the lng line
+#upd:"Ano"
+#
+#lng lines marked with "upd:" will cause a warning to be printed to the
+#screen reminding that this line should be updated/translated
+
+MReadingDiz=0
+l:
+"Чтение описаний файлов"
+"Reading file descriptions"
+"Načítám popisky souboru"
+"Lese Dateibeschreibungen"
+"Fájlmegjegyzések olvasása"
+"Odczytuję opisy plików"
+
+MCannotUpdateDiz
+"Не удалось обновить описания файлов"
+"Cannot update file descriptions"
+"Nelze aktualizovat popisky souboru"
+"Dateibeschreibungen konnten nicht aktualisiert werden."
+"A fájlmegjegyzések nem frissíthetők"
+"Nie moge aktualizować opisów plików"
+
+MCannotUpdateRODiz
+"Файл описаний защищён от записи"
+"The description file is read only"
+"Popiskový soubor má atribut Jen pro čtení"
+"Die Beschreibungsdatei ist schreibgeschützt."
+"A megjegyzésfájl csak olvasható"
+"Opis jest plikiem tylko do odczytu"
+
+MCfgDizTitle
+l:
+"Описания файлов"
+"File descriptions"
+"Popisky souboru"
+"Dateibeschreibungen"
+"Fájl megjegyzésfájlok"
+"Opisy plików"
+
+MCfgDizListNames
+"Имена &списков описаний, разделённые запятыми:"
+"Description &list names delimited with commas:"
+"Seznam pop&isových souborů oddělených čárkami:"
+"Beschreibungs&dateien, getrennt durch Komma:"
+"Megjegyzés&fájlok nevei, vesszővel elválasztva:"
+"Nazwy &plików z opisami oddzielone przecinkami:"
+
+MCfgDizSetHidden
+"Устанавливать &атрибут ""Hidden"" на новые списки описаний"
+"Set ""&Hidden"" attribute to new description lists"
+"Novým souborům s popisy nastavit atribut ""&Skrytý"""
+"Setze das '&Versteckt'-Attribut für neu angelegte Dateien"
+"Az új megjegyzésfájl ""&rejtett"" attribútumú legyen"
+"Ustaw atrybut ""&Ukryty"" dla nowych plików z opisami"
+
+MCfgDizROUpdate
+"Обновлять файл описаний с атрибутом ""Толь&ко для чтения"""
+"Update &read only description file"
+"Aktualizovat popisové soubory s atributem Jen pro čtení"
+"Schreibgeschützte Dateien aktualisie&ren"
+"&Csak olvasható megjegyzésfájlok frissítése"
+"Aktualizuj plik opisu tylko do odczytu"
+
+MCfgDizStartPos
+"&Позиция новых описаний в строке"
+"&Position of new descriptions in the string"
+"&Pozice nových popisů v řetězci"
+"&Position neuer Beschreibungen in der Zeichenkette"
+"Új megjegyzéseknél a szöveg &kezdete"
+"Pozy&cja nowych opisów w linii"
+
+MCfgDizNotUpdate
+"&Не обновлять описания"
+"Do &not update descriptions"
+"&Neaktualizovat popisy"
+"Beschreibungen &nie aktualisieren"
+"N&e frissítse a megjegyzéseket"
+"&Nie aktualizuj opisów"
+
+MCfgDizUpdateIfDisplayed
+"&Обновлять, если они выводятся на экран"
+"Update if &displayed"
+"Aktualizovat, jestliže je &zobrazen"
+"Aktualisieren &wenn angezeigt"
+"Frissítsen, ha meg&jelenik"
+"Aktualizuj jeśli &widoczne"
+
+MCfgDizAlwaysUpdate
+"&Всегда обновлять"
+"&Always update"
+"&Vždy aktualizovat"
+"Im&mer aktualisieren"
+"&Mindig frissítsen"
+"&Zawsze aktualizuj"
+
+MCfgDizAnsiByDefault
+"ANSI by default"
+"ANSI by default"
+"ANSI by default"
+"ANSI by default"
+"ANSI by default"
+"ANSI by default"
+
+MCfgDizSaveInUTF
+"Save in UTF8"
+"Save in UTF8"
+"Save in UTF8"
+"Save in UTF8"
+"Save in UTF8"
+"Save in UTF8"
+
+MError
+"Ошибка"
+"Error"
+"Chyba"
+"Fehler"
+"Hiba"
+"Błąd"
+
+MOk
+"OK"
+"OK"
+"Ok"
+"OK"
+"OK"
+"OK"

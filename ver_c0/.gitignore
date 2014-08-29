@@ -1,0 +1,16 @@
+*.dll
+*.pdb
+*.ini
+
+/Bugs
+/!*.txt
+
+/Descript.ion
+/Readme.txt
+/backup.cmd
+/copy_verc0.cmd
+/export.gcc.def
+/final.32W.vc
+/final.64W.vc
+/makefile_gcc
+/pe.def

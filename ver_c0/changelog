@@ -1,0 +1,20 @@
+* '.sys' extension added
+
+* More extensions supported (dl, so, fmt, module, fll, ahp, t32, t64, sfx).
+* '.Net' modules are identified as [xDN] (or [sDN] when signed).
+
+* [dos]/[win] when plugin fails to retrieve information about PE file.
+* Some StringVersionInfo's fails.
+* String FileVersion or ProductVersion preferred.
+
+* Some PE Files was skipped.
+
+* IsBadReadPtr was eliminated.
+* MapViewOfFile only for required part of PE file.
+
+* Extensions com и pvd.
+
+* [IA64] для образов Itanium platform.
+* Пытаемся обрабатывать файлы, открытые другими приложениями (FILE_SHARE_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0).
+
+* [s32] вместо [x32] (и т.п.) для PE файлов с цифровой подписью.

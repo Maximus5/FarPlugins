@@ -21,3 +21,5 @@
 *.lib
 *.map
 *.obj
+*.ncb
+*.ilk

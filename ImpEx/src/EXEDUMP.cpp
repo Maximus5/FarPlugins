@@ -32,7 +32,7 @@ static const TCHAR cszAddress[] = _T("Address");
 //============================================================================
 
 // Bitfield values and names for the DllCharacteritics flags
-WORD_FLAG_DESCRIPTIONS DllCharacteristics[] = 
+WORD_FLAG_DESCRIPTIONS DllCharacteristics[] =
 {
 	{ IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE /*0x0040*/, "DYNAMIC_BASE (ASLR)" }, // ASLR
 	{ IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY /*0x0080*/, "FORCE_INTEGRITY" }, // Code Integrity Image
@@ -103,7 +103,7 @@ template <class T> void DumpOptionalHeader(MPanelItem *pRoot,T* pImageOptionalHe
     UINT width = 30;
     char *s;
     UINT i;
- 
+
 	bool b64BitHeader = (IMAGE_NT_OPTIONAL_HDR64_MAGIC == pImageOptionalHeader->Magic);
 
 	// Чтобы при входе в корень сразу была видна "битность"
@@ -111,9 +111,9 @@ template <class T> void DumpOptionalHeader(MPanelItem *pRoot,T* pImageOptionalHe
 
 	//MPanelItem* pChild = pRoot->AddFolder(_T("Optional Header"));
 	MPanelItem* pChild = pRoot->AddFile(b64BitHeader ? _T("PE64_Header.txt") : _T("PE32_Header.txt"));
-	
+
 	pChild->AddText(_T("<Optional Header>\n"));
-	
+
 	if (!ValidateMemory(pImageOptionalHeader, sizeof(*pImageOptionalHeader)))
 	{
 		pChild->SetErrorPtr(pImageOptionalHeader, sizeof(*pImageOptionalHeader)); return;
@@ -132,7 +132,7 @@ template <class T> void DumpOptionalHeader(MPanelItem *pRoot,T* pImageOptionalHe
 		pChild->printf("  %-*s%X\n", width, "entrypoint RVA",
 			pImageOptionalHeader->AddressOfEntryPoint);
 		pChild->printf("  %-*s%X\n", width, "base of code", pImageOptionalHeader->BaseOfCode);
-		
+
 		// 32/64 bit dependent code
 		if ( b64BitHeader )
 		{
@@ -142,7 +142,7 @@ template <class T> void DumpOptionalHeader(MPanelItem *pRoot,T* pImageOptionalHe
 		{
 			// Can't refer to BaseOfData, since this field isn't in an IMAGE_NT_OPTIONAL_HDR64
 			pChild->printf("  %-*s%X\n", width, "base of data", ((PIMAGE_OPTIONAL_HEADER32)pImageOptionalHeader)->BaseOfData );
-			
+
 			pChild->printf("  %-*s%X\n", width, "image base", pImageOptionalHeader->ImageBase);
 		}
 		// end of 32/64 bit dependent code
@@ -228,7 +228,7 @@ template <class T> void DumpOptionalHeader(MPanelItem *pRoot,T* pImageOptionalHe
 
 		for ( i=0; i < NUMBER_LOADER_FLAGS; i++ )
 		{
-			if ( pImageOptionalHeader->LoaderFlags & 
+			if ( pImageOptionalHeader->LoaderFlags &
 				 LoaderFlags[i].flag )
 				pChild->printf( "  %s", LoaderFlags[i].name );
 		}
@@ -267,7 +267,7 @@ template <class T> void DumpExeDebugDirectory(MPanelItem *pRoot,PBYTE pImageBase
     PIMAGE_SECTION_HEADER header;
     DWORD va_debug_dir;
     DWORD size;
-    
+
     va_debug_dir = GetImgDirEntryRVA(pNTHeader, IMAGE_DIRECTORY_ENTRY_DEBUG);
 
     if ( va_debug_dir == 0 )
@@ -289,7 +289,7 @@ template <class T> void DumpExeDebugDirectory(MPanelItem *pRoot,PBYTE pImageBase
             return;
 
         size = GetImgDirEntrySize( pNTHeader, IMAGE_DIRECTORY_ENTRY_DEBUG );
-    
+
 		debugDir = (PIMAGE_DEBUG_DIRECTORY)GetPtrFromRVA( va_debug_dir, pNTHeader, pImageBase );
     }
 
@@ -329,7 +329,7 @@ void DumpImportsOfOneModule(	MPanelItem *pRoot, LPCSTR asModuleFile,
 		else
 		{
 			if ( IMAGE_SNAP_BY_ORDINAL32(pINT->u1.Ordinal) )
-				ordinal = IMAGE_ORDINAL32(pINT->u1.Ordinal);			
+				ordinal = IMAGE_ORDINAL32(pINT->u1.Ordinal);
 		}
 
 		pszDecorateBuffer = NULL;
@@ -353,7 +353,7 @@ void DumpImportsOfOneModule(	MPanelItem *pRoot, LPCSTR asModuleFile,
 			LPBYTE ptr2 = (LPBYTE)GetPtrFromRVA(static_cast<DWORD>(pImportDesc->OriginalFirstThunk), pNTHeader, pImageBase);
 			LPBYTE ptr3 = (LPBYTE)GetPtrFromRVA(static_cast<DWORD>(pImportDesc->FirstThunk), pNTHeader, pImageBase);
 			#endif
-			
+
 			//pRoot->printf("  %4u  %s", pOrdinalName->Hint, pOrdinalName->Name);
 			sprintf(szOrdinalBuffer, "%4u", pOrdinalName->Hint );
 			pszFuncName = (char*)pOrdinalName->Name;
@@ -370,7 +370,7 @@ void DumpImportsOfOneModule(	MPanelItem *pRoot, LPCSTR asModuleFile,
 				}
 			}
 		}
-		
+
 		// If it looks like the image has been bound, append the
 		// bound address
 		if ( pImportDesc->TimeDateStamp ) {
@@ -394,18 +394,18 @@ void DumpImportsOfOneModule(	MPanelItem *pRoot, LPCSTR asModuleFile,
 			pChild2->AddText(pChild->GetText(), -1, TRUE);
 			pChild2->SetColumns(asModuleFile, szOrdinalBuffer);
 		}
-		
+
 		//pRoot->printf( "\n" );
-		
+
 		pINT++;         // Advance to next thunk
 		pIAT++;         // advance to next thunk
-	}	
+	}
 }
 
 //
 // Dump the imports table (the .idata section) of a PE file
 //
-template <class T> void DumpImportsSection(MPanelItem *pRoot, PBYTE pImageBase, T * pNTHeader)	// 'T' = PIMAGE_NT_HEADERS 
+template <class T> void DumpImportsSection(MPanelItem *pRoot, PBYTE pImageBase, T * pNTHeader)	// 'T' = PIMAGE_NT_HEADERS
 {
     PIMAGE_IMPORT_DESCRIPTOR pImportDesc;
     DWORD importsStartRVA;
@@ -419,18 +419,18 @@ template <class T> void DumpImportsSection(MPanelItem *pRoot, PBYTE pImageBase, 
     pImportDesc = (PIMAGE_IMPORT_DESCRIPTOR)GetPtrFromRVA(importsStartRVA,pNTHeader,pImageBase);
 	if ( !pImportDesc )
 		return;
-            
+
 	bool bIs64Bit = ( pNTHeader->FileHeader.SizeOfOptionalHeader == IMAGE_SIZEOF_NT_OPTIONAL64_HEADER );
 
 	MPanelItem* pChild = pRoot->AddFolder(_T("Imports Table"));
     pChild->AddText("<Imports Table>:\n");
-    
+
     while ( 1 )
     {
         // See if we've reached an empty IMAGE_IMPORT_DESCRIPTOR
         if ( (pImportDesc->TimeDateStamp==0 ) && (pImportDesc->Name==0) )
             break;
-        
+
 		LPCSTR pszDll = (LPCSTR)GetPtrFromRVA(pImportDesc->Name, pNTHeader, pImageBase);
 
 		MPanelItem* pDll = pChild->AddFolder(pszDll);
@@ -451,7 +451,7 @@ template <class T> void DumpImportsSection(MPanelItem *pRoot, PBYTE pImageBase, 
         pDll->printf("  ForwarderChain:           %08X\n", pImportDesc->ForwarderChain);
         pDll->printf("  DLL Name RVA:             %08X\n", pImportDesc->Name);
         pDll->printf("  Import Address Table RVA: %08X\n", pImportDesc->FirstThunk);
-    
+
         DWORD rvaINT = pImportDesc->OriginalFirstThunk;
         DWORD rvaIAT = pImportDesc->FirstThunk;
 
@@ -459,11 +459,11 @@ template <class T> void DumpImportsSection(MPanelItem *pRoot, PBYTE pImageBase, 
         {
             // Yes! Gotta have a non-zero FirstThunk field then.
             rvaINT = rvaIAT;
-            
+
             if ( rvaINT == 0 )   // No FirstThunk field?  Ooops!!!
                 return;
         }
-        
+
         // Adjust the pointer to point where the tables are in the
         // mem mapped file.
         PIMAGE_THUNK_DATA pINT = (PIMAGE_THUNK_DATA)GetPtrFromRVA(rvaINT, pNTHeader, pImageBase);
@@ -471,9 +471,9 @@ template <class T> void DumpImportsSection(MPanelItem *pRoot, PBYTE pImageBase, 
 			return;
 
         PIMAGE_THUNK_DATA pIAT = (PIMAGE_THUNK_DATA)GetPtrFromRVA(rvaIAT, pNTHeader, pImageBase);
-    
+
         pDll->printf("  Ordn  Name\n");
-    
+
 		bIs64Bit
 			? DumpImportsOfOneModule( pDll, pszDll, (PIMAGE_THUNK_DATA64)pINT, (PIMAGE_THUNK_DATA64)pIAT, pNTHeader, pImportDesc, pImageBase )
 			: DumpImportsOfOneModule( pDll, pszDll, (PIMAGE_THUNK_DATA32)pINT, (PIMAGE_THUNK_DATA32)pIAT, pNTHeader, pImportDesc, pImageBase );
@@ -520,7 +520,7 @@ template <class T, class U> void DumpDelayedImportsImportNames( MPanelItem *pRoo
 			pOrdinalName = bUsingRVA
 				? (PIMAGE_IMPORT_BY_NAME)GetPtrFromRVA((DWORD)thunk->u1.AddressOfData, pNTHeader, pImageBase)
 				: (PIMAGE_IMPORT_BY_NAME)GetPtrFromVA((PVOID)pOrdinalName, pNTHeader, pImageBase);
-            
+
 			lstrcpynA(fileName, (LPCSTR)pOrdinalName->Name, MAX_PATH);
 			sprintf(szOrdinalBuffer, "%4u", (DWORD)(pOrdinalName->Hint));
 			pRoot->printf("    %4u  %s", pOrdinalName->Hint, pOrdinalName->Name);
@@ -533,7 +533,7 @@ template <class T, class U> void DumpDelayedImportsImportNames( MPanelItem *pRoo
 			MPanelItem* pFunc2 = pRoot->Parent()->AddFile(fileName);
 			pFunc2->SetColumns(asModuleFile, szOrdinalBuffer);
 		}
-        
+
         pRoot->printf( "\n" );
 
         thunk++;            // Advance to next thunk
@@ -542,7 +542,7 @@ template <class T, class U> void DumpDelayedImportsImportNames( MPanelItem *pRoo
 	pRoot->printf( "\n" );
 }
 
-template <class T> void DumpDelayedImportsSection(MPanelItem *pRoot, PBYTE pImageBase, T* pNTHeader, bool bIs64Bit )	// 'T' = PIMAGE_NT_HEADERS 
+template <class T> void DumpDelayedImportsSection(MPanelItem *pRoot, PBYTE pImageBase, T* pNTHeader, bool bIs64Bit )	// 'T' = PIMAGE_NT_HEADERS
 {
 	DWORD delayImportStartRVA, delayImportSize;
     PCImgDelayDescr pDelayDesc;
@@ -580,9 +580,9 @@ template <class T> void DumpDelayedImportsSection(MPanelItem *pRoot, PBYTE pImag
 		return;
 
 	__try {
-	            
+
 		pChild->printf("<Delay Imports Table>:\n");
-		
+
 		int nDelaySizeLeft = (int)delayImportSize;
 		int nDllNo = 0;
 		while ( nDelaySizeLeft > 0 && pDelayDesc->rvaDLLName )
@@ -622,7 +622,7 @@ template <class T> void DumpDelayedImportsSection(MPanelItem *pRoot, PBYTE pImag
 			pDll->printf( "    Import Address Table R(VA): %08X\n", pDelayDesc->rvaIAT );
 			pDll->printf( "    Import Names Table R(VA):   %08X\n", pDelayDesc->rvaINT );
 			pDll->printf( "    Bound IAT R(VA):            %08X\n", pDelayDesc->rvaBoundIAT );
-			pDll->printf( "    Unload IAT R(VA):           %08X\n", pDelayDesc->rvaUnloadIAT );	    
+			pDll->printf( "    Unload IAT R(VA):           %08X\n", pDelayDesc->rvaUnloadIAT );
 			pDll->printf( "    TimeDateStamp:              %08X", pDelayDesc->dwTimeStamp );
 
 			if ( pDelayDesc->dwTimeStamp )
@@ -635,16 +635,16 @@ template <class T> void DumpDelayedImportsSection(MPanelItem *pRoot, PBYTE pImag
 
 			//
 			// Display the Import Names Table.
-			
-			
+
+
 			PVOID thunkVA = (PBYTE)0 + (DWORD)pDelayDesc->rvaINT;
 
 			PVOID pvThunkRVA = GetPtrFromRVA((DWORD)pDelayDesc->rvaINT, pNTHeader, pImageBase );
 			PVOID pvThunkVA  = GetPtrFromVA(thunkVA, pNTHeader, pImageBase );
 			PVOID pvThunk = bUsingRVA ? pvThunkRVA : pvThunkVA;
-	    
+
 			pDll->printf("    Ordn  Name\n");
-	        
+
 			if (!pvThunk) {
 				pDll->printf("    <NULL>\n");
 				bInvalid = true;
@@ -683,18 +683,18 @@ template <class T> void DumpDelayedImportsSection(MPanelItem *pRoot, PBYTE pImag
 //
 // Dump the exports table (usually the .edata section) of a PE file
 //
-template <class T> void DumpExportsSection(MPanelItem *pRoot, PBYTE pImageBase, T * pNTHeader)	// 'T' = PIMAGE_NT_HEADERS 
+template <class T> void DumpExportsSection(MPanelItem *pRoot, PBYTE pImageBase, T * pNTHeader)	// 'T' = PIMAGE_NT_HEADERS
 {
     PIMAGE_EXPORT_DIRECTORY pExportDir;
     PIMAGE_SECTION_HEADER header;
-    INT delta; 
+    INT delta;
     PSTR pszFilename;
     DWORD i;
     PDWORD pdwFunctions;
     PWORD pwOrdinals;
     DWORD *pszFuncNames;
     DWORD exportsStartRVA, exportsEndRVA;
-    
+
     exportsStartRVA = GetImgDirEntryRVA(pNTHeader,IMAGE_DIRECTORY_ENTRY_EXPORT);
     exportsEndRVA = exportsStartRVA +
 	   				GetImgDirEntrySize(pNTHeader, IMAGE_DIRECTORY_ENTRY_EXPORT);
@@ -706,17 +706,17 @@ template <class T> void DumpExportsSection(MPanelItem *pRoot, PBYTE pImageBase, 
         return;
 
     delta = (INT)(header->VirtualAddress - header->PointerToRawData);
-        
+
     pExportDir = (PIMAGE_EXPORT_DIRECTORY)GetPtrFromRVA(exportsStartRVA, pNTHeader, pImageBase);
-        
+
     pszFilename = (PSTR)GetPtrFromRVA( pExportDir->Name, pNTHeader, pImageBase );
-        
+
 	MPanelItem *pChild = pRoot->AddFolder(ExportsTableName);
 	pChild->SetColumnsTitles(cszOrdinal,4,cszEntryPoint,8);
     pChild->printf("<Exports Table>:\n");
     pChild->printf("  Name:            %s\n", pszFilename);
     pChild->printf("  Characteristics: %08X\n", pExportDir->Characteristics);
-	
+
 	__time32_t timeStamp = pExportDir->TimeDateStamp;
     pChild->printf("  TimeDateStamp:   %08X -> %s",
     			pExportDir->TimeDateStamp, _ctime32(&timeStamp) );
@@ -725,7 +725,7 @@ template <class T> void DumpExportsSection(MPanelItem *pRoot, PBYTE pImageBase, 
     pChild->printf("  Ordinal base:    %08X\n", pExportDir->Base);
     pChild->printf("  # of functions:  %08X\n", pExportDir->NumberOfFunctions);
     pChild->printf("  # of Names:      %08X\n", pExportDir->NumberOfNames);
-    
+
     pdwFunctions =	(PDWORD)GetPtrFromRVA( pExportDir->AddressOfFunctions, pNTHeader, pImageBase );
     pwOrdinals =	(PWORD)	GetPtrFromRVA( pExportDir->AddressOfNameOrdinals, pNTHeader, pImageBase );
     pszFuncNames =	(DWORD *)GetPtrFromRVA( pExportDir->AddressOfNames, pNTHeader, pImageBase );
@@ -844,7 +844,7 @@ template <class T> void DumpExportsSection(MPanelItem *pRoot, PBYTE pImageBase, 
 		{
 			pFunc->SetData(pImageBase+entryPointRVA, 256);
 		}
-        
+
         pFunc->AddText(_T("\n"));
     }
 
@@ -946,7 +946,7 @@ template <class T> void DumpBaseRelocationsSection(MPanelItem *pRoot, PBYTE pIma
     unsigned __int64 cAllEntries = 0;
     unsigned int cIDX = 0;
     TCHAR szName[64], szAddr[12];
-    
+
     pChild->SetColumnsTitles(cszAddress, 10, cszCount, 5, 0);
 
     while ( baseReloc->SizeOfBlock != 0 )
@@ -961,11 +961,11 @@ template <class T> void DumpBaseRelocationsSection(MPanelItem *pRoot, PBYTE pIma
 			break;
 		if ( baseReloc->SizeOfBlock < sizeof(*baseReloc) )
 			break;
-		
+
         cEntries = (baseReloc->SizeOfBlock-sizeof(*baseReloc))/sizeof(WORD);
         pEntry = MakePtr( PWORD, baseReloc, sizeof(*baseReloc) );
         cAllEntries += cEntries;
-        
+
         cIDX++;
         wsprintf(szName, _T("#%u.reloc"), cIDX);
         wsprintf(szAddr, _T("0x%08X"), baseReloc->VirtualAddress);
@@ -980,11 +980,11 @@ template <class T> void DumpBaseRelocationsSection(MPanelItem *pRoot, PBYTE pIma
 		}
 
         pReloc->SetData((LPBYTE)baseReloc, baseReloc->SizeOfBlock);
-        
+
         // Approximate. cEntries may be changed on IMAGE_REL_BASED_HIGHADJ
         wsprintf(szName, _T("%4u"), cEntries);
         pReloc->SetColumns(szAddr, szName);
-            
+
         //for ( i=0; i < cEntries; i++ )
         //{
         //    // Extract the top 4 bits of the relocation entry.  Turn those 4
@@ -993,8 +993,8 @@ template <class T> void DumpBaseRelocationsSection(MPanelItem *pRoot, PBYTE pIma
         //    szRelocType = relocType <= IMAGE_REL_BASED_DIR64 ? SzRelocTypes[relocType] : _T("unknown");
         //
 		//	DWORD dwAddr = (*pEntry & 0x0FFF) + baseReloc->VirtualAddress;
-        //    
-        //    
+        //
+        //
         //
 		//	if ( IMAGE_REL_BASED_HIGHADJ == relocType )
 		//	{
@@ -1009,7 +1009,7 @@ template <class T> void DumpBaseRelocationsSection(MPanelItem *pRoot, PBYTE pIma
 		//	//pChild->AddText( _T("\n") );
         //    pEntry++;   // Advance to next relocation entry
         //}
-        
+
         baseReloc = MakePtr( PIMAGE_BASE_RELOCATION, baseReloc,
                              baseReloc->SizeOfBlock);
 		if (!ValidateMemory(baseReloc,sizeof(IMAGE_BASE_RELOCATION)))
@@ -1019,7 +1019,7 @@ template <class T> void DumpBaseRelocationsSection(MPanelItem *pRoot, PBYTE pIma
     }
 
     pChild->printf("=================================\nTotal relocations count: %I64u\n", cAllEntries);
-            
+
 	pRoot->AddText( _T("\n") );
 }
 
@@ -1034,14 +1034,14 @@ template <class T> void DumpBoundImportDescriptors( MPanelItem *pRoot, PBYTE pIm
     bidRVA = GetImgDirEntryRVA(pNTHeader, IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT);
     if ( !bidRVA )
         return;
-    
+
     pibid = MakePtr( PIMAGE_BOUND_IMPORT_DESCRIPTOR, pImageBase, bidRVA );
 
 	MPanelItem* pChild = pRoot->AddFolder(_T("Bound Imports"));
     pChild->printf( "Bound import descriptors:\n\n" );
     pChild->printf( "  Module        TimeDate\n" );
     pChild->printf( "  ------------  --------\n" );
-    
+
     while ( pibid->TimeDateStamp )
     {
         unsigned i;
@@ -1057,7 +1057,7 @@ template <class T> void DumpBoundImportDescriptors( MPanelItem *pRoot, PBYTE pIm
         		pszModule,
                 pibid->TimeDateStamp,
                 pszTime );
-                            
+
         pibfr = MakePtr(PIMAGE_BOUND_FORWARDER_REF, pibid,
                             sizeof(IMAGE_BOUND_IMPORT_DESCRIPTOR));
 
@@ -1068,12 +1068,12 @@ template <class T> void DumpBoundImportDescriptors( MPanelItem *pRoot, PBYTE pIm
 			pszTime = _ctime32(&timeStamp); if (!pszTime) pszTime = "(null)\n";
 			pszModule = (char*)(pImageBase + bidRVA + pibfr->OffsetModuleName);
 			if (!ValidateMemory(pszModule,12)) pszModule = "";
-            pChild->printf("    forwarder:  %-12s  %08X -> %s", 
-							pszModule,                            
+            pChild->printf("    forwarder:  %-12s  %08X -> %s",
+							pszModule,
                             pibfr->TimeDateStamp,
                             pszTime );
             pibfr++;    // advance to next forwarder ref
-                
+
             // Keep the outer loop pointer up to date too!
             pibid = MakePtr( PIMAGE_BOUND_IMPORT_DESCRIPTOR, pibid,
                              sizeof( IMAGE_BOUND_FORWARDER_REF ) );
@@ -1118,11 +1118,11 @@ template <class T> void DumpCOR20Header( MPanelItem *pRoot, PBYTE pImageBase, T*
         return;
 
     PIMAGE_COR20_HEADER pCor20Hdr = (PIMAGE_COR20_HEADER)GetPtrFromRVA( cor20HdrRVA, pNTHeader, pImageBase );
-    
+
     pRoot->Root()->AddFlags(_T("NET"));
-    
+
     MPanelItem* pChild = pRoot->AddFolder(_T(".NET"));
-	
+
 	pChild->printf( "<.NET Runtime Header>:\n" );
 
 	pChild->printf( "  Size:       %u\n", pCor20Hdr->cb );
@@ -1131,7 +1131,8 @@ template <class T> void DumpCOR20Header( MPanelItem *pRoot, PBYTE pImageBase, T*
 	if ( pCor20Hdr->Flags & COMIMAGE_FLAGS_ILONLY ) pChild->printf( "    ILONLY\n" );
 	if ( pCor20Hdr->Flags & COMIMAGE_FLAGS_32BITREQUIRED ) pChild->printf( "    32BITREQUIRED\n" );
 	if ( pCor20Hdr->Flags & COMIMAGE_FLAGS_IL_LIBRARY ) pChild->printf( "    IL_LIBRARY\n" );
-	if ( pCor20Hdr->Flags & 8 ) pChild->printf( "    STRONGNAMESIGNED\n" );		// At this moment, WINNT.H and CorHdr.H are out of sync...
+	if ( pCor20Hdr->Flags & COMIMAGE_FLAGS_STRONGNAMESIGNED ) pChild->printf( "    STRONGNAMESIGNED\n" );
+	if ( pCor20Hdr->Flags & COMIMAGE_FLAGS_NATIVE_ENTRYPOINT ) pChild->printf( "    NATIVE_ENTRYPOINT\n" );
 	if ( pCor20Hdr->Flags & COMIMAGE_FLAGS_TRACKDEBUGDATA ) pChild->printf( "    TRACKDEBUGDATA\n" );
 
 	DisplayDataDirectoryEntry( pChild, "MetaData", pCor20Hdr->MetaData );
@@ -1145,7 +1146,7 @@ template <class T> void DumpCOR20Header( MPanelItem *pRoot, PBYTE pImageBase, T*
 	pRoot->printf( "\n" );
 }
 
-template <class T, class U> void DumpLoadConfigDirectory(MPanelItem *pRoot, PBYTE pImageBase, T* pNTHeader, U * pLCD )	// T = PIMAGE_NT_HEADERS, U = PIMAGE_LOAD_CONFIG_DIRECTORY 
+template <class T, class U> void DumpLoadConfigDirectory(MPanelItem *pRoot, PBYTE pImageBase, T* pNTHeader, U * pLCD )	// T = PIMAGE_NT_HEADERS, U = PIMAGE_LOAD_CONFIG_DIRECTORY
 {
     DWORD loadConfigDirRVA;
 
@@ -1192,7 +1193,7 @@ template <class T> void DumpCertificates(MPanelItem *pRoot, PBYTE pImageBase, T*
     certOffset = GetImgDirEntryRVA(pNTHeader, IMAGE_DIRECTORY_ENTRY_SECURITY );
     if ( !certOffset )
         return;
-	
+
 	__int64 dwTotalSize = GetImgDirEntrySize( pNTHeader, IMAGE_DIRECTORY_ENTRY_SECURITY );
 
 	TCHAR szCertName[MAX_PATH], szCertType[64], szRev[8];
@@ -1227,7 +1228,7 @@ template <class T> void DumpCertificates(MPanelItem *pRoot, PBYTE pImageBase, T*
 		case WIN_CERT_TYPE_TS_STACK_SIGNED: lstrcpy(szCertType, _T("TS_STACK_SIGNED")); break;
 		default: wsprintf(szCertType, _T("0x%04X"), pCert->wCertificateType);
 		}
-		
+
 		nCertNo++;
 
 		if (!ValidateMemory(pCert, nAllLen)) {
@@ -1246,7 +1247,7 @@ template <class T> void DumpCertificates(MPanelItem *pRoot, PBYTE pImageBase, T*
 		pChild->printf( "    Length:   %i bytes\n", pCert->dwLength );
 		pChild->printf( "    Revision: 0x%04X\n", pCert->wRevision );
 		pChild->printf( "    Type:     0x%04X", pCert->wCertificateType );
-		
+
 		if (szCertType[0] != _T('0'))
 			pChild->printf(_T(" (%s)"), szCertType);
 
@@ -1261,7 +1262,7 @@ template <class T> void DumpCertificates(MPanelItem *pRoot, PBYTE pImageBase, T*
 
 		dwTotalSize -= nAllLen; //pCert->dwLength;
 		//certOffset += pCert->dwLength;		// Get offset to next certificate
-		
+
 		pCert = (LPWIN_CERTIFICATE)(((LPBYTE)pCert) + nAllLen);
 	}
 
@@ -1278,7 +1279,7 @@ bool DumpExeFile( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader )
 {
     PIMAGE_NT_HEADERS32 pNTHeader;
     PBYTE pImageBase = (PBYTE)dosHeader;
-    
+
 	// Make pointers to 32 and 64 bit versions of the header.
     pNTHeader = MakePtr( PIMAGE_NT_HEADERS32, dosHeader,
                                 dosHeader->e_lfanew );
@@ -1386,7 +1387,7 @@ bool DumpExeFilePE( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader, PIMAGE_NT_HE
     pRoot->printf("\n");
 
 	// IsExe = TRUE, means "NOT *.obj file"
-    DumpSectionTable( pRoot, IMAGE_FIRST_SECTION(pNTHeader), 
+    DumpSectionTable( pRoot, IMAGE_FIRST_SECTION(pNTHeader),
                         pNTHeader->FileHeader.NumberOfSections, TRUE);
     pRoot->printf("\n");
 
@@ -1408,15 +1409,15 @@ bool DumpExeFilePE( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader, PIMAGE_NT_HE
 	bIs64Bit
 	    ? DumpImportsSection(pRoot, pImageBase, pNTHeader64 )
 		: DumpImportsSection(pRoot, pImageBase, pNTHeader);
-    
+
 	bIs64Bit
 		? DumpDelayedImportsSection(pRoot, pImageBase, pNTHeader64, bIs64Bit )
 		: DumpDelayedImportsSection(pRoot, pImageBase, pNTHeader, bIs64Bit );
 
-	bIs64Bit 
+	bIs64Bit
 		? DumpBoundImportDescriptors( pRoot, pImageBase, pNTHeader64 )
 		: DumpBoundImportDescriptors( pRoot, pImageBase, pNTHeader );
-    
+
 	bIs64Bit
 	    ? DumpExportsSection( pRoot, pImageBase, pNTHeader64 )
 		: DumpExportsSection( pRoot, pImageBase, pNTHeader );
@@ -1450,8 +1451,8 @@ bool DumpExeFilePE( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader, PIMAGE_NT_HE
 	{
 		bIs64Bit
 			? DumpRuntimeFunctions( pRoot, pImageBase, pNTHeader64 )
-			: DumpRuntimeFunctions( pRoot, pImageBase, pNTHeader ); 
-				
+			: DumpRuntimeFunctions( pRoot, pImageBase, pNTHeader );
+
 		pRoot->printf( "\n" );
 	}
 
@@ -1461,7 +1462,7 @@ bool DumpExeFilePE( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader, PIMAGE_NT_HE
 			? DumpBaseRelocationsSection( pRoot, pImageBase, pNTHeader64 )
 			: DumpBaseRelocationsSection( pRoot, pImageBase, pNTHeader );
         pRoot->printf("\n");
-    } 
+    }
 
 	if ( fShowSymbolTable && g_pMiscDebugInfo )
 	{
@@ -1480,7 +1481,7 @@ bool DumpExeFilePE( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader, PIMAGE_NT_HE
         DumpCOFFHeader( pRoot, g_pCOFFHeader );
         pRoot->printf("\n");
     }
-    
+
     if ( fShowLineNumbers && g_pCOFFHeader )
     {
         DumpLineNumbers( pRoot, MakePtr(PIMAGE_LINENUMBER, g_pCOFFHeader,
@@ -1491,7 +1492,7 @@ bool DumpExeFilePE( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader, PIMAGE_NT_HE
 
     if ( fShowSymbolTable )
     {
-        if ( pNTHeader->FileHeader.NumberOfSymbols 
+        if ( pNTHeader->FileHeader.NumberOfSymbols
             && pNTHeader->FileHeader.PointerToSymbolTable
 			&& g_pCOFFSymbolTable )
         {
@@ -1499,7 +1500,7 @@ bool DumpExeFilePE( MPanelItem *pRoot, PIMAGE_DOS_HEADER dosHeader, PIMAGE_NT_HE
             pRoot->printf("\n");
         }
     }
-    
+
 	// 04.03.2010 Maks - В Exe не инетересно видеть HexDump, да это еще и долго
 	//if ( fShowRawSectionData )
 	//{

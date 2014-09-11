@@ -1,7 +1,11 @@
+v0.8.14
 * Far 3 build 3000.
-* ?Equiped? with TestLib32.exe and TestLib64.exe for easy testing of LoadLibrary.
 * Named DLL flags in PE header.
 * Wrong bitmap height in resource parser.
+
+v0.8.12
+* Added all actual DLLCHARACTERISTICS flags.
+* Added NATIVE_ENTRYPOINT flag to the .NET Runtime Header.
 
 v0.8.10
 * Support of 'plain DOS' executables.

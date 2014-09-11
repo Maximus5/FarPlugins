@@ -790,6 +790,27 @@ void WINAPI ExitFARW(
 void LoadSettings()
 {
 #if defined(FAR_UNICODE)
+	PluginSettings settings(guid_PluginGuid, psi.SettingsControl);
+	// gbUseMenu, gbUseEnter, gbUseCtrlPgDn, gbLibRegUnreg, gbLibLoadUnload;
+	struct tag_Settings {
+		bool* pbVal; LPCTSTR psName;
+	};
+	struct tag_Settings Settings[] =
+	{
+		{&gbUseMenu, _T("UseMenu")},
+		{&gbUseEnter, _T("UseEnter")},
+		{&gbUseCtrlPgDn, _T("UseCtrlPgDn")},
+		{&gbLibRegUnreg, _T("LibRegUnreg")},
+		{&gbLibLoadUnload, _T("LibLoadUnload")},
+		{&gbUseUndecorate, _T("UseUndecorate")},
+		{&gbDecimalIds, _T("DecimalIds")},
+	};
+	for (int i = 0; i < countof(Settings); i++)
+	{
+		*Settings[i].pbVal = settings.Get(0, Settings[i].psName, *Settings[i].pbVal);
+		// случай первого запуска
+		settings.Set(0, Settings[i].psName, *Settings[i].pbVal);
+	}
 #else
 	if (!gsRootKey) return;
 

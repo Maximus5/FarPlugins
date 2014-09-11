@@ -23,3 +23,7 @@
 *.obj
 *.ncb
 *.ilk
+
+# Visual studio temp folders
+_build
+ipch

@@ -1,0 +1,18 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\ImpEx]
+; Browse by Enter
+"UseEnter"=hex:01
+; Browse by CtrlPgDn
+"UseCtrlPgDn"=hex:01
+
+; It's not possible to determine strictly, which combination
+; was used for plugin calling - Enter or CtrlPgDn. Plugin try
+; to determine combination via checking state of keybard keys.
+; So, sometimes You must switch both of options.
+
+; Enable demangling via Dbghelp.dll
+"UseUndecorate"=hex:01
+
+; hex:01 - Show decimal resource ids, hex:00 - hexadecimal ids
+"DecimalIds"=hex:01

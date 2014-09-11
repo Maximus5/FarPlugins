@@ -1,0 +1,18 @@
+EXPORTS
+	AnalyseW
+	CloseAnalyseW
+	ClosePanelW=ClosePluginW
+	ClosePluginW
+	CompareW
+	ConfigureW
+	ExitFARW
+	FreeFindDataW
+	GetFilesW
+	GetFindDataW
+	GetGlobalInfoW
+	GetOpenPanelInfoW=GetOpenPluginInfoW
+	GetPluginInfoW
+	OpenW=OpenPluginW
+	ProcessPanelInputW
+	SetDirectoryW
+	SetStartupInfoW

@@ -1,0 +1,89 @@
+* Far 3 build 3000.
+* ?Equiped? with TestLib32.exe and TestLib64.exe for easy testing of LoadLibrary.
+* Named DLL flags in PE header.
+* Wrong bitmap height in resource parser.
+
+v0.8.10
+* Support of 'plain DOS' executables.
+* Some VersionInfo parsing fails.
+* Using AnalyzeW.
+* Demangling of Imports and Exports using Dbghelp.dll ('UseUndecorate' option in ImpEx.reg).
+* Virtual folder 'File Header' replaced with virtual file 'DOS_Header.txt'.
+* 'Exception while dumping' on bad 'Base relocation' tables.
+* Column '#Ord' in the 'Imports Table' and 'Delay Imports Table' sections was renamed to 'Hint'. It is not an Ordinal, PE loader uses it as a suggested starting value for the exported function.
+* Flag 'COM' for COM servers (looking for DllRegisterServer export).
+* 'DecimalIds' setting in registry.
+* 'FAR3' flag.
+
+v0.8.8
+* "Couldn't map view of file..." on large files (i.e. *.iso).
+
+v0.8.7
+* OpenFilePlugin.
+* Some settings was added. You may change them via registry. Plugin reloads them on the fly.
+
+v0.8.6
+* Ready for ConEmu Panel Views.
+
+v0.8.5
+* Exception on dumping some resources.
+* <Empty name> instead of empty names.
+
+v0.8.4
+* Flag 'NET' and '.NET' folder for .NET assemblies.
+* There was exception on invalid 'IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG'.
+
+v0.8.3
+* Too detailed 'Base relocation' cause long loading some files.
+
+v0.8.2
+* String tables. Using 'Description', BOM in files.
+
+v0.8.1
+* Exception while dumping dialogs in UPXed modules.
+* Added: Base Relocations, Section Hex Dumps (*.obj), Misc. Debug Info, Line Numbers, Runtime Function Table (Exception handling).
+
+v0.8
+* Using RawDataSize instead of Virtual size, when dumping Section Table.
+* Fixed file name of sections with 8 char name length.
+* Current PE name and directory are displayed now in panel title.
+* Bugs in parsing FileVerInfo.
+* Visual representation of 16bit VERSIONINFO (i.e. *.fon files).
+* Flags FAR1 & FAR2 at root (SetStartupInfo & SetStartupInfoW exists in Exports).
+
+v0.7
+* Only Panel mode '0' changed by plugin.
+* Exception while dumping Delay import table.
+* Incorrect "Can't access ... bytes at 0x...".
+* Fix in *.bmp resource extraction.
+* Exception while dumping PE's with invalid Delay Import Table.
+* Delay Import Table visualization.
+
+v0.6
+* Flag 'UPX' at the root.
+* String table visualization. Multilanguage support.
+* Simple resource extraction: *.bmp, *.cur, *.ico. Type and size are displayed in columns.
+* Visual representation of GROUP_ICON, GROUP_CURSOR. GROUP_ICON placed in ICON folder, GROUP_CURSOR placed in CURSOR folder.
+* Visual representation of VERSIONINFO.
+
+v0.5
+* Exception while dumping invalid string tables.
+* Sort fix for FAR2 (DUMP.TXT must be first item).
+
+v0.4 - 2010-01-27
+* Exception while dumping some PE with certificates.
+* Exception while dumping PE without 'String table' after dumping PE with.
+* Exception while dumping *.lib.
+
+v0.3 - 2010-01-24
+* Exception in x64 dll, while opening x86 PE.
+
+v0.2 - 2010-01-24
+* Extracting resources from 16/32/64 bit PE's (i.e. *.fon files).
+* Appearence of Exports and Imports. Sorting by library/ordinal.
+* String table visualization.
+* +"ImpEx" in Plugin menu, +GetMinFarVersion, -OpenFilePlugin.
+* Long file names support in FAR2.
+
+v0.1 - 2010-01-23
+* Initial version. Based on PEDUMP.

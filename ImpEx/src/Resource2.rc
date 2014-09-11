@@ -1,0 +1,38 @@
+
+#include "version.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION IMPEXVERN
+ PRODUCTVERSION IMPEXVERN
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "FileDescription", "ImpEx" IMPEXPLTFRM
+            VALUE "FileVersion", IMPEXVERS
+            VALUE "LegalCopyright", "(C) 2010 Maximus5"
+            VALUE "OriginalFilename", "ImpEx.dll"
+            VALUE "ProductName", "ImpEx"
+            VALUE "ProductVersion", IMPEXVERS
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END

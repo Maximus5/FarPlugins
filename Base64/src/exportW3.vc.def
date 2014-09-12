@@ -1,0 +1,11 @@
+EXPORTS
+	AnalyseW
+;	CloseAnalyseW
+	ClosePanelW=ClosePluginW
+	GetGlobalInfoW
+	SetStartupInfoW
+	GetPluginInfoW
+	OpenW=OpenPluginW
+	GetFindDataW
+	GetFilesW
+	GetOpenPanelInfoW=GetOpenPluginInfoW

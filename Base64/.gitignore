@@ -1,0 +1,9 @@
+/_Arc
+/Debug
+/Test
+/src/*.bat
+/src/*.log
+\!*.txt
+*.dll
+*.pdb
+makefile_gcc

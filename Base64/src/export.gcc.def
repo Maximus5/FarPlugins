@@ -1,0 +1,10 @@
+EXPORTS
+	SetStartupInfoW=SetStartupInfoW@4
+	GetPluginInfoW=GetPluginInfoW@4
+	GetOpenPluginInfoW=GetOpenPluginInfoW@8
+	GetMinFarVersionW=GetMinFarVersionW@0
+	OpenFilePluginW=OpenFilePluginW@16
+	OpenPluginW=OpenPluginW@8
+	ClosePluginW=ClosePluginW@4
+	GetFindDataW=GetFindDataW@16
+	GetFilesW=GetFilesW@24

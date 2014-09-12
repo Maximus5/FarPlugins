@@ -28,7 +28,7 @@ extern GUID guid_PluginGuid;
 	#define PanelItemWrite(p) (p).LastWriteTime
 	#define PanelItemChange(p) (p).ChangeTime
 	#define PanelItemFileSize(p) (p).FileSize
-	#define PanelItemPackSize(p) (p).PackSize
+	#define PanelItemPackSize(p) (p).FileSize // There is NO PackSize in latest Far
 	#define PanelItemUserData(p) (p).UserData.Data
 	#define MenuItemIsSeparator(p) (((p).Flags & MIF_SEPARATOR) == MIF_SEPARATOR)
 	#define MenuItemSetSeparator(p) (p).Flags |= MIF_SEPARATOR
@@ -103,6 +103,63 @@ extern GUID guid_PluginGuid;
 	#define FILENAMEPTR(p) (p).FindData.cFileName
 #endif
 
+inline INT_PTR EditCtrl(int Cmd, void* Parm, INT_PTR cbSize = 0)
+{
+	INT_PTR iRc;
+	#if FAR_UNICODE>=1906
+	iRc = psi.EditorControl(-1, (EDITOR_CONTROL_COMMANDS)Cmd, cbSize, Parm);
+	#else
+	iRc = psi.EditorControl(Cmd, Parm);
+	#endif
+	return iRc;
+}
+
+#if 0
+struct CPluginAnalyse
+{
+public:
+	TCHAR          *FileName;
+	LPBYTE          Buffer;
+	size_t          BufferSize;
+	OPERATION_MODES OpMode;
+
+public:
+	static CPluginAnalyse* Create(const AnalyseInfo *Info)
+	{
+		int cchNameMax = Info->FileName ? (lstrlen(Info->FileName)+1) : 0;
+		INT_PTR nAllSize = sizeof(CPluginAnalyse)
+			+ cchNameMax*sizeof(*Info->FileName)
+			+ Info->BufferSize;
+		CPluginAnalyse* pRc = (CPluginAnalyse*)malloc(nAllSize);
+		if (!pRc)
+			return NULL;
+		LPBYTE ptr = (LPBYTE)(pRc+1);
+		if (Info->Buffer)
+		{
+			pRc->Buffer = ptr;
+			pRc->BufferSize = Info->BufferSize;
+			memmove(ptr, Info->Buffer, Info->BufferSize);
+			ptr += Info->BufferSize;
+		}
+		else
+		{
+			pRc->Buffer = NULL;
+			pRc->BufferSize = 0;
+		}
+		if (Info->FileName)
+		{
+			pRc->FileName = (TCHAR*)ptr;
+			lstrcpyn(pRc->FileName, Info->FileName, cchNameMax);
+		}
+		else
+		{
+			pRc->FileName = NULL;
+		}
+		pRc->OpMode = Info->OpMode;
+		return pRc;
+	};
+};
+#endif
 
 class CScreenRestore
 {

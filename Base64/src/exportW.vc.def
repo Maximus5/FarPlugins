@@ -1,0 +1,10 @@
+EXPORTS
+	SetStartupInfoW
+	GetPluginInfoW
+	GetOpenPluginInfoW
+	GetMinFarVersionW
+	OpenPluginW
+	OpenFilePluginW
+	ClosePluginW
+	GetFindDataW
+	GetFilesW

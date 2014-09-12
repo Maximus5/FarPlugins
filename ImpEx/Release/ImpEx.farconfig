@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<farconfig version="3.0.3156">
+    <pluginsconfig>
+        <plugin guid="D0704272-AEFA-40DF-9141-DFCB4C9E6125">
+            <hierarchicalconfig>
+                <key name="D0704272-AEFA-40DF-9141-DFCB4C9E6125" description="ImpEx">
+                    <!-- Browse by Enter -->
+                    <value name="UseEnter" type="qword" value="0000000000000001" />
+                    <!-- Browse by CtrlPgDn -->
+                    <value name="UseCtrlPgDn" type="qword" value="0000000000000001" />
+                    <!-- It's not possible to determine strictly, which combination
+                          was used for plugin calling - Enter or CtrlPgDn. Plugin try
+                          to determine combination via checking state of keybard keys.
+                          So, sometimes You must switch both of options.
+                    -->
+                    <!-- 1 - Show decimal resource ids, 0 - hexadecimal ids -->
+                    <value name="DecimalIds" type="qword" value="0000000000000001" />
+                    <value name="LibLoadUnload" type="qword" value="0000000000000001" />
+                    <value name="LibRegUnreg" type="qword" value="0000000000000001" />
+                    <value name="UseMenu" type="qword" value="0000000000000001" />
+                    <!-- Enable demangling via Dbghelp.dll -->
+                    <value name="UseUndecorate" type="qword" value="0000000000000001" />
+                </key>
+            </hierarchicalconfig>
+        </plugin>
+    </pluginsconfig>
+</farconfig>

@@ -1,4 +1,8 @@
-/Debug/
+/_Arc
+/Debug
 /src/*.bat
+/src/*.log
 \!*.txt
 *.vcproj
+*.dll
+*.pdb

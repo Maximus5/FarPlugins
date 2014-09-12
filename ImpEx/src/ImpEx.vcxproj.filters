@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Release Files">
+      <UniqueIdentifier>{24c31810-e647-4298-af6f-d5cd48ceb56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Far Api">
+      <UniqueIdentifier>{f0cd7d3d-fb1f-4703-96ec-9792b4c81acb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Far Api\FarA">
+      <UniqueIdentifier>{9e0c1a97-7b32-4376-ae0f-4d04755730ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Far Api\FarW3Lua">
+      <UniqueIdentifier>{d684e040-073f-4bb3-a3ae-ebc4efac314d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exports">
+      <UniqueIdentifier>{cc5f5ad7-68c5-4dd7-b2f2-45c1959c12bc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="coffsymboltable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COMMON.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConEmuSupport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CVSymbols.CPP">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DBGDUMP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EXEDUMP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImpEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LIBDUMP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJDUMP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OS2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PEDUMP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="resdump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="romimage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="symboltablesupport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Release\changelog">
+      <Filter>Release Files</Filter>
+    </None>
+    <None Include="..\Release\ImpEx.reg">
+      <Filter>Release Files</Filter>
+    </None>
+    <None Include="ImpExW3.def">
+      <Filter>Exports</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="coffsymboltable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COMMON.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConEmuSupport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cv_dbg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvexefmt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvinfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CVInfoNew.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvsymbols.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBGDUMP.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EXEDUMP.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTRNVAR.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LIBDUMP.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJDUMP.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OS2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resdump.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RomImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="symboltablesupport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h" />
+    <ClInclude Include="..\..\common\far3l\pluginW3l.hpp">
+      <Filter>Far Api\FarW3Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FarHelper.h">
+      <Filter>Far Api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\plugin.h">
+      <Filter>Far Api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ascii\pluginA.hpp">
+      <Filter>Far Api\FarA</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ImpEx.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\!ToDo.txt" />
+    <Text Include="..\Release\License.txt">
+      <Filter>Release Files</Filter>
+    </Text>
+    <Text Include="..\Release\ReadMe.txt">
+      <Filter>Release Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="ImpEx.def">
+      <Filter>Exports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ImpExW.def">
+      <Filter>Exports</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

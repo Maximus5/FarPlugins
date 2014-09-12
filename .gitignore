@@ -16,13 +16,13 @@
 *.sdf
 *.suo
 *.user
-*.filters
 *.exp
 *.lib
 *.map
 *.obj
 *.ncb
 *.ilk
+*.aps
 
 # Visual studio temp folders
 _build

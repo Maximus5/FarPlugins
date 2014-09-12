@@ -1,0 +1,6 @@
+
+EXPORTS
+	SetStartupInfo=SetStartupInfoW@4
+	GetPluginInfo=GetPluginInfoW@4
+	OpenPlugin=OpenPluginW@8
+	GetMinFarVersion=GetMinFarVersionW@0

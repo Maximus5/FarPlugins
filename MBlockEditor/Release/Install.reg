@@ -1,0 +1,33 @@
+REGEDIT4
+
+; Sample macroses for Far2 & MBlockEditor
+
+; Note, plugin GUID for Far3 is 05E884B0-8603-4B35-A4D2-9CEAD36A4B68
+
+[-HKEY_CURRENT_USER\Software\Far2\PluginHotkeys\Plugins/BlockEditor/BlockEditor.dll]
+;; Hotkey required for Far 1.7x
+;"Hotkey"="*"
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\Ctrl/]
+;; callplugin is available only in Far2/Far3, so, Use F11... in Far 1.7x
+;"Sequence"="F11 * 3"
+"Sequence"="callplugin(1296198763,3)"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\CtrlShift/]
+;"Sequence"="F11 * 4"
+"Sequence"="callplugin(1296198763,4)"
+"DisableOutput"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\ShiftTab]
+;"Sequence"="F11 * 2"
+"Sequence"="callplugin(1296198763,2)"
+"DisableOutput"=dword:00000001
+"NoSendKeysToPlugins"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\Tab]
+;"Sequence"="F11 * 1"
+"Sequence"="callplugin(1296198763,1)"
+"DisableOutput"=dword:00000001
+"EVSelection"=dword:00000001
+"NoSendKeysToPlugins"=dword:00000001

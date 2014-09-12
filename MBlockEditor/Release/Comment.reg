@@ -1,0 +1,76 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor]
+;; value "off" means 'comments are inserted at first non-space symbol'
+;; value "on"  means '... inserted at the line beginning'
+"CommentFromBegin"="off"
+
+;; This is a sample to define (or override) commenting style for '.cpp' files
+;; Extension (after dot) may be any
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.cpp]
+;; Same as ".c", ".cxx", ".h", ".hpp", "hxx"
+"Comment"="//"
+"CommentBegin"="/*"
+"CommentEnd"="*/"
+"CommentFromBegin"="off"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.bat]
+;; Same as ".cmd"
+;; This is example of multiple comments. In fact, you must create REG_MULTI_SZ value.
+;; But, you may use \n separator, if you registry editor allows it.
+"Comment"="rem \nREM "
+;; Don't show menu with comment type selection, use first avaibale ("rem " here)
+"CommentSkipMenu"="on"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.bas]
+;; Same as ".vbs"
+"Comment"="'"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.def]
+;; This is sample, not hardcoded in the plugin
+"Comment"=";"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.htm]
+;; Same as ".html" and ".xml"
+"Comment"=""
+"CommentBegin"="<!--"
+"CommentEnd"="-->"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.html]
+;; Same as ".html" and ".xml"
+"Comment"=""
+"CommentBegin"="<!--"
+"CommentEnd"="-->"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.ini]
+;; This is sample, not hardcoded in the plugin
+"Comment"=";;"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.reg]
+;; This is sample, not hardcoded in the plugin
+"Comment"=";;"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.sql]
+"Comment"="-- "
+"CommentFromBegin"="on"
+"CommentBegin"="/*"
+"CommentEnd"="*/"
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.txt]
+;; This is sample, not hardcoded in the plugin
+"Comment"=">> "
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.php]
+;; "//\0#\0"
+"Comment"=hex(7):2f,2f,00,23,00,00
+"CommentSkipMenu"="off"
+;; "<!--\0/*\0"
+"CommentBegin"=hex(7):3c,21,2d,2d,00,2f,2a,00,00
+;; "-->\0*/\0"
+"CommentEnd"=hex(7):2d,2d,3e,00,2a,2f,00,00
+
+[HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor\.ps1]
+"Comment"="#"
+"CommentBegin"="<#"
+"CommentEnd"="#>"

@@ -1,0 +1,113 @@
+NAME = BlockEditor
+SRCS = BlockEditor.cpp
+
+WIDE = 1
+RCWIDE = -D UNICODE -D _UNICODE
+CXXWIDE = -D UNICODE -D _UNICODE
+
+OBJDIRA = gccA
+OBJDIRW = gccW
+COMDIR = $(TMPDIR)/common
+DLLDIRA = Release.x32A
+DLLDIRW = Release.x32U1007
+EXT = dll
+DLLNAME = $(NAME).$(EXT)
+DLLFULLNAMEA = $(DLLDIRA)/$(DLLNAME)
+DLLFULLNAMEW = $(DLLDIRW)/$(DLLNAME)
+DEFA = BlockEditorA.gcc.def
+DEFW = BlockEditorW.gcc.def
+RC_NAME = resource.rc
+RESA = $(OBJDIRA)/$(NAME).res.o
+RESW = $(OBJDIRW)/$(NAME).res.o
+
+NOSTART = -nostartfiles
+ifdef NEEDENTRY
+NOSTART = 
+endif
+
+NODEFLIBS = -nodefaultlibs
+ifdef NEEDDEFLIB
+NODEFLIBS = 
+endif
+
+CXX = g++
+DLLTOOL = dlltool
+RM = rm -f
+RMDIR = rmdir
+CP = cp -f
+M4 = m4 -P
+MV = mv -f
+MKDIR = mkdir -p
+WINDRES = windres
+CXXFLAGS = -mno-cygwin -Wall -Os -funsigned-char -fomit-frame-pointer -fstrict-aliasing -fno-rtti -fno-exceptions 
+LNKFLAGS = -mdll -s -lgcc -luser32 -lkernel32 -ladvapi32 -lshell32
+RCFLAGS = 
+
+OBJSA = $(patsubst %.cpp,$(OBJDIRA)/%.o,$(filter %.cpp,$(SRCS))) $(RESA)
+MAPA = $(patsubst %.$(EXT),%.map,$(DLLFULLNAMEA))
+
+OBJSW = $(patsubst %.cpp,$(OBJDIRW)/%.o,$(filter %.cpp,$(SRCS))) $(RESW)
+MAPW = $(patsubst %.$(EXT),%.map,$(DLLFULLNAMEW))
+
+
+.PHONY: all
+all: iclean build clean
+#all: iclean build
+#	@$(MAKE) -f makefile_gcc build 
+# clean
+
+.PHONY: iclean
+iclean:
+	@echo prebuild cleaning
+	@$(RM) $(OBJDIRA)/*.* $(OBJDIRW)/*.*
+
+.PHONY: build
+build: $(DLLFULLNAMEA) iclean $(DLLFULLNAMEW)
+
+#all: $(DLLFULLNAME)
+
+$(OBJDIRA)/%.o: %.cpp
+	@echo compiling ANSI $<
+	@$(MKDIR) -p $(@D)
+	@$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(OBJDIRW)/%.o: %.cpp
+	@echo compiling UNICODE $<
+	@$(MKDIR) -p $(@D)
+	@$(CXX) $(CXXFLAGS) $(CXXWIDE) -c -o $@ $<
+
+$(RESA): $(RC_NAME)
+	@echo compiling resources $<
+	@$(MKDIR) -p $(@D)
+	@$(WINDRES) $(RCFLAGS) -i $< -o $@
+
+$(RESW): $(RC_NAME)
+	@echo compiling resources $<
+	@$(MKDIR) -p $(@D)
+	@$(WINDRES) $(RCFLAGS) $(RCWIDE) -i $< -o $@
+
+$(DLLFULLNAMEA): $(OBJSA) $(DEFA)
+	@echo linking ANSI $@
+	@$(MKDIR) -p $(@D)
+	@$(CXX) -mdll -o $(DLLNAME) -Xlinker --base-file -Xlinker $(DLLNAME).base $(OBJSA) $(LNKFLAGS)
+	@$(DLLTOOL) --dllname $(DLLNAME) --base-file $(DLLNAME).base --output-exp $(DLLNAME).exp --def $(DEFA)
+	@$(CXX) -mdll  -o $(DLLNAME) $(OBJSA) $(DLLNAME).exp $(LNKFLAGS) -Xlinker -Map -Xlinker $(MAPA)
+	@$(MV) $(DLLNAME) $(DLLDIRA)
+	@$(RM) $(DLLNAME).base
+	@$(RM) $(DLLNAME).exp
+
+$(DLLFULLNAMEW): $(OBJSW) $(DEFW)
+	@echo linking UNICODE $@
+	@$(MKDIR) -p $(@D)
+	@$(CXX) -mdll -o $(DLLNAME) -Xlinker --base-file -Xlinker $(DLLNAME).base $(OBJSW) $(LNKFLAGS)
+	@$(DLLTOOL) --dllname $(DLLNAME) --base-file $(DLLNAME).base --output-exp $(DLLNAME).exp --def $(DEFW)
+	@$(CXX) -mdll  -o $(DLLNAME) $(OBJSW) $(DLLNAME).exp $(LNKFLAGS) -Xlinker -Map -Xlinker $(MAPW)
+	@$(MV) $(DLLNAME) $(DLLDIRW)
+	@$(RM) $(DLLNAME).base
+	@$(RM) $(DLLNAME).exp
+
+.PHONY: clean
+clean:
+	@echo final cleaning
+	@$(RM) $(OBJSA) $(OBJSW)
+	@$(RMDIR) $(OBJDIRA) $(OBJDIRW)

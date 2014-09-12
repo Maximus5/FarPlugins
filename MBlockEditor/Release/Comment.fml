@@ -1,0 +1,24 @@
+
+// This is sample macro-file for MacroLib plugin for Far Manager 2.x
+// You can download plugin here:
+// http://code.google.com/p/far-plugins/wiki/MacroLib
+
+macro Area="Editor" Key="Ctrl/" Descr="Comment selection (auto mode)"
+{{
+  callplugin(1296198763,3)
+}}
+
+macro Area="Editor" Key="CtrlShift/" Descr="Uncomment selection"
+{{
+  callplugin(1296198763,4)
+}}
+
+macro Area="Editor" Key="Tab" Cond="Selected:1" Descr="Tabulate selection rightward"
+{{
+  callplugin(1296198763,1)
+}}
+
+macro Area="Editor" Key="ShiftTab" Descr="Tabulate selection leftward"
+{{
+  callplugin(1296198763,2)
+}}

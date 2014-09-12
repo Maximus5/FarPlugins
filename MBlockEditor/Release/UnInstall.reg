@@ -1,0 +1,16 @@
+REGEDIT4
+
+; Remove sample macroses for Far2 & MBlockEditor
+; Remove plugin settings
+
+[-HKEY_CURRENT_USER\Software\Far2\PluginHotkeys\Plugins/BlockEditor/BlockEditor.dll]
+
+[-HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\Ctrl/]
+
+[-HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\CtrlShift/]
+
+[-HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\ShiftTab]
+
+[-HKEY_CURRENT_USER\Software\Far2\KeyMacros\Editor\Tab]
+
+[-HKEY_CURRENT_USER\Software\Far2\Plugins\MBlockEditor]

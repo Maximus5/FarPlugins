@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Description, Far 3.x only.
+  This is sample macros for MBlockEditor
+  Usage: "%FARHOME%\Far.exe" /import Comment_FileTypes.farconfig
+-->
+<farconfig>
+    <macros>
+        <keymacros>
+            <macro area="Editor" key="Ctrl/" flags="DisableOutput" description="Comment selection (auto mode)">
+                <text>
+                    <![CDATA[callplugin("D82D6847-0C7B-4BF4-9A31-B0B929707854",3)]]>
+                </text>
+            </macro>
+            <macro area="Editor" key="CtrlShift/" flags="DisableOutput" description="Uncomment selection">
+                <text>
+                    <![CDATA[callplugin("D82D6847-0C7B-4BF4-9A31-B0B929707854",4)]]>
+                </text>
+            </macro>
+            <macro area="Editor" key="Tab" flags="DisableOutput|EVSelection" description="Tabulate selection rightward">
+                <text>
+                    <![CDATA[callplugin("D82D6847-0C7B-4BF4-9A31-B0B929707854",1)]]>
+                </text>
+            </macro>
+            <macro area="Editor" key="ShiftTab" flags="DisableOutput" description="Tabulate selection leftward">
+                <text>
+                    <![CDATA[callplugin("D82D6847-0C7B-4BF4-9A31-B0B929707854",2)]]>
+                </text>
+            </macro>
+        </keymacros>
+    </macros>
+</farconfig>

@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="UCD">
+      <UniqueIdentifier>{0fb9e8c1-5359-42e5-8972-3739a23e85e3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CachedWrite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cvtname.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="diz_c0.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dizlist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="farrtl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="farwinapi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filestr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="headers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="local.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pathmix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="strmix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnicodeString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\CharDistribution.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\JpCntx.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\LangBulgarianModel.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\LangCyrillicModel.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\LangGreekModel.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\LangHebrewModel.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\LangHungarianModel.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\LangThaiModel.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsBig5Prober.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsCharSetProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsEscCharsetProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsEscSM.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsEUCJPProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsEUCKRProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsEUCTWProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsGB2312Prober.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsHebrewProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsLatin1Prober.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsMBCSGroupProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsMBCSSM.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsSBCharSetProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsSBCSGroupProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsSJISProber.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsUniversalDetector.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\nsUTF8Prober.cpp">
+      <Filter>UCD</Filter>
+    </ClCompile>
+    <ClCompile Include="UCD\prmem.c">
+      <Filter>UCD</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="diz_c0.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CachedWrite.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="codepage.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvtname.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dizlist.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="farrtl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="farwinapi.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filestr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="format.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="local.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="message.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pathmix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UCD\prtypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="registry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="strmix.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThumbSDK.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnicodeString.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="diz_c0.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="UCD\nscore.h">
+      <Filter>UCD</Filter>
+    </CustomBuild>
+    <CustomBuild Include="UCD\nsMBCSGroupProber.h">
+      <Filter>UCD</Filter>
+    </CustomBuild>
+    <CustomBuild Include="UCD\nsUniversalDetector.h">
+      <Filter>UCD</Filter>
+    </CustomBuild>
+    <CustomBuild Include="nsUniversalDetectorEx.h">
+      <Filter>UCD</Filter>
+    </CustomBuild>
+    <CustomBuild Include="UCD\prmem.h">
+      <Filter>UCD</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

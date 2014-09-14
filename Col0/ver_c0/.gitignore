@@ -2,6 +2,7 @@
 *.pdb
 *.ini
 
+/_Arc
 /Bugs
 /!*.txt
 

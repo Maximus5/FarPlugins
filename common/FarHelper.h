@@ -40,6 +40,8 @@ extern GUID guid_PluginGuid;
 	#define MenuItemSetSelected(p) (p).Flags |= MIF_SELECTED
 	//
 	#define SETMENUTEXT(itm,txt) itm.Text = txt;
+	#define FARDLGPARM void*
+	#define FARDLGRET intptr_t
 	#define FARINT intptr_t
 	#define FARPTR void*
 	#define USERDATAPTR void*
@@ -47,6 +49,7 @@ extern GUID guid_PluginGuid;
 	#define FADV1988 0,
 	#define _GetCheck(i) (int)psi.SendDlgMessage(hDlg,DM_GETCHECK,i,0)
 	#define GetDataPtr(i) ((const TCHAR *)psi.SendDlgMessage(hDlg,DM_GETCONSTTEXTPTR,i,0))
+	#define DlgGetTextLength(hDlg,CtrlId) psi.SendDlgMessage(hDlg,DM_GETTEXT,CtrlId,0)
 	#define SETTEXT(itm,txt) itm.PtrData = txt
 	#define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
 	#define FILENAMEPTR PanelItemFileNamePtr
@@ -67,6 +70,8 @@ extern GUID guid_PluginGuid;
 	#define MenuItemSetSelected(p) (p).Selected = TRUE
 	//
 	#define SETMENUTEXT(itm,txt) itm.Text = txt;
+	#define FARDLGPARM LPARAM
+	#define FARDLGRET LONG_PTR
 	#define FARINT int
 	#define FARPTR LONG_PTR
 	#define USERDATAPTR DWORD_PTR
@@ -74,6 +79,7 @@ extern GUID guid_PluginGuid;
 	#define FADV1988
 	#define _GetCheck(i) (int)psi.SendDlgMessage(hDlg,DM_GETCHECK,i,0)
 	#define GetDataPtr(i) ((const TCHAR *)psi.SendDlgMessage(hDlg,DM_GETCONSTTEXTPTR,i,0))
+	#define DlgGetTextLength(hDlg,CtrlId) psi.SendDlgMessage(hDlg, DM_GETTEXTLENGTH, CtrlId, 0)
 	#define SETTEXT(itm,txt) itm.PtrData = txt
 	#define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
 	#define FILENAMEPTR PanelItemFileNamePtr
@@ -95,6 +101,8 @@ extern GUID guid_PluginGuid;
 	#define MenuItemSetSelected(p) (p).Selected = TRUE
 	//
     #define SETMENUTEXT(itm,txt) lstrcpy(itm.Text, txt);
+	#define FARDLGPARM LPARAM
+	#define FARDLGRET LONG_PTR
     #define FARINT int
 	#define FARPTR void*
 	#define USERDATAPTR DWORD_PTR
@@ -102,6 +110,7 @@ extern GUID guid_PluginGuid;
 	#define FADV1988
     #define _GetCheck(i) items[i].Selected
     #define GetDataPtr(i) items[i].Ptr.PtrData
+	#define DlgGetTextLength(hDlg,CtrlId) psi.SendDlgMessage(hDlg, DM_GETTEXTLENGTH, CtrlId, 0)
     #define SETTEXT(itm,txt) lstrcpy(itm.Data, txt)
     #define SETTEXTPRINT(itm,fmt,arg) wsprintf(itm.Data, fmt, arg)
 	#define FILENAMEPTR(p) (p).FindData.cFileName
@@ -116,6 +125,23 @@ inline INT_PTR EditCtrl(int Cmd, void* Parm, INT_PTR cbSize = 0)
 	iRc = psi.EditorControl(Cmd, Parm);
 	#endif
 	return iRc;
+}
+
+inline TCHAR* DlgGetText(HANDLE hDlg, int CtrlId)
+{
+	INT_PTR nSrcLen = DlgGetTextLength(hDlg, CtrlId);
+	TCHAR* pszSrc = NULL;
+	if (nSrcLen > 0)
+	{
+		pszSrc = (wchar_t*)calloc(nSrcLen+1, sizeof(*pszSrc));
+		#if FAR_UNICODE>=2400
+		FarDialogItemData did = {sizeof(did), nSrcLen, pszSrc};
+		psi.SendDlgMessage(hDlg, DM_GETTEXT, CtrlId, &did);
+		#else
+		psi.SendDlgMessage(hDlg, DM_GETTEXTPTR, CtrlId, (FARDLGPARM)pszSrc);
+		#endif
+	}
+	return pszSrc;
 }
 
 #if 0

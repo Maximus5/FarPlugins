@@ -1053,9 +1053,8 @@ BOOL DoComment()
 				MCHKHEAP;
 				if (nMode == ewmCommentBlock)
 				{
-					//if ((nMode == ewmCommentBlock) || (egs.StringNumber == nStartLine))
-					//{
-					if (nIdx) // сначала скопировать пробельные символы
+					// сначала скопировать пробельные символы
+					if (nIdx)
 						memcpy(lsText, egs.StringText, nIdx*sizeof(TCHAR));
 					MCHKHEAP;
 					lstrcpy(lsText+nIdx, psCommCurr);

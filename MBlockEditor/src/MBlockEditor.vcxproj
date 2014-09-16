@@ -240,112 +240,112 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugA|Win32'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)A</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugA|x64'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)A_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugW|Win32'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)W</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugW|x64'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)W_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseW|Win32'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)W</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseW|x64'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)W_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseA|Win32'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)A</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseA|x64'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)A_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugW3|Win32'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)W3</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugW3L|Win32'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)W3L</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugW3|x64'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)W3_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugW3L|x64'">
-    <OutDir>$(SolutionDir)_Debug\</OutDir>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)W3L_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseW3|Win32'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)W3</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseW3L|Win32'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)W3L</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseW3|x64'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)W3_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseW3L|x64'">
-    <OutDir>$(SolutionDir)_Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <IntDir>$(SolutionDir)..\_build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
@@ -393,6 +393,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -441,6 +442,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -489,6 +491,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -537,6 +540,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -585,6 +589,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -633,6 +638,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -681,6 +687,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -729,6 +736,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -777,6 +785,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -831,6 +840,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -879,6 +889,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -933,6 +944,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -981,6 +993,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -1027,7 +1040,7 @@
       <OutputFile>$(TargetPath)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\BlockEditorW3.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(TargetDir)/$(TargetName).pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -1035,6 +1048,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -1083,6 +1097,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -1129,7 +1144,7 @@
       <OutputFile>$(TargetPath)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\BlockEditorW3.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(TargetDir)/$(TargetName).pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -1137,6 +1152,7 @@
       <ImportLibrary>$(IntDir)BlockEditor.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -1189,6 +1205,10 @@
     <None Include="Resource.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\far3l\PluginSettings.hpp" />
+    <ClInclude Include="..\..\common\far3l\pluginW3l.hpp" />
+    <ClInclude Include="..\..\common\FarHelper.h" />
+    <ClInclude Include="..\..\common\plugin.h" />
     <ClInclude Include="BlockEditorRes.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>

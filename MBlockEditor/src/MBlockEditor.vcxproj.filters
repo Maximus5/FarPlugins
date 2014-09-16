@@ -13,6 +13,12 @@
       <UniqueIdentifier>{73bbbaf8-7247-4bc8-ae97-ef6f29e3eb9e}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Far-Api">
+      <UniqueIdentifier>{57795294-768f-4de1-970c-5919843fe4fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Far-Api\Far3Lua">
+      <UniqueIdentifier>{68688e7d-52a1-44bf-853c-e7946104abee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockEditor.cpp">
@@ -30,6 +36,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="version.h" />
+    <ClInclude Include="..\..\common\FarHelper.h">
+      <Filter>Far-Api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\plugin.h">
+      <Filter>Far-Api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\far3l\pluginW3l.hpp">
+      <Filter>Far-Api\Far3Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\far3l\PluginSettings.hpp">
+      <Filter>Far-Api\Far3Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">

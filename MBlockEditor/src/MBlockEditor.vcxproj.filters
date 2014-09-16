@@ -19,6 +19,9 @@
     <Filter Include="Far-Api\Far3Lua">
       <UniqueIdentifier>{68688e7d-52a1-44bf-853c-e7946104abee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Exports">
+      <UniqueIdentifier>{5a501438-b0e2-49a8-9dc9-e199360914ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockEditor.cpp">
@@ -56,13 +59,13 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BlockEditor.def">
-      <Filter>Source Files</Filter>
+      <Filter>Exports</Filter>
     </CustomBuild>
     <CustomBuild Include="BlockEditorW.def">
-      <Filter>Source Files</Filter>
+      <Filter>Exports</Filter>
     </CustomBuild>
     <CustomBuild Include="BlockEditorW3.def">
-      <Filter>Source Files</Filter>
+      <Filter>Exports</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

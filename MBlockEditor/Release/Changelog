@@ -1,3 +1,6 @@
+1.0.0.17
+[*] Don't comment empty lines in block selection if there was indent before.
+
 1.0.0.16
 [*] Fix settings loading.
 

@@ -262,8 +262,7 @@ FarSetHandle OpenKey(LPCTSTR pszSubKey)
 	FarSetHandle Key = {NULL};
 	#if FAR_UNICODE>=3000
 
-		GUID FarGuid = {};
-		FarSettingsCreate sc = {sizeof(FarSettingsCreate), FarGuid, INVALID_HANDLE_VALUE};
+		FarSettingsCreate sc = {sizeof(FarSettingsCreate), guid_BlockEditor, INVALID_HANDLE_VALUE};
 		FarSettingsItem fsi = {sizeof(fsi)};
 		bool lbKeyOpened = psi.SettingsControl(INVALID_HANDLE_VALUE, SCTL_CREATE, 0, &sc) != 0;
 		if (lbKeyOpened)

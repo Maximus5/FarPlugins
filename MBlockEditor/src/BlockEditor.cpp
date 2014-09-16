@@ -1053,6 +1053,9 @@ BOOL DoComment()
 				MCHKHEAP;
 				if (nMode == ewmCommentBlock)
 				{
+					// Не трогать пустые строки, если предыдущая была с отступом
+					if (!egs.StringLength && (egs.StringNumber > nStartLine) && (nInsertSlash > 0))
+						continue;
 					// сначала скопировать пробельные символы
 					if (nIdx)
 						memcpy(lsText, egs.StringText, nIdx*sizeof(TCHAR));

@@ -14,6 +14,7 @@
 
 # Visual studio generated files
 *.sdf
+*.opensdf
 *.suo
 *.user
 *.exp
@@ -27,3 +28,4 @@
 # Visual studio temp folders
 _build
 ipch
+UpgradeLog.htm

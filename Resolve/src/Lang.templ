@@ -1,0 +1,114 @@
+﻿#hpp file name
+Resolve_Lang.h
+#number of languages
+1
+#id:0 language file name, language name, language description
+Release\Resolve_en.lng English "English"
+
+#head of the hpp file
+hhead:
+hhead:#pragma once
+hhead:
+
+#tail of the hpp file
+#htail:
+#htail:
+#and so on as much as needed
+
+#--------------------------------------------------------------------
+#now come the lng feeds
+#--------------------------------------------------------------------
+#first comes the text name from the enum which can be preceded with
+#comments that will go to the hpp file
+#h://This comment will appear before MYes
+#he://This comment will appear after MYes
+#MYes
+#now come the lng lines for all the languages in the order defined
+#above, they can be preceded with comments as shown below
+#l://This comment will appear in all the lng files before the lng line
+#le://This comment will appear in all the lng files after the lng line
+#ls://This comment will appear only in Russian lng file before the lng line
+#lse://This comment will appear only in Russian lng file after the lng line
+#"Да"
+#ls://This comment will appear only in English lng file before the lng line
+#lse://This comment will appear only in English lng file after the lng line
+#"Yes"
+#ls://This comment will appear only in Czech lng file before the lng line
+#lse://This comment will appear only in Czech lng file after the lng line
+#upd:"Ano"
+#
+#lng lines marked with "upd:" will cause a warning to be printed to the
+#screen reminding that this line should be updated/translated
+
+RSPluginName=0
+l:// Plugin title
+"Resolve"
+
+RSCantCreateTemp
+"Can't create temp file"
+
+RSCantOpenTemp
+"Can't open temp file"
+
+RSDlgTitle
+"CPP Resolve"
+
+RSExprLabel
+"&Expr:"
+
+RSSourceLabel
+"&Source:"
+
+RSResolveBtn
+"&Resolve"
+
+RSLookupBtn
+"Err&Look"
+
+RSTypeLabel
+"&Type:"
+
+RSValueLabel
+"&Value:"
+
+RSCopy1Btn
+"&1 Copy"
+
+RSCopy1Fmt
+"%v"
+
+RSCopy2Btn
+"&2 Copy #"
+
+RSCopy2Fmt
+"%t %n = %v"
+
+RSCopy3Btn
+"&3 Copy /*"
+
+RSCopy3Fmt
+"%v/*%n*/"
+
+RSFmtDecWord
+"Dec=%i, Word=%u"
+
+RSFmtDec
+"Dec=%i"
+
+RSFmtNameErr
+"Resolve\nName=%s\nErr=0x%08X, %s\n"
+
+RSFmtErr
+"Resolve\nErr=0x%08X, %s\n"
+
+RSFmtFacility
+"Facility=%i\n"
+
+RSCantGetDescr
+"Can't get description"
+
+RSClipboardFailed
+"CPP Resolve\nClipboard failed"
+
+RSClipFormatFail
+"CPP Resolve\nEmpty format string in lng file"

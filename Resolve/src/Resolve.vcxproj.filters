@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{f38596ba-41c1-4280-a027-d833483e841c}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{d1c91aae-73df-4d85-9904-84fcf926bd72}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{8ef1bc20-a98b-4120-80cc-f6ec683209f8}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Far-Api">
+      <UniqueIdentifier>{7c379e33-2df8-437b-b99d-1cd7e8670f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Far-Api\Far3">
+      <UniqueIdentifier>{08b9dc50-bbbf-4c91-b525-690a18caca46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Far-Api\Far2">
+      <UniqueIdentifier>{173bb5b4-71d5-464a-bf73-16082230d86a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Far-Api\Far3Lua">
+      <UniqueIdentifier>{cc7ad1b1-0a26-4ae9-a56d-51319926b998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exports">
+      <UniqueIdentifier>{292af545-9bcc-4791-888d-ac3618a7192a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Version.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Release\Changelog" />
+    <None Include="exportW3.vc.def">
+      <Filter>Exports</Filter>
+    </None>
+    <None Include="export.vc.def">
+      <Filter>Exports</Filter>
+    </None>
+    <None Include="exportW3L.vc.def">
+      <Filter>Exports</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ResolveDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResolvePlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FacList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InetErrNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolveDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WiCErrorNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WinErrorNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\DlgBuilder.hpp">
+      <Filter>Far-Api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FarHelper.h">
+      <Filter>Far-Api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\far3l\pluginW3l.hpp">
+      <Filter>Far-Api\Far3Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\unicode\pluginW.hpp">
+      <Filter>Far-Api\Far2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\far3\pluginW3.hpp">
+      <Filter>Far-Api\Far3</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resolve.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

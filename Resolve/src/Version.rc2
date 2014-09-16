@@ -1,0 +1,40 @@
+
+#include "version.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION MYDLLVERN
+ PRODUCTVERSION MYDLLVERN
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "ConEmu.Maximus5@gmail.com\0"
+            VALUE "CompanyName", "Maximus5, http://code.google.com/p/conemu-maximus5/\0"
+            VALUE "FileDescription", "Resolve plugin for Far Manager" MYDLLPLTFRM
+            VALUE "FileVersion", MYDLLVERS
+            VALUE "LegalCopyright", "(C) 2009-2012 Maximus5"
+            VALUE "OriginalFilename", "Resolve.dll"
+            VALUE "ProductName", "Resolve"
+            VALUE "ProductVersion", MYDLLVERS
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END

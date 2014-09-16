@@ -1,0 +1,10 @@
+*.log
+*.bat
+*.pdb
+*.dll
+*.7z
+_*.sln
+Descript.ion
+/src/!*.txt
+/_Arc
+/Release/Renewal.xml

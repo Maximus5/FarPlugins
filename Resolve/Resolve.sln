@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Resolve", "src\Resolve.vcxproj", "{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DebugW|Win32 = DebugW|Win32
+		DebugW|x64 = DebugW|x64
+		DebugW3|Win32 = DebugW3|Win32
+		DebugW3|x64 = DebugW3|x64
+		DebugW3L|Win32 = DebugW3L|Win32
+		DebugW3L|x64 = DebugW3L|x64
+		ReleaseW|Win32 = ReleaseW|Win32
+		ReleaseW|x64 = ReleaseW|x64
+		ReleaseW3|Win32 = ReleaseW3|Win32
+		ReleaseW3|x64 = ReleaseW3|x64
+		ReleaseW3L|Win32 = ReleaseW3L|Win32
+		ReleaseW3L|x64 = ReleaseW3L|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW|Win32.ActiveCfg = DebugW|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW|Win32.Build.0 = DebugW|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW|x64.ActiveCfg = DebugW|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW|x64.Build.0 = DebugW|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3|Win32.ActiveCfg = DebugW3|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3|Win32.Build.0 = DebugW3|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3|x64.ActiveCfg = DebugW3|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3|x64.Build.0 = DebugW3|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3L|Win32.ActiveCfg = DebugW3L|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3L|Win32.Build.0 = DebugW3L|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3L|x64.ActiveCfg = DebugW3L|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.DebugW3L|x64.Build.0 = DebugW3L|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW|Win32.ActiveCfg = ReleaseW|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW|Win32.Build.0 = ReleaseW|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW|x64.ActiveCfg = ReleaseW|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW|x64.Build.0 = ReleaseW|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3|Win32.ActiveCfg = ReleaseW3|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3|Win32.Build.0 = ReleaseW3|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3|x64.ActiveCfg = ReleaseW3|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3|x64.Build.0 = ReleaseW3|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3L|Win32.ActiveCfg = ReleaseW3L|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3L|Win32.Build.0 = ReleaseW3L|Win32
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3L|x64.ActiveCfg = ReleaseW3L|x64
+		{E4A2E4CA-EA66-4EC5-B747-5AF84882E867}.ReleaseW3L|x64.Build.0 = ReleaseW3L|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
+EndGlobal

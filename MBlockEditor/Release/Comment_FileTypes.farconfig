@@ -4,99 +4,115 @@
   This is sample configuration file for file types (by extension)
 
   CommentFromBegin
-    value "off" means 'comments are inserted at first non-space symbol'
-    value "on"  means '... inserted at the line beginning'
+	value "off" means 'comments are inserted at first non-space symbol'
+	value "on"  means '... inserted at the line beginning'
 
   CommentSkipMenu
-    value "on" means don't show menu with comment type selection, use first avaibale (i.e. "rem ")
+	value "on" means don't show menu with comment type selection, use first avaibale (i.e. "rem ")
 
   Comment
-    value defines line comment chars (i.e. "//")
+	value defines line comment chars (i.e. "//")
 
   CommentBegin and CommentEnd
-    values defines stream comment chars (i.e. "/*" and "*/")
+	values defines stream comment chars (i.e. "/*" and "*/")
 
   Usage: "%FARHOME%\Far.exe" /import Comment_FileTypes.farconfig
 -->
 <farconfig>
-    <pluginsconfig>
-        <plugin guid="D82D6847-0C7B-4BF4-9A31-B0B929707854">
-            <hierarchicalconfig>
-                <key name="D82D6847-0C7B-4BF4-9A31-B0B929707854" description="MBlockEditor">
-                    <value name="CommentFromBegin" type="text" value="off" />
+	<pluginsconfig>
+		<plugin guid="D82D6847-0C7B-4BF4-9A31-B0B929707854">
+			<hierarchicalconfig>
+				<key name="D82D6847-0C7B-4BF4-9A31-B0B929707854" description="MBlockEditor">
+					<value name="CommentFromBegin" type="text" value="off" />
 
-                    <key name=".bat">
-                        <value name="Comment" type="text" value="rem &#x0A;REM " />
-                        <value name="CommentSkipMenu" type="text" value="on" />
-                    </key>
-                    <key name=".cmd">
-                        <value name="Comment" type="text" value="rem &#x0A;REM " />
-                        <value name="CommentSkipMenu" type="text" value="on" />
-                    </key>
+					<key name=".bat" description="">
+						<value name="Comment" type="text" value="rem &#x0A;REM " />
+						<value name="CommentSkipMenu" type="text" value="on" />
+					</key>
+					<key name=".cmd" description="">
+						<value name="Comment" type="text" value="rem &#x0A;REM " />
+						<value name="CommentSkipMenu" type="text" value="on" />
+					</key>
 
-                    <key name=".cpp">
-                        <value name="Comment" type="text" value="//" />
-                        <value name="CommentBegin" type="text" value="/*" />
-                        <value name="CommentEnd" type="text" value="*/" />
-                        <value name="CommentFromBegin" type="text" value="off" />
-                    </key>
-                    <key name=".def">
-                        <value name="Comment" type="text" value=";" />
-                    </key>
+					<key name=".cpp" description="">
+						<value name="Comment" type="text" value="//" />
+						<value name="CommentBegin" type="text" value="/*" />
+						<value name="CommentEnd" type="text" value="*/" />
+						<value name="CommentFromBegin" type="text" value="off" />
+						<!--<value name="CommentFromBegin" type="text" value="on" />-->
+					</key>
+					<key name=".def" description="">
+						<value name="Comment" type="text" value=";" />
+					</key>
 
-                    <key name=".ini">
-                        <value name="Comment" type="text" value=";" />
-                    </key>
-                    <key name=".reg">
-                        <value name="Comment" type="text" value=";" />
-                    </key>
+					<key name=".farconfig" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
 
-                    <key name=".php">
-                        <value name="Comment" type="text" value="//&#x0A;#" />
-                        <value name="CommentBegin" type="text" value="/*&#x0A;&lt;!--" />
-                        <value name="CommentEnd" type="text" value="*/&#x0A;--&gt;" />
-                        <value name="CommentSkipMenu" type="text" value="off" />
-                    </key>
+					<key name=".htm" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
+					<key name=".html" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
 
-                    <key name=".sql">
-                        <value name="Comment" type="text" value="-- " />
-                        <value name="CommentBegin" type="text" value="/*" />
-                        <value name="CommentEnd" type="text" value="*/" />
-                        <value name="CommentFromBegin" type="text" value="on" />
-                    </key>
+					<key name=".ini" description="">
+						<value name="Comment" type="text" value=";" />
+					</key>
 
-                    <key name=".htm">
-                        <value name="Comment" type="text" value="" />
-                        <value name="CommentBegin" type="text" value="&lt;!--" />
-                        <value name="CommentEnd" type="text" value="--&gt;" />
-                    </key>
-                    <key name=".html">
-                        <value name="Comment" type="text" value="" />
-                        <value name="CommentBegin" type="text" value="&lt;!--" />
-                        <value name="CommentEnd" type="text" value="--&gt;" />
-                    </key>
-                    <key name=".wxs">
-                        <value name="Comment" type="text" value="" />
-                        <value name="CommentBegin" type="text" value="&lt;!--" />
-                        <value name="CommentEnd" type="text" value="--&gt;" />
-                    </key>
-                    <key name=".wxi">
-                        <value name="Comment" type="text" value="" />
-                        <value name="CommentBegin" type="text" value="&lt;!--" />
-                        <value name="CommentEnd" type="text" value="--&gt;" />
-                    </key>
+					<key name=".php" description="">
+						<value name="Comment" type="text" value="//&#x0A;#" />
+						<value name="CommentBegin" type="text" value="/*&#x0A;&lt;!--" />
+						<value name="CommentEnd" type="text" value="*/&#x0A;--&gt;" />
+						<value name="CommentSkipMenu" type="text" value="off" />
+					</key>
 
-                    <key name=".txt">
-                        <value name="Comment" type="text" value="&gt;&gt; " />
-                    </key>
+					<key name=".ps1" description="">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentBegin" type="text" value="&lt;#" />
+						<value name="CommentEnd" type="text" value="#&gt;" />
+					</key>
 
-                    <key name=".ps1">
-                        <value name="Comment" type="text" value="#" />
-                        <value name="CommentBegin" type="text" value="&lt;#" />
-                        <value name="CommentEnd" type="text" value="#&gt;" />
-                    </key>
-                 </key>
-            </hierarchicalconfig>
-        </plugin>
-    </pluginsconfig>
+					<key name=".reg" description="">
+						<value name="Comment" type="text" value=";" />
+					</key>
+
+					<key name=".sql" description="">
+						<value name="Comment" type="text" value="-- " />
+						<value name="CommentBegin" type="text" value="/*" />
+						<value name="CommentEnd" type="text" value="*/" />
+						<value name="CommentFromBegin" type="text" value="on" />
+					</key>
+
+					<key name=".txt" description="">
+						<value name="Comment" type="text" value="&gt;&gt; " />
+					</key>
+
+					<key name=".wxi" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
+					<key name=".wxs" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
+
+					<key name=".xml" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
+
+				 </key>
+			</hierarchicalconfig>
+		</plugin>
+	</pluginsconfig>
 </farconfig>

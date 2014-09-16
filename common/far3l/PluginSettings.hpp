@@ -3,6 +3,7 @@
 
 class PluginSettings
 {
+protected:
 	HANDLE handle;
 	FARAPISETTINGSCONTROL SettingsControl;
 

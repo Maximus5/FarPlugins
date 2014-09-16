@@ -19,6 +19,10 @@ extern GUID guid_PluginGuid;
 #define psiControl psi.Control
 #endif
 
+#if defined(_UNICODE) && (FAR_UNICODE>=2800)
+	#include "far3l/PluginSettings.hpp"
+#endif
+
 #if defined(_UNICODE) && (FAR_UNICODE>=1988)
 	#define PanelItemFileNamePtr(p) (p).FileName
 	#define PanelItemAltNamePtr(p) (p).AlternateFileName

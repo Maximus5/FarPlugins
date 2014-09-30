@@ -1,0 +1,1234 @@
+﻿#hpp file name
+RegEditor_Lang.h
+#number of languages
+2
+#id:0 language file name, language name, language description
+..\Release\RegEditor_ru.lng Russian "Russian (Русский)"
+#id:1 language file name, language name, language description
+..\Release\RegEditor_en.lng English "English"
+
+#head of the hpp file
+hhead:
+hhead:#pragma once
+hhead:
+
+#tail of the hpp file
+#htail:
+#htail:
+#and so on as much as needed
+
+#--------------------------------------------------------------------
+#now come the lng feeds
+#--------------------------------------------------------------------
+#first comes the text name from the enum which can be preceded with
+#comments that will go to the hpp file
+#h://This comment will appear before MYes
+#he://This comment will appear after MYes
+#MYes
+#now come the lng lines for all the languages in the order defined
+#above, they can be preceded with comments as shown below
+#l://This comment will appear in all the lng files before the lng line
+#le://This comment will appear in all the lng files after the lng line
+#ls://This comment will appear only in Russian lng file before the lng line
+#lse://This comment will appear only in Russian lng file after the lng line
+#"Да"
+#ls://This comment will appear only in English lng file before the lng line
+#lse://This comment will appear only in English lng file after the lng line
+#"Yes"
+#ls://This comment will appear only in Czech lng file before the lng line
+#lse://This comment will appear only in Czech lng file after the lng line
+#upd:"Ano"
+#
+#lng lines marked with "upd:" will cause a warning to be printed to the
+#screen reminding that this line should be updated/translated
+
+
+REPluginName=0
+l:// Plugin title
+"RegEditor"
+"RegEditor"
+
+REBarShiftF1
+l:// Keybar titles
+"Ключи..."
+"Keys..."
+
+REBarShiftF1L
+l:// Keybar titles
+"Ключи..."
+"Keys..."
+
+REBarShiftF2
+"Сохр..."
+"Save..."
+
+REBarShiftF2L
+"Сохранить..."
+"Save..."
+
+REBarShiftF2Virt
+"Вирт."
+"Virtual"
+
+REBarShiftF2VirtL
+"Виртуализация"
+"Virtualization"
+
+REBarF3
+"Просм"
+"View"
+
+REBarF3L
+"Просмотр"
+"View"
+
+REBarAltF3
+"#Просм"
+"#View"
+
+REBarAltF3L
+"#Просмотр"
+"#View"
+
+REBarAltShiftF3
+"&Просм"
+"&View"
+
+REBarAltShiftF3L
+"&Просмотр"
+"&View"
+
+REBarShiftF3
+"32/64"
+"32/64"
+
+REBarShiftF3L
+"32/64"
+"32/64"
+
+REBarCtrlAltF3
+"ТПрава..."
+"TPerms..."
+
+REBarCtrlAltF3L
+"ТекстПрава..."
+"TextPermissions..."
+
+REBarF4
+"Редакт"
+"Edit"
+
+REBarF4L
+"Редактировать"
+"Edit"
+
+REBarAltF4
+"#Редакт"
+"#Edit"
+
+REBarAltF4L
+"#Редактировать"
+"#Edit"
+
+REBarAltShiftF4
+"&Редакт"
+"&Edit"
+
+REBarAltShiftF4L
+"&Редактировать"
+"&Edit"
+
+REBarCtrlAltF4
+"Права..."
+"Perms..."
+
+REBarCtrlAltF4L
+"Права..."
+"Permissions..."
+
+REBarShiftF4
+"Значен..."
+"Value..."
+
+REBarShiftF4L
+"Значение..."
+"Value..."
+
+REBarF5
+"Копир"
+"Copy"
+
+REBarF5L
+"Копировать"
+"Copy"
+
+REBarShiftF5
+"#Копир"
+"#Copy"
+
+REBarShiftF5L
+"#Копирировать"
+"#Copy"
+
+REBarShiftF6
+"#Переим"
+"#Rename"
+
+REBarShiftF6L
+"#Переименовать"
+"#Rename"
+
+REBarF7
+"Созд"
+"MkKey"
+
+REBarF7L
+"Создать ключ"
+"MkKey"
+
+REBarAltShiftF7
+"Сервер"
+"Remote"
+
+REBarAltShiftF7L
+"Сервер"
+"Remote"
+
+REBarShiftF7
+"Режим"
+"DirMod"
+
+REBarShiftF7L
+"Режим"
+"DirMod"
+
+REPanelx32Label
+l:// RegBit panel prefix
+"[32]"
+"[32]"
+
+REPanelx32VirtLabel
+"[V32]"
+"[V32]"
+
+REPanelx64Label
+"[64]"
+"[64]"
+
+REPanelx64VirtLabel
+"[V64]"
+"[V64]"
+
+REPanelVirtLabel
+"[V]"
+"[V]"
+
+REPanelBackupPrefix
+"[B]"
+"[B]"
+
+REPanelBackupRestorePrefix
+"[R]"
+"[R]"
+
+REDeletedKey
+"<Удаленный ключ>"
+"<Deleted key>"
+
+REDeletedValue
+"<Удаленное значение>"
+"<Deleted value>"
+
+REBookmarksTitle
+l:// Key shortcuts
+"RegEditor - Ссылки на ключи"
+"RegEditor - Key shortcuts"
+
+REBookmarksExtTitle
+"RegEditor - Избранное"
+"RegEditor - Favorites"
+
+REBookmarksFooter
+"Ins,Del,F4,Ctrl-R,Tab"
+"Ins,Del,F4,Ctrl-R,Tab"
+
+REBookmarksExtFooter
+"Tab"
+"Tab"
+
+REConfigTitle
+l:// Configuration dialog
+"RegEditor - настройка плагина"
+"RegEditor - configuration"
+
+REAddToPluginsMenu
+"Показывать в &меню плагинов"
+"Add to &Plugins Menu"
+
+REAddToDisksMenu
+"Показывать в меню &дисков"
+"Add to &Disks Menu"
+
+REDisksMenuHotkey
+"    Клавиша доступа ('&0'..'9'). Если не введена, назначается сама"
+"    Disks Menu hotkey ('&0'..'9'). Leave empty to autoassign"
+
+REPrefixSeparator
+"Префиксы"
+"Prefixes"
+
+REPrefixLabel
+"&Префикс плагина:    "
+"Plugin prefi&x: "
+
+REPanelPrefixLabel
+"&Заголовок панели:   "
+"Panel &title:   "
+
+REWow6432
+"WOW64"
+"WOW64"
+
+REWow64process
+"x64 операционная система"
+"64-bit operation system"
+
+REWow64on32
+"Отображать &64-битный реестр"
+"Use real x&64 registry"
+
+REBrowseRegFiles
+"О&ткрывать .reg файлы"
+"Browse .&reg files"
+
+REBrowseHives
+"От&крывать hive файлы"
+"Browse &hive files"
+
+RESkipAccessDeniedMessage
+"Пропускать ошибку \"&Отказано в доступе\""
+"Skip \"Access d&enied\" message"
+
+REUseBackupRestore
+"REG_&OPTION_BACKUP_RESTORE"
+"RE&G_OPTION_BACKUP_RESTORE"
+
+RESkipPrivilegesDeniedMessage
+"Пропускать о&шибку привилегий"
+"Skip pri&vileges error"
+
+REShowKeysAsDirs
+"Отображать к&лючи как папки"
+"Show &keys as folders"
+
+REExportDefaultValueFirst
+"&Экспорт @-значений в начале"
+"Export @-values &first"
+
+RECreateUnicodeFiles
+"&Создавать файлы в юникоде     "
+"Create &unicode files"
+
+REAnsiCpLabel
+"Кодовая страница для &ANSI"
+"ANSI &codepage       "
+
+REEditBinaryAsText
+"Б&инарные данные как текст"
+"Edit b&inary values as text"
+#"Редактировать б&инарные данные как текст (без преобразования)"
+#"Edit b&inary values as text (no unicode<->ansi conversion)"
+
+REEscapeRNonExporting
+"Экра&нировать \\r и \\n в *.reg"
+"Escape \\r and \\&n on export"
+
+RESpeedUpLargeKeysSeparator
+"Ускорение открытия больших ключей (HKCR\\CLSID, и т.п.)"
+"Speed up browsing of large keys (HKCR\\CLSID, and so on)"
+
+REUnsortLargeKeys
+"Отключать со&ртировку в панели,  если элементов больше"
+"Disable &sorting, when key contains more items than"
+#"Disable &sorting, when item count more than"
+
+RELoadDescriptions
+"За&гружать описания              Дочитывать в фоне после"
+"&Load descriptions     Background reading after (ms)"
+
+REAutoRefreshSeparator
+"Поддерживать актуальность ключей, значений, описаний"
+"Make panel current for keys, values, descriptions"
+
+REAutoRefreshChanges
+"&Автоматическое обновление панели при изменениях в реестре"
+"&Automatic refresh panel contents on registry changes"
+
+RERefreshKeyTimeoutLabel
+"    Период проверки клю&ча"
+"    Key ti&meout"
+
+RERefreshSubkeyTimeoutLabel
+"Период проверки подкл&ючей"
+"Su&bkey check timeout"
+
+RECheckMacroSeq
+"Проверять текст макросов"
+"Check macro se&quences"
+
+RECheckMacroVar
+"и макросы в %%переменных"
+"and macr&o in %%variables"
+
+REStorePanelMode
+"&Восстанавливать режим панелей"
+"&Restore panel mode"
+
+REBtnOK
+"OK"
+"OK"
+
+REBtnCancel
+"Отмена"
+"Cancel"
+
+REBtnDiscard
+"Не сохранять"
+"Discard"
+
+REBtnContinue
+"Продолжить"
+"Continue"
+
+REBtnEditor
+"В &редактор"
+"&Edit"
+
+REBtnOverwrite
+"&Перезаписать"
+"&Overwrite"
+
+REBtnAppend
+"&Дописать"
+"&Append"
+
+REBtnVisual
+"&Визуальные"
+"Visu&al"
+
+REChangeNumber
+l:// Value editor dialogs
+"RegEdit - Редактирование числа"
+"RegEdit - Edit number"
+
+REValueNameLabel
+"&Имя значения:"
+"Value &name:"
+
+REValueTypeLabel
+"&Тип значения:"
+"Value type:"
+
+REValueDataLabel
+"&Значение"
+"&Value data"
+
+REValueBaseLabel
+"Основание числа:"
+"Number base:"
+
+REValueBaseHex
+"&Шестнадцатиричное"
+"&Hexadecimal"
+
+REValueBaseUnsigned
+"Десятичное &без знака"
+"&Unsigned decimal"
+
+REValueBaseSigned
+"Десятичное &со знаком"
+"&Signed decimal"
+
+REValueSizeStatic
+"    %i байт"
+"    %i bytes"
+
+REValueShowAltStatic
+"= 4294967295  (Ошибка) "
+"= 0xFFFFFFFF  (Invalid) "
+
+REValueErrorLabel
+"  (Ошибка)"
+"  (Invalid)"
+
+RENewValueTitle
+"RegEdit - Новое значение"
+"RegEdit - New value"
+
+RENewValueNameLabel
+"&Имя значения (пустая строка для значения по умолчанию):"
+"Value &name (empty string for default value):"
+
+RENewValueName
+"(Новое значение)"
+"(New value)"
+
+REChangeDescTitle
+"RegEdit - Изменить значение"
+"RegEdit - Change value"
+
+REChangeDescLabel
+"Введите значение для"
+"Change the value of"
+
+RERenameKeyTitle
+"RegEdit - Переименовать ключ"
+"RegEdit - Rename key"
+
+RECopyKeyTitle
+"RegEdit - Копировать ключ"
+"RegEdit - Copy key"
+
+RERenameKeyLabel
+"Введите новое имя ключа ('\\' не допускаются):"
+"Enter new key name ('\\' not allowed):"
+
+RERenameValueTitle
+"RegEdit - Переименовать значение"
+"RegEdit - Rename value"
+
+RECopyValueTitle
+"RegEdit - Копировать значение"
+"RegEdit - Copy value"
+
+RERenameValueLabel
+"Введите новое имя &значения:"
+"Enter new value &name:"
+
+
+RECreateKeyTitle
+"Создать ключ"
+"Create subkey"
+
+RECreateKeyLabel
+"Введите имя нового ключа, или ключей через '\\':"
+"Name for the new subkey, or subkeys, divided by '\\':"
+
+
+REImportValueTitle
+"Импорт значения"
+"Import value"
+
+REImportValueLabel
+"Импортируемый файл:"
+"Importing file name:"
+
+REImportUnicodeStrings
+"&Юникодные строки"
+"&Unicode strings"
+
+REImportForAll
+"Для &всех последующих"
+"For &all next"
+
+
+REGuiPermissionEdit
+"Открываем диалог редактирования прав"
+"Permissions dialog is open"
+
+REGuiPermissionTitle
+"Разрешения для %s"
+"Permissions for %s"
+
+REConnectRemoteTitle
+"Подключение к серверу"
+"Connect to server"
+
+REConnectServerNameLabel
+"&Имя сервера:"
+"&Server name:"
+
+REConnectUserNameLabel
+"И&мя пользователя или 'Пользователь@Домен':"
+"&User name or 'User@Domain':"
+
+REConnectPasswordLabel
+"Па&роль:"
+"Pass&word:"
+
+REConnectMedia
+"Ресур&с:"
+"S&hare name:"
+
+REBtnConnect
+"&Подключиться"
+"&Connect"
+
+REBtnLocal
+"&Локально"
+"&Local"
+
+
+REExportDlgTitle
+"Экспорт ключей/значений"
+"Export keys/values"
+
+RESaveRegDlgTitle
+"Сохранить измененный .reg файл"
+"Save modified .reg file"
+
+REExportItemLabel
+"&Экспорт \"%s\" в:"
+"&Export \"%s\" to:"
+
+REExportItemsLabel
+"&Экспорт %i элементов из \"%s\" в:"
+"&Export %i items from \"%s\" to:"
+
+RESaveRegItemLabel
+"&Сохранить \"%s\" в:"
+"&Save \"%s\" to:"
+
+REExportItemsProgress
+"Экспортировано %u из %u"
+"Exported %u from %u"
+
+RECopyDlgTitle
+"Копировать"
+"Copy"
+
+RECopyItemLabel
+"&Копировать \"%s\" в:"
+"&Copy \"%s\" to:"
+
+RECopyItemsLabel
+"&Копировать %i элементов из \"%s\" в:"
+"&Copy %i items from \"%s\" to:"
+
+REImportDlgTitle
+"Импорт ключей/значений"
+"Import keys/values"
+
+RELoadingRegFileTitle
+"Парсинг reg-файла"
+"Parsing reg-file"
+
+RELoadingRegFileText
+"Читаем содержимое файла с диска: "
+"Loading file source: "
+
+REExportFormatLabel
+"Формат экспорта"
+"Export format"
+
+REExportReg4
+"файл REGEDIT&4"
+"REGEDIT&4 file"
+
+REExportReg5
+"файл REGEDIT&5 (Unicode)"
+"REGEDIT&5 (Unicode) file"
+
+REExportCmd
+"&cmd-файл (OEM/UTF-8)"
+"&cmd-file (OEM/UTF-8)"
+
+REExportHive
+"&Двоичный файлы (\"куст\")  "
+"&Binary files (\"hive\")  "
+
+REExportRaw
+"Двоичный &файл (\"данные\") "
+"Binary file (\"&raw\")    "
+
+REExportHiveRoot
+"&Как подключ"
+"Export &as subkey"
+
+REExportRawUnicode
+"&Юникодные строки/файлы"
+"&Unicode strings/files"
+
+
+REFormatFailLabel
+"Ошибка разбора формата *.reg файла"
+"Parsing *.reg file failed"
+
+REFormatFailLineInfo
+"Строка %u, колонка %u (нумерация с 1)"
+"Line %u, column %u (1 base)"
+
+
+REActionBrowse
+"&Открыть reg-файл на панели"
+"&Browse reg-file"
+
+REActionImport
+"&Импортировать в реестр"
+"&Import to the registry"
+
+REActionImport32
+"Импортировать в реестр (&32бит)"
+"Import to the registry (&32bit)"
+
+REActionImport64
+"Импортировать в реестр (&64бит)"
+"Import to the registry (&64bit)"
+
+REActionImportHere
+"Импортировать в &текущий ключ"
+"Import to the &current key"
+
+REActionImportValuesHere
+"Импортировать &значения в текущий ключ"
+"Import &values to the current key"
+
+REActionImportRegAsRaw
+"Импортировать &как значение"
+"Import &as value"
+
+REImportStyleKeyTitle
+"Импорт ключа"
+"Importing key"
+
+REImportStyleFileLabel
+"Импортируемый файл:"
+"Importing file:"
+
+REImportStyleKeyLabel
+"Импортируемый ключ:"
+"Importing key: "
+
+
+RE_REG_NONE
+l:// Registry data types
+"Неизвестный тип данных"
+"Unknown value type"
+
+RE_REG_SZ
+"REG_&SZ"
+"REG_&SZ"
+
+RE_REG_EXPAND_SZ
+"REG_&EXPAND_SZ"
+"REG_&EXPAND_SZ"
+
+RE_REG_BINARY
+"REG_&BINARY"
+"REG_&BINARY"
+
+RE_REG_DWORD
+"REG_&DWORD"
+"REG_&DWORD"
+
+RE_REG_DWORD_BIG_ENDIAN
+"REG_D&WORD_BIG_ENDIAN"
+"REG_D&WORD_BIG_ENDIAN"
+
+RE_REG_LINK
+"REG_&LINK"
+"REG_&LINK"
+
+RE_REG_MULTI_SZ
+"REG_&MULTI_SZ"
+"REG_&MULTI_SZ"
+
+RE_REG_RESOURCE_LIST
+"REG_&RESOURCE_LIST"
+"REG_&RESOURCE_LIST"
+
+RE_REG_FULL_RESOURCE_DESCRIPTOR
+"REG_&FULL_RESOURCE_DESCRIPTOR"
+"REG_&FULL_RESOURCE_DESCRIPTOR"
+
+RE_REG_RESOURCE_REQUIREMENTS_LIST
+"RE&G_RESOURCE_REQUIREMENTS_LIST"
+"RE&G_RESOURCE_REQUIREMENTS_LIST"
+
+RE_REG_QWORD
+"REG_&QWORD"
+"REG_&QWORD"
+
+
+
+RECmdHeader
+l:// Export to cmd
+"@echo off\r\nrem \r\nrem Reg.exe has many restrictions, for example:\r\nrem * Unicode (UTF-8) supported in Win7 or higher\r\nrem * REG_QWORD (and other 'specials') is not supported\r\nrem * Value names and keys can't contains quotation symbols\r\nrem * Strings, value names and keys can't contains \\r\\n\r\nrem * REG_MULTI_SZ may fails, if value contains \\\\0\r\nrem * Empty keys can't be created w/o default value\r\nrem \r\n"
+"@echo off\r\nrem \r\nrem Reg.exe has many restrictions, for example:\r\nrem * Unicode (UTF-8) supported in Win7 or higher\r\nrem * REG_QWORD (and other 'specials') is not supported\r\nrem * Value names and keys can't contains quotation symbols\r\nrem * Strings, value names and keys can't contains \\r\\n\r\nrem * REG_MULTI_SZ may fails, if value contains \\\\0\r\nrem * Empty keys can't be created w/o default value\r\nrem \r\n"
+
+RECmdVarReset
+"set FarRegEditRc=\r\n"
+"set FarRegEditRc=\r\n"
+
+RECmdUTF8Warn
+"\r\nrem Required for Unicode strings support"
+"\r\nrem Required for Unicode strings support"
+
+RECmdErrCheck
+"  if errorlevel 1 if NOT DEFINED FarRegEditRc set FarRegEditRc="
+"  if errorlevel 1 if NOT DEFINED FarRegEditRc set FarRegEditRc="
+
+RECmdErrFin
+"\r\n\r\nif NOT DEFINED FarRegEditRc (\r\n  echo Import succeeded\r\n) else (\r\n  echo At least one value/key failed: %FarRegEditRc%\r\n)\r\n"
+"\r\n\r\nif NOT DEFINED FarRegEditRc (\r\n  echo Import succeeded\r\n) else (\r\n  echo At least one value/key failed: %FarRegEditRc%\r\n)\r\n"
+
+REM_CmdWarnUtf8
+"ВНИМАНИЕ!\ncmd-файл в кодировке UTF-8 будет работать\nтолько в Windows 7 или выше\nПродолжить\nОтмена"
+"WARNING!\nUTF-8 cmd-file will works in Windows 7 or higher\nContinue\nCancel"
+
+REM_CmdWarnOEM
+"ВНИМАНИЕ!\nПри экспорте в OEM cmd-файл могут быть\nпроблемы с Unicode ключами/значениями\nПродолжить\nОтмена"
+"WARNING!\nExporting to the OEM cmd-file you may have\nproblems with Unicode keys/values\nContinue\nCancel"
+
+
+
+REM_Warning
+l:// Error and confirmation messages
+"ВНИМАНИЕ!"
+"WARNING!"
+
+REM_WarningDelete
+"ВНИМАНИЕ!\nУдаляя некоторые ключи, вы можете серьезно повредить вашу систему!\nВы действительно хотите удалить выбранные элементы из реестра?\nУдалить\nОтмена"
+"WARNING!\nDeleting some entries may seriously damage your system!\nDo you want to delete the selected entry from the registry?\nDelete\nCancel"
+
+REM_ConfirmDelete
+"RegEditor\nВы действительно хотите удалить\n%i ключей, %i значений\nУдалить\nОтмена"
+"RegEditor\nDo you wish to delete\n%i keys, %i values\nDelete\nCancel"
+
+REM_NumberRequireName
+"RegEditor\nПустое имя значения не допускается!\nПовторить ввод имени?\nПовторить\nОтмена"
+"RegEditor\nEmpty value names are not allowed!\nRepeat value edit?\nRepeat\nCancel"
+
+REM_CantAjustPrivileges
+"RegEditor\nНе удалось настроить привилегии текущего процесса\nSE_BACKUP_NAME, SE_RESTORE_NAME"
+"RegEditor\nCan't adjust current process privileges\nSE_BACKUP_NAME, SE_RESTORE_NAME"
+
+REM_CantOpenKeyRead
+"Ключ не существует или нет прав на чтение"
+"Key not exists or can't be opened for reading"
+
+REM_CantOpenKeyWrite
+"Не удалось открыть ключ на изменение"
+"Can't open key for writing"
+
+REM_CantOpenKeyDelete
+"Не удалось открыть ключ для удаления подключей"
+"Can't open key for deleting subkey"
+
+REM_KeyNotExists
+"Ключ с таким именем не существует!"
+"Key with this name does not exists!"
+
+REM_CurrentPath
+"Текущий путь:"
+"Current path:"
+
+REM_KeyNameTooLong
+"Длина имени одного ключа не может превышать 260 символов"
+"Single key name can't exceed 260 characters"
+
+REM_ValueNotExists
+"Значение с таким именем не существует!"
+"Value with this name does not exists!"
+
+REM_CantOpenValueRead
+"Не удалось прочитать значение"
+"Query value data failed"
+
+REM_CantOpenValueWrite
+"Не удалось изменить значение"
+"Value change failed"
+
+REM_CantRenameDefaultValue
+"RegEditor\nЗначение по умолчанию переименовывать нельзя!"
+"RegEditor\nCan't rename default value!"
+
+REM_NotEnoughRighsForCopy
+"RegEditor\nКопирование/переименование ключа невозможно\nНе удалось настроить привилегии текущего процесса\nSE_BACKUP_NAME, SE_RESTORE_NAME"
+"RegEditor\nCan't copy/rename subkey\nAdjust current process privileges failed\nSE_BACKUP_NAME, SE_RESTORE_NAME"
+
+REM_KeyAlreadyExists
+"Ключ с таким именем уже существует!"
+"Key with this name already exists!"
+
+REM_ValueAlreadyExists
+"Значение с таким именем уже существует!"
+"Value with this name already exists!"
+
+REM_KeyWillBeErased
+"При перезаписи старый ключ будет полностью очищен!"
+"Old subkey will be fully erased while overwriting!"
+
+REM_ValueWillBeErased
+"При перезаписи старое значение будет утеряно!"
+"Old value will be lost while overwriting!"
+
+REM_ValueForcedToMultiSZ
+"У значения будет оставлен тип REG_MULTI_SZ"
+"Value type will be left as REG_MULTI_SZ"
+
+REM_CantSaveKey
+"Не удалось выгрузить ключ в файл"
+"Can't save registry key to file"
+
+REM_CantLoadKey
+"Не удалось загрузить ключ из файла"
+"Can't load registry key from file"
+
+REM_CantRenameKey
+"Не удалось переименовать ключ"
+"Rename key failed"
+
+REM_CantDeleteKey
+"Не удалось удалить ключ"
+"Delete key failed"
+
+REM_CantDeleteValue
+"Не удалось удалить значение"
+"Delete value failed"
+
+REM_RegFileLoadFailed
+"Не удалось прочитать содержимое *.reg файла"
+"Loading *.reg file contents failed"
+
+REM_CmdLineFail_Export
+"RegEditor\nОшибка в командной строке (export:)\nНе указан экспортируемый ключ, значение, или файл-результат"
+"RegEditor\nErrors in command line (export:)\nExport key, value, of target file was not specified"
+
+REM_CmdLineFail_Import
+"RegEditor\nОшибка в командной строке (import:)\nНе указан импортируемый файл"
+"RegEditor\nErrors in command line (import:)\nImport file was not specified"
+
+REM_CmdLineFail_OpenRegFile
+"RegEditor\nОшибка в командной строке (file:)\nНе указан открываемый файл"
+"RegEditor\nErrors in command line (file:)\nOpen file was not specified"
+
+REM_CmdLineFail_Remote
+"RegEditor\nОшибка в командной строке (/server)\nНе указано имя сервера"
+"RegEditor\nErrors in command line (/server)\nRemote server name was not specified"
+
+REM_CmdLineFail_RemoteArg
+"RegEditor\nОшибка в командной строке (/server)\nОшибка в параметрах"
+"RegEditor\nErrors in command line (/server)\nInvalid arguments"
+
+REM_CmdLineFail_UnknownCommand
+"Ошибка в командной строке. Неизвестная команда"
+"Errors in command line. Unknown command"
+
+REM_ImportConfirm
+"RegEditor\nAre you sure you want to add the information to the registry?\n%s"
+"RegEditor\nAre you sure you want to add the information to the registry?\n%s"
+
+REM_ImportSuccess
+"RegEditor\nИмпорт *.reg файла в реестр завершился успешно"
+"RegEditor\nInformation has been successfully entered into the registry\n%s"
+
+REM_ImportFailed
+"RegEditor\nПри импорте файла в реестр произошла ошибка!\n%s"
+"RegEditor\nRegistry file import FAILED!\n%s"
+
+REM_ImportCreateKeyFailed
+"RegEditor\nПри импорте файла в реестр произошла ошибка!\nНе удалось открыть ключ в режиме изменения!\n%s\nПродолжить\nОтмена"
+"RegEditor\nRegistry file import FAILED!\nCan't open key for writing!\n%s\nContinue\nCancel"
+
+REM_ImportDeleteKeyFailed
+"RegEditor\nПри импорте файла в реестр произошла ошибка!\nНе удалось удалить ключ!\n%s\nПродолжить\nОтмена"
+"RegEditor\nRegistry file import FAILED!\nCan't delete key\n%s\nContinue\nCancel"
+
+REM_CantCreateTempFolder
+"RegEditor\nНе удалось создать папку для временных файлов!\n%s"
+"RegEditor\nCreating temporary folder failed!\n%s"
+
+REM_CantCreateTempFile
+"RegEditor\nНе удалось создать файл!\n%s"
+"RegEditor\nCreating file failed!\n%s"
+
+REM_CantOpenFileReading
+"RegEditor\nНе удалось открыть файл в режиме чтения!\n%s"
+"RegEditor\nOpen file failed!\n%s"
+
+REM_CantReadFile
+"RegEditor\nНе удалось прочитать содержимое файла!\n%s"
+"RegEditor\nFile read failed!\n%s"
+
+REM_CantAllocateMemory
+"RegEditor\nНе удалось выделить блок памяти (%u)!"
+"RegEditor\nCan't allocate memory (%u)"
+
+REM_FileAlreadyExist
+"Файл уже существует"
+"File already exists"
+
+REM_FileExistInfo
+"Существующий файл                %9u %02i.%02i.%04i %02i:%02i:%02i"
+"Existing                         %9u %02i.%02i.%04i %02i:%02i:%02i"
+
+REM_OperationCancelledByUser
+"RegEditor\nОперация была отменена пользователем (Esc)"
+"RegEditor\nOperation was cancelled by user (Esc)"
+
+REM_ConfirmOperationCancel
+"RegEditor\nОстановить выполняемую операцию?\nОстановить\nПродолжить"
+"RegEditor\nStop current operation?\nStop\nContinue"
+
+REM_SetDirectoryFailed
+"RegEditor\nОшибка SetDirectory\n'%s'"
+"RegEditor\nSetDirectory failed\n'%s'"
+
+REM_OpenPluginPrefixFailed
+"RegEditor\nОшибка открытия плагина по префиксу\n'%s'"
+"RegEditor\nOpen plugin by prefix failed\n'%s'"
+
+REM_HiveOpenFailed
+"RegEditor\nНе удалось открыть куст (hive)\n%s"
+"RegEditor\nHive open failed\n%s"
+
+REM_Duration
+"RegEditor\nДлительность: %s"
+"RegEditor\nDuration: %s"
+
+REM_CmdLineFail_HiveFile
+"RegEditor\nОшибка в командной строке (mount:)\nНе указан файл куста"
+"RegEditor\nErrors in command line (mount:)\nHive file was not specified"
+
+REM_CmdLineFail_HiveKey
+"RegEditor\nОшибка в командной строке (mount:)\nНе указан монтируемый ключ"
+"RegEditor\nErrors in command line (mount:)\nTarget key was not specified"
+
+REM_CmdLineFail_Unmount
+"RegEditor\nОшибка в командной строке (mount:)\nНе указан демонтируемый ключ"
+"RegEditor\nErrors in command line (mount:)\nUnmount key was not specified"
+
+REM_Unmount_Confirm
+"RegEditor\nВы действительно хотите демонтировать ключ?\n'%s'\nНет\nДемонтировать"
+"RegEditor\nAre you sure you want to unmount key?\n'%s'\nNo\nUnmount"
+
+REM_Mount_Fail
+"RegEditor\nПри монтировании ключа произошла ошибка\n'%s'"
+"RegEditor\nMount key failed\n'%s'"
+
+REM_Unmount_Fail
+"RegEditor\nПри демонтировании ключа произошла ошибка\n'%s'"
+"RegEditor\nUnmount key failed\n'%s'"
+
+REM_LogonFailed
+"RegEditor\nОшибка подключения (неправильный логин пароль)\nЛогин: '%s'"
+"RegEditor\nLogon failed (wrong username or password)\nUsername: '%s'"
+
+REM_ImpersonateFailed
+"RegEditor\nОшибка ImpersonateLoggedOnUser\nЛогин: '%s'"
+"RegEditor\nImpersonateLoggedOnUser failed\nUsername: '%s'"
+
+REM_RevertToSelfFailed
+"RegEditor\nОшибка RevertToSelf"
+"RegEditor\nRevertToSelf failed"
+
+REM_RemoteConnecting
+"Подключаемся к удаленному серверу..."
+"Connecting remote server..."
+
+REM_RemoteKeyFailed
+"RegEditor\nОшибка доступа к ключу удаленного сервера\n'%s'\nПродолжить\nОтмена"
+"RegEditor\nConnect remote registry key failed\n'%s'\nContinue\nCancel"
+
+REM_UnknownFileFormat
+"RegEditor\nНеподдерживаемый формат файла\n%s"
+"RegEditor\nUnknown file format\n%s"
+
+REM_ConfirmBookmarkReset
+"RegEditor\nСбросить закладки к умолчаниям?"
+"RegEditor\nReset bookmarks to defaults?"
+
+REM_EmptyKeyNameNotAllowed
+"RegEditor\nПустое имя ключа недопустимо!"
+"RegEditor\nEmpty key name not allowed!"
+
+REM_EmptyValueNameNotAllowed
+"RegEditor\nПустое имя значения недопустимо!"
+"RegEditor\nEmpty value name not allowed!"
+
+
+REM_BadDoubleZero
+"RegEditor\nВ середине строки формата REG_MULTI_SZ '\\0\\0' недопустимо!\n'\\0\\0' заменен на перевод строки '\\n'!"
+"RegEditor\n'\\0\\0' are prohibited in the center of REG_MULTI_SZ!\n'\\0\\0' was replaced with '\\n'!"
+
+REM_CmdBadKeyName
+"RegEditor\nИмя ключа содержит недопустимые символы\n%s\nВыгрузка в cmd-файл невозможна"
+"RegEditor\nKey name contains invalid characters\n%s\nExporting to cmd-file is impossible"
+
+REM_CmdBadValueName
+"RegEditor\nИмя значения содержит недопустимые символы\n%s\nВыгрузка в cmd-файл невозможна"
+"RegEditor\nValue name contains invalid characters\n%s\nExporting to cmd-file is impossible"
+
+REM_CmdBadValueMSZ
+"RegEditor\nЗначение (MSZ) содержит все допустимые символы-разделители\n%s\nВыгрузка в cmd-файл невозможна"
+"RegEditor\nValue (MSZ) contains all valid delim-characters\n%s\nExporting to cmd-file is impossible"
+
+REM_CmdErrMsz0
+"RegEditor\nВ середине строки формата REG_MULTI_SZ '\\0\\0' недопустимо!\n%s\nВыгрузка в cmd-файл невозможна"
+"RegEditor\n'\\0\\0' are prohibited in the center of REG_MULTI_SZ!\n%s\nExporting to cmd-file is impossible"
+
+
+REM_CreateToolhelp32SnapshotFailed
+l:// RegEdit.exe
+"RegEditor\nНе удалось получить список запущенных процессов"
+"RegEditor\nLoad running processes failed"
+
+REM_RegeditExeFailed
+"RegEditor\nНе удалось запустить RegEdit.exe"
+"RegEditor\nCan't start RegEdit.exe"
+
+REM_RegeditWindowFailed
+"RegEditor\nНе удалось найти главное окно RegEdit.exe"
+"RegEditor\nCan't find main RegEdit.exe window"
+
+REM_RegeditWindowHung
+"RegEditor\nОкно RegEdit.exe не отвечает или зависло"
+"RegEditor\nMain RegEdit.exe window appears to not respond or hangs"
+
+REM_RegeditCommunicationFailed
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe"
+"RegEditor\nCommunication with main RegEdit.exe window fails"
+
+REM_RegeditFailed_VirtualAllocEx
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nVirtualAllocEx"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nVirtualAllocEx"
+
+REM_RegeditFailed_WriteProcessMemory
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nWriteProcessMemory"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nWriteProcessMemory"
+
+REM_RegeditFailed_ReadProcessMemory
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nReadProcessMemory"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nReadProcessMemory"
+
+REM_RegeditFailed_LoadLibraryPtr
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nНе удалось определить адрес LoadLibraryW"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nCan't determine LoadLibraryW address"
+
+REM_RegeditFailed_CreateRemoteThread
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nCreateRemoteThread"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nCreateRemoteThread"
+
+REM_RegeditFailed_TVM_GETITEMW
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nTVM_GETITEMW"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nTVM_GETITEMW"
+
+REM_RegeditFailed_WaitThreadReady
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nИстекло время ожидания"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nThread timeout"
+
+REM_RegeditFailed_Pipe
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nНе удалось передать команду через Pipe\n%s"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nSend command through Pipe failed\n%s"
+
+REM_RegeditFailed_NullArgs
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nВ функцию SelectTreeItem переданы некорректные аргументы"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nInvalid arguments in function SelectTreeItem"
+
+REM_RegeditFailed_NoWindow
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nОкно RegEdit.exe было закрыто"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nRegEdit.exe window was closed"
+
+REM_RegeditFailed_KeyNotFound
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nКлюч не найден"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nKey not found"
+
+REM_RegeditFailed_ValueNotFound
+"RegEditor\nОшибка взаимодействия с окном RegEdit.exe\nЗначение не найден"
+"RegEditor\nCommunication with main RegEdit.exe window fails\nValue not found"
+
+REM_RegeditFailed_NeedHandle
+"RegEditor\nНе удалось подключиться к процессу RegEdit.exe\nЗакройте окно RegEdit.exe, чтобы плагин смог\nзапустить процесс самостоятельно,\nпосле чего повторите операцию (CtrlJ)"
+"RegEditor\nConnect to RegEdit.exe process fails\nPlease, close RegEdit.exe window,\nthat allows plugin to start child process,\nand repeat operation (CtrlJ)"
+
+REM_RegeditFailed_RequireH64
+"RegEditor\nНе удалось подключиться к процессу RegEdit.exe\nДля перехода в RegEdit.exe из FAR x86\nв 64битной ОС необходим файл RegEditorH64.dll"
+"RegEditor\nConnect to RegEdit.exe process fails\nUsing 64bit OS and FAR x86 requires file RegEditorH64.dll"
+
+REStartingRegedit
+l:// RegEdit.exe loading...
+"Запускаем RegEdit.exe"
+"Starting RegEdit.exe"
+
+REWaitForIdleRegedit
+"Ожидание завершения загрузки RegEdit.exe"
+"Waiting for RegEdit.exe loading finished"
+
+REM_MPEC_UNRECOGNIZED_KEYWORD
+l:// Macro check result
+"RegEditor\nОшибка проверки макропоследовательности\nНеизвестное ключевое слово '%s'\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nUnknown keyword '%s'\nLine %u, Col %u"
+
+REM_MPEC_UNRECOGNIZED_FUNCTION
+"RegEditor\nОшибка проверки макропоследовательности\nНеизвестная функция '%s'\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nUnknown function '%s'\nLine %u, Col %u"
+
+REM_MPEC_FUNC_PARAM
+"RegEditor\nОшибка проверки макропоследовательности\nНеверное количество параметров у функции '%s'\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nIncorrect arguments count for the function '%s'\nLine %u, Col %u"
+
+REM_MPEC_NOT_EXPECTED_ELSE
+"RegEditor\nОшибка проверки макропоследовательности\nНеожиданное появление $Else\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nUnexpected $Else\nLine %u, Col %u"
+
+REM_MPEC_NOT_EXPECTED_END
+"RegEditor\nОшибка проверки макропоследовательности\nНеожиданное появление $End\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nUnexpected $End\nLine %u, Col %u"
+
+REM_MPEC_UNEXPECTED_EOS
+"RegEditor\nОшибка проверки макропоследовательности\nНеожиданный конец строки\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nUnexpected end of line\nLine %u, Col %u"
+
+REM_MPEC_EXPECTED_TOKEN
+"RegEditor\nОшибка проверки макропоследовательности\nОжидается '%s'\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nExpected '%s'\nLine %u, Col %u"
+
+REM_MPEC_BAD_HEX_CONTROL_CHAR
+"RegEditor\nОшибка проверки макропоследовательности\nНеизвестный шестнадцатеричный управляющий символ\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nUnknown hexadecimal control character\nLine %u, Col %u"
+
+REM_MPEC_BAD_CONTROL_CHAR
+"RegEditor\nОшибка проверки макропоследовательности\nНеправильный управляющий символ\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nIncorrect control character\nLine %u, Col %u"
+
+REM_MPEC_VAR_EXPECTED
+"RegEditor\nОшибка проверки макропоследовательности\nПеременная '%s' не найдена\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nVariable '%s' not found\nLine %u, Col %u"
+
+REM_MPEC_EXPR_EXPECTED
+"RegEditor\nОшибка проверки макропоследовательности\nОшибка синтаксиса\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nSyntax error\nLine %u, Col %u"
+
+REM_MPEC_ZEROLENGTHMACRO
+"RegEditor\nОшибка проверки макропоследовательности\nПустая макропоследовательность\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nEmpty macro sequence\nLine %u, Col %u"
+
+REM_MPEC_INTPARSERERROR
+"RegEditor\nОшибка проверки макропоследовательности\nВнутренняя ошибка парсера"
+"RegEditor\nError parsing macro\nInternal parser error"
+
+REM_MPEC_CONTINUE_OTL
+"RegEditor\nОшибка проверки макропоследовательности\nОператор $Continue вне цикла\nСтрока %u, Колонка %u"
+"RegEditor\nError parsing macro\nOperator $Continue out of loop\nLine %u, Col %u"
+
+
+REM_GetKeySecurityFail
+"RegEditor\nНе удалось получить информацию о разрешениях\nключ: %s"
+"RegEditor\nQuering security information failed\nkey: %s"
+
+REM_SetKeyOwnerFail
+"RegEditor\nНе удалось изменить информацию о владельце ключа\n%s"
+"RegEditor\nSet key owner failed\nkey: %s"
+
+REM_SetKeySecurityFail
+"RegEditor\nНе удалось изменить информацию о разрешениях\nключ: %s"
+"RegEditor\nSet security information failed\nkey: %s"
+
+REM_DescrToStringFail
+"RegEditor\nНе удалось преобразовать в строковую форму разрешения\nключ: %s"
+"RegEditor\nSecurity descriptor to string form failed\nkey: %s"
+
+REM_StringToDescrFail
+"RegEditor\nНе удалось преобразовать из строковой формы разрешения\nключ: %s"
+"RegEditor\nString form to security descriptor failed\nkey: %s"

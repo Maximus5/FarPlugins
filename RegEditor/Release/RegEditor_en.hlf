@@ -1,0 +1,324 @@
+.Language=English,English
+.PluginContents=RegEditor
+.Options CtrlStartPosChar=^<wrap>
+
+@Contents
+$^#RegEditor#
+ This plugin allows to browse and edit Windows Registry.
+
+ #Benefits#
+  ^<wrap>x86/x64/Far1/Far2
+  ^<wrap>Fast (optimized & cached), rescan registry only when changes occures.
+  ^<wrap>Works with real x64 registry from FAR x86 (x64/x86 view switching supported).
+  ^<wrap>Automatic refreshing of subkey descriptions on active and passive panels.
+  ^<wrap>Obvious display and editing of dword values.
+  ^<wrap>Mnemo in command line plugin opening (REG2:HKCU\Software\Far2).
+  ^<wrap>C0 support (you may use same modes, as for col0 plugins).
+  ^<wrap>User-friendly export (#F5#). All selected keys and values will be written in one *.reg file. You may specify name of the result file.
+  ^<wrap>Valid data for values with real name "(Default)" (that is NOT key default value).
+  ^<wrap>Internal key shortcuts and Favorites from RegEdit.exe.
+  ^<wrap>Working with remote registry via network.
+  ^<wrap>Importing *.reg files from command line or 'enter in the archieve'.
+  ^<wrap>Creating new values (#Shift-F4#).
+
+
+ ~Keyboard shortcuts~@Keyboard@
+ ~Command Line Syntax~@CommandLine@
+ ~Configuration~@Configuration@
+ ~Editing numbers~@ChangeNumber@
+
+
+@Keyboard
+$^#RegEditor - Keyboard shortcuts#
+
+    #Термины#
+
+ ключ     = раздел regedit
+ значение = параметр regedit
+
+ ~числовые значения~@ChangeNumber@: dword или hex 8/16/32 бит
+ произвольные значения: все остальные (в том числе строковые)
+
+    #Панель#
+
+ #Shift-F1#        ^<wrap>~key shortcuts / regedit favorites~@Bookmarks@ (переключение по #Tab#)
+
+ #F3#              ^<wrap>встроенный просмотр в reg формате
+ #Alt-F3#          ^<wrap>AltF3 просмотр в raw формате (для значений)
+                 ^<wrap>игнорируется (для ключей)
+ #Alt-Shift-F3#    ^<wrap>встроенный просмотр в reg формате выделенных элементов
+ #Ctrl-Shift-F3#   ^<wrap>встроенный просмотр в raw формате (для значений)*
+                 ^<wrap>встроенный просмотр в reg формате (для ключей)
+ #Shift-F3#        ^<wrap>переключение x64/x86 реестра на 64-битных ОС
+
+ #F4#              ^<wrap>диалог редактирования (для числовых значений)
+                 ^<wrap>встроенный редактор в raw формате (для произвольных значений)**
+                 ^<wrap>встроенный редактор в reg формате (для ключей)
+ #Alt-F4#          ^<wrap>встроенный редактор в reg формате
+ #Alt-Shift-F4#    ^<wrap>встроенный редактор в reg формате выделенных элементов
+ #Ctrl-Shift-F4#   ^<wrap>встроенный редактор в raw формате (для значений)*,**
+                 ^<wrap>встроенный редактор в reg формате (для ключей)
+ #Shift-F4#        ^<wrap>создание значения с заданием типа
+
+ *  #Ctrl-Shift-F3#/#Ctrl-Shift-F4# для значений открывают просмотр/редактор в режиме автоопределения кодовой страницы
+ ** флажок '~Edit binary values as text~@Configuration@' влияет на #F4# и не влияет на #Ctrl-Shift-F4#
+
+ #F5#              экспорт в reg-файл
+                 ^<wrap>#F5# с файловой панели на панель плагина запускает импорт reg-файла в реестр
+ #Shift-F5#        копирование ключа/значения под курсором
+
+ #F6#              экспорт в reg-файл
+ #Shift-F6#        ^<wrap>переименование ключа/значения под курсором (в том числе, изменение регистра имени)
+
+ #F7#              создание ключа
+ #Alt-F7#          поиск (выполняется средствами самого FAR)
+ #Alt-Shift-F7#    подключение к удаленному реестру
+ #Shift-F7#        режим показа ключей (папка/файл)
+
+ #F8#              удаление ключей/значений
+ #Shift-F8#        = #F8#
+
+ #Alt-Shift-F9#    конфигурация плагина
+
+ #Clear#           = #F3#
+ #Ctrl-J#          переход в RegEdit.exe
+ #Ctrl-R#          принудительное перечитывание панели
+ #Shift-Enter#     = #Ctrl-J#
+ #Ctrl-Q#          QView в raw формате (для значений)
+ #Ctrl-Z#          ^<wrap>редактирование значения или (для ключей) значения по умолчанию в стиле descriptions; для ключей-макросов редактируется или значение 'Description' или значение по умолчанию для ключа
+
+    #Браузер reg-файлов#
+
+ #Shift-F2#        сохранить открытый в панели reg-файл
+                 ^<wrap>если файл менялся, но не был сохранен вручную, пользователю будет предложено его сохранить при закрытии плагина
+
+ ~Command Line Syntax~@CommandLine@
+ ~Configuration~@Configuration@
+ ~Contents~@Contents@
+
+@CommandLine
+$^#RegEditor - Command Line Syntax#
+
+ #reg2:HKEY_CURRENT_USER\Software\Far2#   ^<wrap>переход к ключу из панели Far
+
+ #cd HKEY_CURRENT_USER\Software\Far2#     ^<wrap>переход к ключу из панели плагина
+ #   \HKEY_CURRENT_USER\Software\Far2#    ^<wrap>(относительные и абсолютные пути)
+
+ При попытке перейти (через префикс или cd) в несуществующий (недоступный) ключ плагин пытается перейти в один из родительских ключей.
+
+ #reg2:HKCU\Software\Far2#                ^<wrap>разрешено использование алиасов
+ #reg2:HKLM\Software\Far#
+ #cd HKCU\Software\Far2#
+ #cd HKLM\Software\Far#
+
+ #reg2:[HKEY_CURRENT_USER\Software\Far2]# ^<wrap>разрешено использование скобок
+ #cd [HKEY_CURRENT_USER\Software\Far]#
+
+ #reg2:\\server\RegPath#                  ^<wrap>подключение к удаленному реестру
+ #reg2:\\server#
+ #cd \\server\RegPath#
+ #cd \\server#
+ #cd \\#                                  ^<wrap>обратно в локальный реестр
+
+ #reg2:<RegFilePathName>#                 ^<wrap>открытие reg-файла или куста (hive)
+ #reg2:file:<RegFilePathName>#
+
+ #reg2:import:<RegFilePathName>#          ^<wrap>импорт reg-файла
+ #reg2:export:#                           ^<wrap>(не реализовано) экспорт reg-файла
+
+                                        ^<wrap>подключение/отключение куста (hive)
+ #reg2:mount:"<HiveFilePathName>" "[HKEY_USERS\]SubKeyName"#
+ #reg2:unmount:"[HKEY_USERS\]SubKeyName"#
+
+ ~Keyboard shortcuts~@Keyboard@
+ ~Configuration~@Configuration@
+ ~Contents~@Contents@
+
+@Configuration
+$^#RegEditor - Configuration#
+
+        ╔═══════════════════ RegEditor - configuration ═══════════════════╗
+        ║ [x] Add to Plugins Menu          [ ] Add to Disks Menu          ║
+        ║     Disks Menu hotkey ('0'..'9'). Leave empty to autoassign     ║
+        ╟────────────────────────────Prefixes─────────────────────────────╢
+        ║ Plugin prefix:  reg2             Panel title:     REG2          ║
+        ╟──────────────────────────────WOW64──────────────────────────────╢
+        ║ [?] Use real x64 registry        [ ] 64-bit operation system    ║
+        ╟─────────────────────────────────────────────────────────────────╢
+        ║ [?] Skip "Access denied", or use REG_OPTION_BACKUP_RESTORE      ║
+        ║ [x] Skip adjust privileged error messsage                       ║
+        ║ [x] Browse .reg files            [x] Browse hive files          ║
+        ║ [x] Show keys as folders         [ ] Export @@-values first      ║
+        ║ [x] Create unicode files         ANSI codepage         1251     ║
+        ║ [x] Escape \r and \n on export   [x] Edit binary values as text ║
+        ╟─────Speed up browsing of large keys (HKCR\CLSID, and so on)─────╢
+        ║ [x] Disable sorting, when key contains more items than  1000    ║
+        ║ [x] Load descriptions     Background reading after (ms) 300     ║
+        ╟────────Make panel current for keys, values, descriptions────────╢
+        ║ [ ] Automatic refresh panel contents on registry changes        ║
+        ║     Key timeout 1000             Subkey check timeout  10000    ║
+        ╟─────────────────────────────────────────────────────────────────╢
+        ║                        { OK } [ Cancel ]                        ║
+        ╚═════════════════════════════════════════════════════════════════╝
+
+
+ ~Keyboard shortcuts~@Keyboard@
+ ~Editing numbers~@ChangeNumber@
+ ~Contents~@Contents@
+
+@ChangeNumber
+$^#RegEditor - Editing numbers#
+
+
+        ╔═══════════════════════ Edit number ═══════════════════════╗
+        ║ Value name:                                               ║
+        ║ FadeInactiveMask                                          ║
+        ╟───────────────────────────────────────────────────────────╢
+        ║ Value type:                   Number base:                ║
+        ║ ( ) REG_BINARY                () Hexadecimal             ║
+        ║ () REG_DWORD                 ( ) Unsigned decimal        ║
+        ║     4 bytes                   ( ) Signed decimal          ║
+        ╟───────────────────────────────────────────────────────────╢
+        ║ Value data:  00d0d0d0         = 13684944                  ║
+        ╟───────────────────────────────────────────────────────────╢
+        ║                     { OK } [ Cancel ]                     ║
+        ╚═══════════════════════════════════════════════════════════╝
+
+
+ ~Keyboard shortcuts~@Keyboard@
+ ~Configuration~@Configuration@
+ ~Contents~@Contents@
+
+@NewValue
+$^#RegEditor - New value#
+
+todo...
+
+@ImportValue
+$^#RegEditor - Import raw value#
+
+todo...
+
+@ImportKey
+$^#RegEditor - Import key#
+
+todo...
+
+@DeleteItems
+$^#RegEditor - Delete items confirmation#
+
+todo...
+
+@CreateSubkey
+$^#RegEditor - Creating new subkey#
+
+todo...
+
+@RenameKey
+$^#RegEditor - Rename key#
+
+todo...
+
+@RenameValue
+$^#RegEditor - Rename value#
+
+ #!!! Warning !!!#
+ Преобразование типа (REG_MULTI_SZ <--> REG_SZ) не выполняется! То есть в строку REG_SZ попадут '\0', а в REG_MULTI_SZ не будет разбивки на строки '\0' - останутся обычные переводы '\r\n'.
+
+todo...
+
+@EditValue
+$^#RegEditor - Change value#
+
+CtrlZ
+todo...
+
+@RemoteConnect
+$^#RegEditor - Remote connect#
+
+todo...
+Диалог подключения, сообщения об ошибках, командая строка и пр.
+
+@Bookmarks
+$^#RegEditor - Using key shortcuts#
+
+ Key shortcuts allows quick jump to one of stored registry paths. Use #ShiftF1#
+from plugin panel to display shortcuts list. RegEditor plugin support internal shortcuts
+(stored in the plugin settings) and #Favorites# from RegEdit.exe.
+
+ Hotkeys in #Internal# key shortcuts.
+ #Ins#    ^<wrap>Insert current registry path into before selected bookmark.
+ #Del#    ^<wrap>Delete selected bookmark.
+ #F4#     ^<wrap>Edit shortcuts list via Far editor. Empty lines or '-' (single character) are threated as seprators.
+ #Ctrl-R# ^<wrap>Reset shortcuts to plugin defaults.
+ #Tab#    ^<wrap>Switches to #Favorites# from RegEdit.exe.
+
+ Hotkeys in RegEdit.exe #Favorites#.
+ #Tab#    ^<wrap>Switches back to internal plugin shortcuts.
+
+@ExportKey
+$^#RegEditor - Export keys/values#
+
+ #Destination field#
+ You may specify target folder or file with extension.
+
+ #Export format#
+  ^<wrap>#REGEDIT4# file - reg file in ~ANSI codepage~@Configuration@.
+  ^<wrap>#REGEDIT5# file - reg file in Unicode.
+  ^<wrap>#cmd#-file - create batch file, which imports keys/values with reg.exe.
+              #Warning!# reg.exe has many restrictions!
+  ^<wrap>#Binary files ("hive")# - obvious. When #Export as subkey# checked, selected
+key will be created in the hive, otherwise - only subkeys and values will be written.
+  ^<wrap>#Binary files ("raw")# - each selected value will be written in separate file.
+Strings may be exported in #Unicode# or ~ANSI codepage~@Configuration@ depending
+of checkbox #Unicode strings/files#.
+
+ #Dialog GUID# {0A5BA797-E9A4-4882-BA45-027691780AE2}
+
+ ~Contents~@Contents@
+
+@SaveRegFile
+$^#RegEditor - Overwrite of save reg-file confirmation#
+
+Overwrite of save confirmation
+todo...
+
+@ImportKey
+$^#RegEditor - Import registry scripts#
+
+reg2:import:<file>
+todo...
+
+@MountKey
+$^#RegEditor - Unmount registry key#
+
+reg2:mount:"<HivePathName>" "HKEY_USERS\<key>"
+
+reg2:mount:"<HivePathName>" "HKEY_LOCAL_MACHINE\<key>"
+
+todo...
+
+@UnmountKey
+$^#RegEditor - Unmount registry key#
+
+reg2:unmount:HKEY_USERS\<key>
+
+reg2:unmount:HKEY_LOCAL_MACHINE\<key>
+
+todo...
+
+@JumpRegedit
+$^#RegEditor - Jump to RegEdit.exe#
+
+todo...
+
+@CommandLine
+$^#RegEditor - Command line#
+
+Open local registry
+Open remote registry
+Open .reg or hive file
+Import .reg file to local registry
+Export keys or files to .reg
+Mount hive to local registry
+Unmount local registry key

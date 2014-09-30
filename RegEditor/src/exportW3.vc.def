@@ -1,0 +1,24 @@
+EXPORTS
+	GetGlobalInfoW
+	GetMinFarVersionW
+	SetStartupInfoW
+	GetPluginInfoW
+	ExitFARW
+	OpenW=OpenPluginW
+	AnalyseW
+	CloseAnalyseW
+	GetFindDataW
+	FreeFindDataW
+	GetOpenPanelInfoW=GetOpenPluginInfoW
+	ClosePanelW=ClosePluginW
+	SetDirectoryW
+	ProcessPanelInputW
+	ConfigureW
+	PutFilesW
+	GetFilesW
+	ProcessPanelEventW=ProcessEventW
+	CompareW
+	DeleteFilesW
+	MakeDirectoryW
+	ProcessSynchroEventW
+	ProcessEditorEventW

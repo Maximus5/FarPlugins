@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{861e696c-9e8e-49a6-a3ed-bcc728dc9414}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9162cef0-1d8c-4de8-93b6-f535ca0eb8ce}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{23c15719-6c3d-40bf-a8b8-b290b99bc3fd}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="FarSdk">
+      <UniqueIdentifier>{73f4422d-e704-4392-b6d1-98234a6765e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FarSdk\FarW">
+      <UniqueIdentifier>{6c58731a-7601-4995-8f73-7758050beeda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FarSdk\FarW3">
+      <UniqueIdentifier>{1b7a3948-5405-4e45-93b0-752446c84d66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FarSdk\FarW3L">
+      <UniqueIdentifier>{ba7418b2-73df-47fd-91d3-c90c51df1acd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FarSdk\FarAnsi">
+      <UniqueIdentifier>{b001fa48-82ce-4ed4-b744-7c8e5512fd9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Docs">
+      <UniqueIdentifier>{1a4ccfa5-607e-4b0b-8167-437904e9b3d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ToDo">
+      <UniqueIdentifier>{83ab5718-14a1-4e17-95e4-fe753d161d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exports">
+      <UniqueIdentifier>{bb682764-0221-4c27-9fdc-c778999f9497}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Privobji.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RE_CmdLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RE_Guids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RE_Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RE_Malloc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RE_Plugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RE_PluginList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RE_Progress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_Base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_Cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_FileHive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_FileReg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_FileTxt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_Folder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_Path.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="REG_WinApi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RegConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RegEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="afxres.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Privobji.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RE_CmdLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RE_Guids.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RE_Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RE_Malloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RE_Plugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RE_PluginList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RE_Progress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_Base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_Cache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_FileHive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_FileReg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_FileTxt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_Folder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_Path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REG_WinApi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks\RegEditExe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegEditor_Lang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TokenHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\DlgBuilder.hpp">
+      <Filter>FarSdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FarHelper.h">
+      <Filter>FarSdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\plugin.h">
+      <Filter>FarSdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ascii\pluginA.hpp">
+      <Filter>FarSdk\FarAnsi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\unicode\pluginW.hpp">
+      <Filter>FarSdk\FarW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\far3\pluginW3.hpp">
+      <Filter>FarSdk\FarW3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\far3l\pluginW3l.hpp">
+      <Filter>FarSdk\FarW3L</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h" />
+    <ClInclude Include="..\..\common\farcolor.h">
+      <Filter>FarSdk</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RegEditor.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Release\License.txt">
+      <Filter>Docs</Filter>
+    </None>
+    <None Include="..\Release\Benefits">
+      <Filter>Docs</Filter>
+    </None>
+    <None Include="!StringFormat.txt">
+      <Filter>ToDo</Filter>
+    </None>
+    <None Include="!ToDo.txt">
+      <Filter>ToDo</Filter>
+    </None>
+    <None Include="Lang.templ">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="!ToDo2.txt">
+      <Filter>ToDo</Filter>
+    </None>
+    <None Include="!Help.txt">
+      <Filter>ToDo</Filter>
+    </None>
+    <None Include="!reg.txt">
+      <Filter>ToDo</Filter>
+    </None>
+    <None Include="!Security.txt">
+      <Filter>ToDo</Filter>
+    </None>
+    <None Include="exportA.vc.def">
+      <Filter>Exports</Filter>
+    </None>
+    <None Include="exportW.vc.def">
+      <Filter>Exports</Filter>
+    </None>
+    <None Include="exportW3.vc.def">
+      <Filter>Exports</Filter>
+    </None>
+    <None Include="exportW3L.vc.def">
+      <Filter>Exports</Filter>
+    </None>
+    <None Include="..\Release\ChangeLog" />
+  </ItemGroup>
+</Project>

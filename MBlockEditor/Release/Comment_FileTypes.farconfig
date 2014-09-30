@@ -62,6 +62,12 @@
 						<value name="CommentEnd" type="text" value="--&gt;" />
 					</key>
 
+					<key name=".hrc" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
+
 					<key name=".ini" description="">
 						<value name="Comment" type="text" value=";" />
 					</key>

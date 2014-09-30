@@ -40,6 +40,8 @@ extern GUID guid_PluginGuid;
 	#define MenuItemSetSelected(p) (p).Flags |= MIF_SELECTED
 	//
 	#define SETMENUTEXT(itm,txt) itm.Text = txt;
+	#define MENUBREAKCODETYPE intptr_t
+	#define PANELUSERDATATYPE void*
 	#define FARDLGPARM void*
 	#define FARDLGRET intptr_t
 	#define FARINT intptr_t
@@ -53,6 +55,7 @@ extern GUID guid_PluginGuid;
 	#define SETTEXT(itm,txt) itm.PtrData = txt
 	#define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
 	#define FILENAMEPTR PanelItemFileNamePtr
+	#define FARCP_AUTODETECT CP_DEFAULT
 #elif defined(_UNICODE)
 	#define PanelItemFileNamePtr(p) (p).FindData.lpwszFileName
 	#define PanelItemAltNamePtr(p) (p).FindData.lpwszAlternateFileName
@@ -70,6 +73,8 @@ extern GUID guid_PluginGuid;
 	#define MenuItemSetSelected(p) (p).Selected = TRUE
 	//
 	#define SETMENUTEXT(itm,txt) itm.Text = txt;
+	#define MENUBREAKCODETYPE int
+	#define PANELUSERDATATYPE DWORD_PTR
 	#define FARDLGPARM LPARAM
 	#define FARDLGRET LONG_PTR
 	#define FARINT int
@@ -83,6 +88,7 @@ extern GUID guid_PluginGuid;
 	#define SETTEXT(itm,txt) itm.PtrData = txt
 	#define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
 	#define FILENAMEPTR PanelItemFileNamePtr
+	#define FARCP_AUTODETECT CP_AUTODETECT
 #else
 	#define PanelItemFileNamePtr(p) (p).FindData.cFileName
 	#define PanelItemAltNamePtr(p) (p).FindData.cAlternateFileName
@@ -101,6 +107,8 @@ extern GUID guid_PluginGuid;
 	#define MenuItemSetSelected(p) (p).Selected = TRUE
 	//
     #define SETMENUTEXT(itm,txt) lstrcpy(itm.Text, txt);
+	#define MENUBREAKCODETYPE int
+	#define PANELUSERDATATYPE DWORD_PTR
 	#define FARDLGPARM LPARAM
 	#define FARDLGRET LONG_PTR
     #define FARINT int
@@ -114,6 +122,7 @@ extern GUID guid_PluginGuid;
     #define SETTEXT(itm,txt) lstrcpy(itm.Data, txt)
     #define SETTEXTPRINT(itm,fmt,arg) wsprintf(itm.Data, fmt, arg)
 	#define FILENAMEPTR(p) (p).FindData.cFileName
+	#define FARCP_AUTODETECT CP_AUTODETECT
 #endif
 
 inline INT_PTR EditCtrl(int Cmd, void* Parm, INT_PTR cbSize = 0)
@@ -142,6 +151,18 @@ inline TCHAR* DlgGetText(HANDLE hDlg, int CtrlId)
 		#endif
 	}
 	return pszSrc;
+}
+
+static void WINAPI DummyFreeUserData(void *UserData, const struct FarPanelItemFreeInfo *Info)
+{
+}
+
+inline void SetPanelItemUserData(PluginPanelItem& p, void* data)
+{
+	PanelItemUserData(p) = (PANELUSERDATATYPE)data;
+	#if (FAR_UNICODE>=1988)
+	p.UserData.FreeData = DummyFreeUserData;
+	#endif
 }
 
 #if 0

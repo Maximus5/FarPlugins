@@ -48,7 +48,9 @@ other possible license with no implications from the above license on them.
 
 #ifndef RC_INVOKED
 
+#if (_MSC_VER>=1600)
 #include <stdint.h>
+#endif
 #include <windows.h>
 
 #undef DefDlgProc
@@ -668,6 +670,7 @@ typedef unsigned __int64 PLUGINPANELITEMFLAGS;
 static const PLUGINPANELITEMFLAGS
 	PPIF_SELECTED               = 0x0000000040000000ULL,
 	PPIF_PROCESSDESCR           = 0x0000000080000000ULL,
+	PPIF_HASNOTEXTENSION        = 0x0000000100000000ULL,
 	PPIF_NONE                   = 0;
 
 struct FarPanelItemFreeInfo

@@ -822,7 +822,7 @@ HANDLE WINAPI OpenFilePluginW(const TCHAR *Name,const unsigned char *Data,int Da
 			wsprintf(szErr, L"Universal decoder\nBase64 encoded data contains errors!\nSource size: %i, Decoded size: %i\nFailPos(1-based): %i\nContinue\nCancel",
 				lstrlenA(p->pData), nTargetLen, nErrPos);
 			// Пользователь может согласиться на просмотр успешно декодированной части
-			if (psi.Message(_PluginNumber(guid_PluginGuid), FMSG_ERRORTYPE|FMSG_ALLINONE,
+			if (psi.Message(_PluginNumber(guid_PluginGuid), FMSG_WARNING|FMSG_ALLINONE,
 					NULL, (const wchar_t * const *)szErr, 0, 2) == 0)
 			{
 				lbRc = TRUE; nRc = nTargetLen;
@@ -1078,7 +1078,7 @@ HANDLE WINAPI OpenPluginW(
 		EditCtrl(ECTL_GETINFO, &ei);
 		if (ei.BlockType != BTYPE_STREAM)
 		{
-			psi.Message(_PluginNumber(guid_PluginGuid), FMSG_ERRORTYPE|FMSG_ALLINONE|FMSG_MB_OK,
+			psi.Message(_PluginNumber(guid_PluginGuid), FMSG_WARNING|FMSG_ALLINONE|FMSG_MB_OK,
 				NULL, (const wchar_t * const *)L"Universal decoder\nThere is no selection to decode!", 0, 0);
 			return PanelNone;
 		}
@@ -1244,7 +1244,7 @@ HANDLE WINAPI OpenPluginW(
 				wsprintf(szErr, L"Universal decoder\nBase64 encoded data contains errors!\nSource size: %i, Decoded size: %i\nFailPos(1-based): %i\nContinue\nCancel",
 					lstrlenA(lsFull), nDecodeLen, nErrPos);
 				// Пользователь может согласиться на просмотр успешно декодированной части
-				if (psi.Message(_PluginNumber(guid_PluginGuid), FMSG_ERRORTYPE|FMSG_ALLINONE,
+				if (psi.Message(_PluginNumber(guid_PluginGuid), FMSG_WARNING|FMSG_ALLINONE,
 						NULL, (const wchar_t * const *)szErr, 0, 2) == 0)
 				{
 					nRc = nDecodeLen;

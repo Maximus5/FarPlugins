@@ -1,7 +1,7 @@
 
 #define MVV_1 1
 #define MVV_2 1
-#define MVV_3 37
+#define MVV_3 38
 #define MVV_4 FARMANAGERVERSION_BUILD
 #define MVV_4a ""
 

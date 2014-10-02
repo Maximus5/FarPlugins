@@ -112,7 +112,7 @@ void WINAPI GetGlobalInfoW(struct GlobalInfo *Info)
 			FARMANAGERVERSION_STAGE);
 	
 	// Build: YYMMDDX (YY - две цифры года, MM - мес€ц, DD - день, X - 0 и выше-номер подсборки)
-	Info->Version = MAKEFARVERSION(MVV_1,MVV_2,MVV_3,((MVV_1 % 100)*100000) + (MVV_2*1000) + (MVV_3*10) + (MVV_4 % 10),VS_RELEASE);
+	Info->Version = MAKEFARVERSION(MVV_1,MVV_2,MVV_3,FARMANAGERVERSION_BUILD,VS_RELEASE);
 	
 	Info->Guid = guid_PluginGuid;
 	Info->Title = L"RegEditor";

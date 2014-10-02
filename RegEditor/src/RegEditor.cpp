@@ -554,7 +554,13 @@ HANDLE WINAPI OpenPluginW(
 	#endif
 
 	if ((OpenFromMask == OPEN_COMMANDLINE) && Item)
+	{
+		#if FAR_UNICODE>=3000
+		pszCommand = ((OpenCommandLineInfo*)Item)->CommandLine;
+		#else
 		pszCommand = (LPCTSTR)Item;
+		#endif
+	}
 	#if FAR_UNICODE>=1900
 	else if ((OpenFromMask == OPEN_SHORTCUT) && Item)
 	{

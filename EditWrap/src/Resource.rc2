@@ -1,0 +1,40 @@
+
+#include "version.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION EDITWRAPVERN
+ PRODUCTVERSION EDITWRAPVERN
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "ConEmu.Maximus5@gmail.com\0"
+            VALUE "CompanyName", "Maximus5, http://forum.farmanager.com/viewtopic.php?t=????\0"
+            VALUE "FileDescription", "EditWrap" EDITWRAPPLTFRM
+            VALUE "FileVersion", EDITWRAPVERS
+            VALUE "LegalCopyright", "(C) 2008-2014 Maximus5"
+            VALUE "OriginalFilename", "EditWrap.dll"
+            VALUE "ProductName", "EditWrap"
+            VALUE "ProductVersion", EDITWRAPVERS
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END

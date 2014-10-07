@@ -1,0 +1,14 @@
+*.cmd
+*.bat
+*.dll
+*.pdb
+Descript.ion
+
+/!*.txt
+/Renewal.xml
+/usage4upload
+/EditWrap.farconfig
+/EditWrap.fml
+/Debug
+/_Arc
+/test

@@ -1,0 +1,32 @@
+1.8
++ Far 3 build 4040 (bis recommended)
+
+1.7
+% One more fix for tabs :)
+
+1.6
+% Last word fix.
+
+1.5
++ Tabs was not taken in account while simple Wrap (not Word Wrap).
++ Tabs optimization.
+
+1.4
+% Tabs related fix.
+
+1.3
++ Renewal related.
+
+1.2
++ Far3 build 2591 (bis recommended)
++ Tabs takes to account
++ Modified flag does not turned on (Far3 2591 bis required)
+
+1.1
+* Renamed to 'EditWrap'
+* Far3 build 2194
++ Menu: Toggle wrap/Toggle word wrap/Wrap/Word wrap/Unwrap
++ callplugin
+
+1.0
+First test version

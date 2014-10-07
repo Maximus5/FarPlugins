@@ -23,7 +23,7 @@ extern GUID guid_PluginGuid;
 	#include "far3l/PluginSettings.hpp"
 #endif
 
-#if defined(_UNICODE) && (FAR_UNICODE>=1988)
+#if defined(_UNICODE) && (FAR_UNICODE>=2800)
 	#define PanelItemFileNamePtr(p) (p).FileName
 	#define PanelItemAltNamePtr(p) (p).AlternateFileName
 	#define PanelItemAttributes(p) (p).FileAttributes
@@ -56,6 +56,41 @@ extern GUID guid_PluginGuid;
 	#define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
 	#define FILENAMEPTR PanelItemFileNamePtr
 	#define FARCP_AUTODETECT CP_DEFAULT
+	#define FARSTRUCTSIZE(s) sizeof(s)
+#elif defined(_UNICODE) && (FAR_UNICODE>=1988)
+	#define PanelItemFileNamePtr(p) (p).FileName
+	#define PanelItemAltNamePtr(p) (p).AlternateFileName
+	#define PanelItemAttributes(p) (p).FileAttributes
+	#define PanelItemCreation(p) (p).CreationTime
+	#define PanelItemAccess(p) (p).LastAccessTime
+	#define PanelItemWrite(p) (p).LastWriteTime
+	#define PanelItemChange(p) (p).ChangeTime
+	#define PanelItemFileSize(p) (p).FileSize
+	#define PanelItemPackSize(p) (p).FileSize // There is NO PackSize in latest Far
+	#define PanelItemUserData(p) (p).UserData.Data
+	#define MenuItemIsSeparator(p) (((p).Flags & MIF_SEPARATOR) == MIF_SEPARATOR)
+	#define MenuItemSetSeparator(p) (p).Flags |= MIF_SEPARATOR
+	#define MenuItemIsSelected(p) (((p).Flags & MIF_SELECTED) == MIF_SELECTED)
+	#define MenuItemSetSelected(p) (p).Flags |= MIF_SELECTED
+	//
+	#define SETMENUTEXT(itm,txt) itm.Text = txt;
+	#define MENUBREAKCODETYPE intptr_t
+	#define PANELUSERDATATYPE void*
+	#define FARDLGPARM void*
+	#define FARDLGRET intptr_t
+	#define FARINT intptr_t
+	#define FARPTR void*
+	#define USERDATAPTR void*
+	#define F757NA 0, 
+	#define FADV1988 0,
+	#define _GetCheck(i) (int)psi.SendDlgMessage(hDlg,DM_GETCHECK,i,0)
+	#define GetDataPtr(i) ((const TCHAR *)psi.SendDlgMessage(hDlg,DM_GETCONSTTEXTPTR,i,0))
+	#define DlgGetTextLength(hDlg,CtrlId) psi.SendDlgMessage(hDlg,DM_GETTEXT,CtrlId,0)
+	#define SETTEXT(itm,txt) itm.PtrData = txt
+	#define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
+	#define FILENAMEPTR PanelItemFileNamePtr
+	#define FARCP_AUTODETECT CP_DEFAULT
+	#define SETFARSTRUCTSIZE(s)
 #elif defined(_UNICODE)
 	#define PanelItemFileNamePtr(p) (p).FindData.lpwszFileName
 	#define PanelItemAltNamePtr(p) (p).FindData.lpwszAlternateFileName
@@ -89,6 +124,7 @@ extern GUID guid_PluginGuid;
 	#define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
 	#define FILENAMEPTR PanelItemFileNamePtr
 	#define FARCP_AUTODETECT CP_AUTODETECT
+	#define SETFARSTRUCTSIZE(s)
 #else
 	#define PanelItemFileNamePtr(p) (p).FindData.cFileName
 	#define PanelItemAltNamePtr(p) (p).FindData.cAlternateFileName
@@ -123,6 +159,7 @@ extern GUID guid_PluginGuid;
     #define SETTEXTPRINT(itm,fmt,arg) wsprintf(itm.Data, fmt, arg)
 	#define FILENAMEPTR(p) (p).FindData.cFileName
 	#define FARCP_AUTODETECT CP_AUTODETECT
+	#define SETFARSTRUCTSIZE(s)
 #endif
 
 inline INT_PTR EditCtrl(int Cmd, void* Parm, INT_PTR cbSize = 0)

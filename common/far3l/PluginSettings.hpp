@@ -38,7 +38,7 @@ public:
 
 	bool DeleteSubKey(size_t Root)
 	{
-		FarSettingsValue value={sizeof(FarSettingsValue),Root,nullptr};
+		FarSettingsValue value={sizeof(FarSettingsValue),Root,NULL};
 		return (int)SettingsControl(handle,SCTL_DELETE,0,&value) ? true : false;
 	}
 

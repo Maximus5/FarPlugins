@@ -1215,6 +1215,7 @@ struct FarSetColors
 
 enum WINDOWINFO_TYPE
 {
+	WTYPE_DESKTOP                   = 0,
 	WTYPE_PANELS                    = 1,
 	WTYPE_VIEWER                    = 2,
 	WTYPE_EDITOR                    = 3,
@@ -1440,6 +1441,9 @@ enum EDITOR_CONTROL_COMMANDS
 	ECTL_SUBSCRIBECHANGEEVENT       = 36,
 	ECTL_UNSUBSCRIBECHANGEEVENT     = 37,
 	ECTL_GETTITLE                   = 38,
+
+	//Maximus. Требуется для "прозрачного" заворота строк (declined in official)
+	ECTL_DROPMODIFEDFLAG            = 999,
 };
 
 enum EDITOR_SETPARAMETER_TYPES
@@ -2261,6 +2265,7 @@ enum VERSION_STAGE
 	VS_ALPHA                        = 1,
 	VS_BETA                         = 2,
 	VS_RC                           = 3,
+	VS_BIS                          = 8,
 };
 
 struct VersionInfo

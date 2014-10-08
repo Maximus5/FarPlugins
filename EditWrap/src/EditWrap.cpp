@@ -613,6 +613,21 @@ HANDLE WINAPI OpenPluginW(
 	if (psi.AdvControl(PluginNumber, ACTL_GETFARRECT, FADV1988 &rcFar))
 	{
 		iMaxWidth = rcFar.Right - rcFar.Left;
+		// Нет способа проверить через API, включена ли прокрутка
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO csbi = {};
+		GetConsoleScreenBufferInfo(hOut, &csbi);
+		CHAR_INFO ch[2]; COORD crSize = {1,2}; COORD crRead = {0,0};
+		int iTop = 1; // csbi.dwSize.Y - rcFar.Bottom;
+		SMALL_RECT srRegion = {rcFar.Right, rcFar.Top+iTop, rcFar.Right, rcFar.Top+1+iTop};
+		if (ReadConsoleOutput(hOut, ch, crSize, crRead, &srRegion))
+		{
+			if ((ch[0].Char.UnicodeChar == L'▲')
+				&& ((ch[1].Char.UnicodeChar == L'▓') || (ch[1].Char.UnicodeChar == L'░')))
+			{
+				iMaxWidth--;
+			}
+		}
 	}
 	#endif
 

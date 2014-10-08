@@ -40,5 +40,6 @@
     <None Include="Resource.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\Release\changelog" />
   </ItemGroup>
 </Project>

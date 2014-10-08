@@ -23,6 +23,14 @@ extern GUID guid_PluginGuid;
 	#include "far3l/PluginSettings.hpp"
 #endif
 
+#if defined(_UNICODE) && (FARMANAGERVERSION_BUILD>=2572)
+	#define FAR_PANEL_STOP PANEL_STOP
+	#define FAR_PANEL_NONE NULL
+#else
+	#define FAR_PANEL_STOP ((HANDLE)-2)
+	#define FAR_PANEL_NONE INVALID_HANDLE_VALUE
+#endif
+
 #if defined(_UNICODE) && (FAR_UNICODE>=2800)
 	#define PanelItemFileNamePtr(p) (p).FileName
 	#define PanelItemAltNamePtr(p) (p).AlternateFileName

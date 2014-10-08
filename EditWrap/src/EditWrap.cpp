@@ -764,5 +764,5 @@ wrap:
 		EditCtrl(ECTL_UNDOREDO, &ur);
 	}
 
-	return INVALID_HANDLE_VALUE;
+	return FAR_PANEL_NONE;
 }

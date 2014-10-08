@@ -24,7 +24,7 @@ BEGIN
         BLOCK "000004b0"
         BEGIN
             VALUE "Comments", "ConEmu.Maximus5@gmail.com\0"
-            VALUE "CompanyName", "Maximus5, http://forum.farmanager.com/viewtopic.php?t=????\0"
+            VALUE "CompanyName", "Maximus5, http://forum.farmanager.com/viewtopic.php?f=5&t=6587\0"
             VALUE "FileDescription", "EditWrap" EDITWRAPPLTFRM
             VALUE "FileVersion", EDITWRAPVERS
             VALUE "LegalCopyright", "(C) 2008-2014 Maximus5"

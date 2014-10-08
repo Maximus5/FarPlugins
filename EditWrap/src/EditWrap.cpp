@@ -1,4 +1,4 @@
-
+п»ї
 #include <Windows.h>
 #include <crtdbg.h>
 #include <tchar.h>
@@ -91,7 +91,7 @@ int WINAPI GetMinFarVersionW(void)
 		Info->StructSize = sizeof(GlobalInfo);
 		Info->MinFarVersion = FARMANAGERVERSION;
 
-		// Build: YYMMDDX (YY - две цифры года, MM - месяц, DD - день, X - 0 и выше-номер подсборки)
+		// Build: YYMMDDX (YY - РґРІРµ С†РёС„СЂС‹ РіРѕРґР°, MM - РјРµСЃСЏС†, DD - РґРµРЅСЊ, X - 0 Рё РІС‹С€Рµ-РЅРѕРјРµСЂ РїРѕРґСЃР±РѕСЂРєРё)
 		//Info->Version = MAKEFARVERSION(MVV_1,MVV_2,MVV_3,((MVV_1 % 100)*100000) + (MVV_2*1000) + (MVV_3*10) + (MVV_4 % 10), VS_RELEASE);
 		Info->Version = MAKEFARVERSION(MVV_1,MVV_2,MVV_3,MVV_4, VS_RELEASE);
 		
@@ -170,14 +170,14 @@ enum FoldWorkMode
 //	
 //	int iStart = lstrlen(psz);
 //	int i = iStart;
-//	lstrcpyn(psz+i, pszBegin, MENU_PART+1 /*+1 т.к. включая \0*/);
+//	lstrcpyn(psz+i, pszBegin, MENU_PART+1 /*+1 С‚.Рє. РІРєР»СЋС‡Р°СЏ \0*/);
 //	i = lstrlen(psz);
 //	int iFin = iStart+MENU_PART+1;
 //	while (i < iFin)
 //		psz[i++] = _T(' ');
 //	psz[i] = 0;
 //	if (pszEnd)
-//		lstrcpyn(psz+i, pszEnd, MENU_PART+1 /*+1 т.к. включая \0*/);
+//		lstrcpyn(psz+i, pszEnd, MENU_PART+1 /*+1 С‚.Рє. РІРєР»СЋС‡Р°СЏ \0*/);
 //	i = lstrlen(psz);
 //	iFin = iStart+MENU_PART*2+2;
 //	while (i < iFin)
@@ -237,7 +237,7 @@ INT_PTR FindExceed(wchar_t* pszCopy, INT_PTR iLine, INT_PTR iFrom, INT_PTR iFind
 {
 	INT_PTR nExceed = 0;
 
-	// В строке могут быть '\0', так что проверки типа wcschr надежны только в положительном варианте
+	// Р’ СЃС‚СЂРѕРєРµ РјРѕРіСѓС‚ Р±С‹С‚СЊ '\0', С‚Р°Рє С‡С‚Рѕ РїСЂРѕРІРµСЂРєРё С‚РёРїР° wcschr РЅР°РґРµР¶РЅС‹ С‚РѕР»СЊРєРѕ РІ РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕРј РІР°СЂРёР°РЅС‚Рµ
 	wchar_t* pszTab = wcschr(pszCopy+iFrom, L'\t');
 	if (pszTab && (pszTab > (pszCopy + iFrom + iMaxWidth)))
 	{
@@ -247,14 +247,14 @@ INT_PTR FindExceed(wchar_t* pszCopy, INT_PTR iLine, INT_PTR iFrom, INT_PTR iFind
 	{
 		INT_PTR TabPos = 1;
 
-		// Проходим по всем символам до позиции поиска, если она ещё в пределах строки,
-		// либо до конца строки, если позиция поиска за пределами строки
+		// РџСЂРѕС…РѕРґРёРј РїРѕ РІСЃРµРј СЃРёРјРІРѕР»Р°Рј РґРѕ РїРѕР·РёС†РёРё РїРѕРёСЃРєР°, РµСЃР»Рё РѕРЅР° РµС‰С‘ РІ РїСЂРµРґРµР»Р°С… СЃС‚СЂРѕРєРё,
+		// Р»РёР±Рѕ РґРѕ РєРѕРЅС†Р° СЃС‚СЂРѕРєРё, РµСЃР»Рё РїРѕР·РёС†РёСЏ РїРѕРёСЃРєР° Р·Р° РїСЂРµРґРµР»Р°РјРё СЃС‚СЂРѕРєРё
 		for (nExceed = iFrom; (nExceed < iFind) && (TabPos <= iMaxWidth); nExceed++)
 		{
-			// Обрабатываем табы
+			// РћР±СЂР°Р±Р°С‚С‹РІР°РµРј С‚Р°Р±С‹
 			if (pszCopy[nExceed] == L'\t')
 			{
-				// Расчитываем длину таба с учётом настроек и текущей позиции в строке
+				// Р Р°СЃС‡РёС‚С‹РІР°РµРј РґР»РёРЅСѓ С‚Р°Р±Р° СЃ СѓС‡С‘С‚РѕРј РЅР°СЃС‚СЂРѕРµРє Рё С‚РµРєСѓС‰РµР№ РїРѕР·РёС†РёРё РІ СЃС‚СЂРѕРєРµ
 				TabPos += TabSize-(TabPos%TabSize);
 			}
 			else
@@ -263,7 +263,7 @@ INT_PTR FindExceed(wchar_t* pszCopy, INT_PTR iLine, INT_PTR iFrom, INT_PTR iFind
 
 		if ((TabPos > iMaxWidth) && (nExceed > iFrom) && (pszCopy[nExceed-1] == L'\t'))
 		{
-			nExceed--; // чтобы "конец" таба за экран не вылезал
+			nExceed--; // С‡С‚РѕР±С‹ "РєРѕРЅРµС†" С‚Р°Р±Р° Р·Р° СЌРєСЂР°РЅ РЅРµ РІС‹Р»РµР·Р°Р»
 		}
 		//	bExceed = true;
 	}
@@ -300,7 +300,7 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 		if ((egs.StringLength <= iMaxWidth)
 			&& ((egs.StringLength <= 0) || !(egs.StringText && wcschr(egs.StringText, L'\t'))))
 		{
-			// Эту строку резать не нужно
+			// Р­С‚Сѓ СЃС‚СЂРѕРєСѓ СЂРµР·Р°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
 			continue;
 		}
 		
@@ -318,9 +318,9 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 				goto wrap;
 			}
 		}
-		// Делаем копию, над которой можем издеваться
+		// Р”РµР»Р°РµРј РєРѕРїРёСЋ, РЅР°Рґ РєРѕС‚РѕСЂРѕР№ РјРѕР¶РµРј РёР·РґРµРІР°С‚СЊСЃСЏ
 		memmove(pszCopy, egs.StringText, egs.StringLength*sizeof(*pszCopy));
-		pszCopy[egs.StringLength] = 0; // на всякий случай, хотя вроде должен быть ASCIIZ
+		pszCopy[egs.StringLength] = 0; // РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№, С…РѕС‚СЏ РІСЂРѕРґРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ ASCIIZ
 		
 		bool lbFirst = 0;
 		iFrom = 0; iEnd = egs.StringLength;
@@ -342,8 +342,8 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 					if (IsSpaceOrNull(pszCopy[iFind-1]))
 						break;
 					//{
-					//	// Если есть табы - нужно учитывать их ширину
-					//	//TODO: Optimize, по хорошему, если есть табы, нужно оптимизировать расчет экранной позиции
+					//	// Р•СЃР»Рё РµСЃС‚СЊ С‚Р°Р±С‹ - РЅСѓР¶РЅРѕ СѓС‡РёС‚С‹РІР°С‚СЊ РёС… С€РёСЂРёРЅСѓ
+					//	//TODO: Optimize, РїРѕ С…РѕСЂРѕС€РµРјСѓ, РµСЃР»Рё РµСЃС‚СЊ С‚Р°Р±С‹, РЅСѓР¶РЅРѕ РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ СЂР°СЃС‡РµС‚ СЌРєСЂР°РЅРЅРѕР№ РїРѕР·РёС†РёРё
 					//	bool bExceed = IsExceed(pszCopy, i, iFrom, iFind, iMaxWidth, ei.TabSize);
 
 					//	if (!bExceed)
@@ -351,7 +351,7 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 					//}
 					iFind--;
 				}
-				// Если по пробелам порезать не удалось, попробуем по другим знакам?
+				// Р•СЃР»Рё РїРѕ РїСЂРѕР±РµР»Р°Рј РїРѕСЂРµР·Р°С‚СЊ РЅРµ СѓРґР°Р»РѕСЃСЊ, РїРѕРїСЂРѕР±СѓРµРј РїРѕ РґСЂСѓРіРёРј Р·РЅР°РєР°Рј?
 				if (iFind == iFrom)
 				{
 					iFind = iTo;
@@ -360,8 +360,8 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 						if (_tcschr(gsPuctuators, pszCopy[iFind]) && !_tcschr(gsWordDiv, pszCopy[iFind-1]))
 							break;
 						//{
-						//	// Если есть табы - нужно учитывать их ширину
-						//	//TODO: Optimize, по хорошему, если есть табы, нужно оптимизировать расчет экранной позиции
+						//	// Р•СЃР»Рё РµСЃС‚СЊ С‚Р°Р±С‹ - РЅСѓР¶РЅРѕ СѓС‡РёС‚С‹РІР°С‚СЊ РёС… С€РёСЂРёРЅСѓ
+						//	//TODO: Optimize, РїРѕ С…РѕСЂРѕС€РµРјСѓ, РµСЃР»Рё РµСЃС‚СЊ С‚Р°Р±С‹, РЅСѓР¶РЅРѕ РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ СЂР°СЃС‡РµС‚ СЌРєСЂР°РЅРЅРѕР№ РїРѕР·РёС†РёРё
 						//	bool bExceed = IsExceed(pszCopy, i, iFrom, iFind, iMaxWidth, ei.TabSize);
 
 						//	if (!bExceed)
@@ -377,8 +377,8 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 							if (_tcschr(gsWordDiv, pszCopy[iFind]) && !_tcschr(gsWordDiv, pszCopy[iFind-1]))
 								break;
 							//{
-							//	// Если есть табы - нужно учитывать их ширину
-							//	//TODO: Optimize, по хорошему, если есть табы, нужно оптимизировать расчет экранной позиции
+							//	// Р•СЃР»Рё РµСЃС‚СЊ С‚Р°Р±С‹ - РЅСѓР¶РЅРѕ СѓС‡РёС‚С‹РІР°С‚СЊ РёС… С€РёСЂРёРЅСѓ
+							//	//TODO: Optimize, РїРѕ С…РѕСЂРѕС€РµРјСѓ, РµСЃР»Рё РµСЃС‚СЊ С‚Р°Р±С‹, РЅСѓР¶РЅРѕ РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ СЂР°СЃС‡РµС‚ СЌРєСЂР°РЅРЅРѕР№ РїРѕР·РёС†РёРё
 							//	bool bExceed = IsExceed(pszCopy, i, iFrom, iFind, iMaxWidth, ei.TabSize);
 
 							//	if (!bExceed)
@@ -394,18 +394,18 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 
 			if (iFind < iEnd)
 			{
-				// Для ECTL_INSERTSTRING нужно установить курсор
+				// Р”Р»СЏ ECTL_INSERTSTRING РЅСѓР¶РЅРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РєСѓСЂСЃРѕСЂ
 				EditorSetPosition eset = {FARSTRUCTSIZE(eset)};
 				eset.CurLine = i;
 				eset.TopScreenLine = -1;
 				EditCtrl(ECTL_SETPOSITION, &eset);
-				// Теперь можно разорвать строку
+				// РўРµРїРµСЂСЊ РјРѕР¶РЅРѕ СЂР°Р·РѕСЂРІР°С‚СЊ СЃС‚СЂРѕРєСѓ
 				EditCtrl(ECTL_INSERTSTRING, NULL);
-				// Чтобы вернуть курсор на исходную строку
+				// Р§С‚РѕР±С‹ РІРµСЂРЅСѓС‚СЊ РєСѓСЂСЃРѕСЂ РЅР° РёСЃС…РѕРґРЅСѓСЋ СЃС‚СЂРѕРєСѓ
 				if (i < ei.CurLine)
 					ei.CurLine++;
 			}
-			// И менять ее данные
+			// Р РјРµРЅСЏС‚СЊ РµРµ РґР°РЅРЅС‹Рµ
 			EditorSetString esset = {FARSTRUCTSIZE(esset)};
 			esset.StringNumber = i;
 			esset.StringText = pszCopy+iFrom;
@@ -413,18 +413,18 @@ void DoWrap(BOOL abWordWrap, EditorInfo &ei, int iMaxWidth)
 			esset.StringLength = (iFind - iFrom);
 			EditCtrl(ECTL_SETSTRING, &esset);
 
-			// Накрутить счетчики
+			// РќР°РєСЂСѓС‚РёС‚СЊ СЃС‡РµС‚С‡РёРєРё
 			if (iFind < iEnd)
 			{
-				i++; ei.TotalLines++; // т.к. вставили строку
+				i++; ei.TotalLines++; // С‚.Рє. РІСЃС‚Р°РІРёР»Рё СЃС‚СЂРѕРєСѓ
 			}
 			
-			// Следующая часть строки
+			// РЎР»РµРґСѓСЋС‰Р°СЏ С‡Р°СЃС‚СЊ СЃС‚СЂРѕРєРё
 			iFrom = iFind;
 		}
 	}
 
-	// Обновить позицию курсора
+	// РћР±РЅРѕРІРёС‚СЊ РїРѕР·РёС†РёСЋ РєСѓСЂСЃРѕСЂР°
 	{
 		EditorSetPosition eset = {FARSTRUCTSIZE(eset)};
 		eset.CurLine = ei.CurLine;
@@ -437,8 +437,8 @@ wrap:
 		free(pszCopy);
 
 #ifdef _UNICODE
-	// Сброс флага "редактирован"
-	//TODO: bis-сборка?
+	// РЎР±СЂРѕСЃ С„Р»Р°РіР° "СЂРµРґР°РєС‚РёСЂРѕРІР°РЅ"
+	//TODO: bis-СЃР±РѕСЂРєР°?
 	if (!bWasModifed)
 		EditCtrl(ECTL_DROPMODIFEDFLAG, NULL);
 #endif
@@ -468,7 +468,7 @@ void DoUnwrap(EditorInfo &ei)
 		
 		if (egs.StringEOL && *egs.StringEOL)
 		{
-			// В этой строке есть EOL, ее не сворачивали
+			// Р’ СЌС‚РѕР№ СЃС‚СЂРѕРєРµ РµСЃС‚СЊ EOL, РµРµ РЅРµ СЃРІРѕСЂР°С‡РёРІР°Р»Рё
 			continue;
 		}
 		
@@ -508,7 +508,7 @@ void DoUnwrap(EditorInfo &ei)
 				lbApplyAndBreak = true;
 			}
 
-			// Получить следующую строку
+			// РџРѕР»СѓС‡РёС‚СЊ СЃР»РµРґСѓСЋС‰СѓСЋ СЃС‚СЂРѕРєСѓ
 			if ((j+1) >= ei.TotalLines)
 			{
 				lbApplyAndBreak = true;
@@ -525,7 +525,7 @@ void DoUnwrap(EditorInfo &ei)
 				_ASSERTE(egs.StringText!=NULL);
 				if (egs.StringEOL && *egs.StringEOL)
 				{
-					// В этой строке есть EOL, ее не сворачивали
+					// Р’ СЌС‚РѕР№ СЃС‚СЂРѕРєРµ РµСЃС‚СЊ EOL, РµРµ РЅРµ СЃРІРѕСЂР°С‡РёРІР°Р»Рё
 					lstrcpyn(szEOL, egs.StringEOL?egs.StringEOL:_T(""), ARRAYSIZE(szEOL));
 				}
 			}
@@ -541,13 +541,13 @@ void DoUnwrap(EditorInfo &ei)
 				
 				for (INT_PTR k = i+1; k <= j; k++)
 				{
-					// Для ECTL_DELETESTRING нужно установить курсор
+					// Р”Р»СЏ ECTL_DELETESTRING РЅСѓР¶РЅРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РєСѓСЂСЃРѕСЂ
 					EditorSetPosition eset = {FARSTRUCTSIZE(eset)};
 					eset.CurLine = i+1;
 					eset.TopScreenLine = -1;
 					iRc = EditCtrl(ECTL_SETPOSITION, &eset);
 					_ASSERTE(iRc);
-					// Удаляем "свернутое"
+					// РЈРґР°Р»СЏРµРј "СЃРІРµСЂРЅСѓС‚РѕРµ"
 					iRc = EditCtrl(ECTL_DELETESTRING, NULL);
 					_ASSERTE(iRc);
 					ei.TotalLines--;
@@ -555,13 +555,13 @@ void DoUnwrap(EditorInfo &ei)
 						ei.CurLine--;
 				}
 				
-				// Выход из while
+				// Р’С‹С…РѕРґ РёР· while
 				break;
 			}
 		}
 	}
 	
-	// Обновить позицию курсора
+	// РћР±РЅРѕРІРёС‚СЊ РїРѕР·РёС†РёСЋ РєСѓСЂСЃРѕСЂР°
 	{
 		EditorSetPosition eset = {FARSTRUCTSIZE(eset)};
 		eset.CurLine = ei.CurLine;
@@ -574,8 +574,8 @@ wrap:
 		free(pszCopy);
 
 #ifdef _UNICODE
-	// Сброс флага "редактирован"
-	//TODO: bis-сборка?
+	// РЎР±СЂРѕСЃ С„Р»Р°РіР° "СЂРµРґР°РєС‚РёСЂРѕРІР°РЅ"
+	//TODO: bis-СЃР±РѕСЂРєР°?
 	if (!bWasModifed)
 		EditCtrl(ECTL_DROPMODIFEDFLAG, NULL);
 #endif
@@ -709,7 +709,7 @@ HANDLE WINAPI OpenPluginW(
 	}
 	#endif
 
-	// Показать меню: что делать
+	// РџРѕРєР°Р·Р°С‚СЊ РјРµРЅСЋ: С‡С‚Рѕ РґРµР»Р°С‚СЊ
 	if (WorkMode == fwm_None)
 		WorkMode = ChooseWorkMode();
 	if (WorkMode == fwm_None)

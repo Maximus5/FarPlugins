@@ -354,6 +354,7 @@
     <ClCompile Include="EditWrap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\far3l\PluginSettings.hpp" />
     <ClInclude Include="..\..\common\FarHelper.h" />
     <ClInclude Include="..\..\common\plugin.h" />
     <ClInclude Include="version.h" />

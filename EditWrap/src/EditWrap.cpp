@@ -9,7 +9,9 @@
 
 	#undef FAR_UNICODE
 	#define FAR_UNICODE FARMANAGERVERSION_BUILD
-		
+
+	// String GUID is used in code
+	const wchar_t guid_PluginGuidS[] = L"580F7F4F-7E64-4367-84C1-5A6EB66DAB1F";
 	GUID guid_PluginGuid = { /* 580f7f4f-7e64-4367-84c1-5a6eb66dab1f */
 		0x580f7f4f,
 		0x7e64,
@@ -581,6 +583,39 @@ wrap:
 #endif
 }
 
+#if !defined(FAR_UNICODE) || (FAR_UNICODE<3000)
+bool CheckScrollEnabled(const SMALL_RECT& rcFar)
+{
+	bool bScrollExists = false;
+
+	#if 0
+	GUID FarGuid = {};
+	PluginSettings fs(FarGuid, psi.SettingsControl);
+	bScrollExists = fs.Get(FSSF_EDITOR, L"ShowScrollBar", false);
+	if (bScrollExists)
+		return true;
+	#endif
+
+	// Нет способа проверить через API, включена ли прокрутка в конкретном экземпляре редактора
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi = {};
+	GetConsoleScreenBufferInfo(hOut, &csbi);
+	CHAR_INFO ch[2]; COORD crSize = {1,2}; COORD crRead = {0,0};
+	int iTop = 1; // csbi.dwSize.Y - rcFar.Bottom;
+	SMALL_RECT srRegion = {rcFar.Right, rcFar.Top+iTop, rcFar.Right, rcFar.Top+1+iTop};
+	if (ReadConsoleOutput(hOut, ch, crSize, crRead, &srRegion))
+	{
+		if ((ch[0].Char.UnicodeChar == L'▲')
+			&& ((ch[1].Char.UnicodeChar == L'▓') || (ch[1].Char.UnicodeChar == L'░')))
+		{
+			bScrollExists = true;
+		}
+	}
+
+	return bScrollExists;
+}
+#endif
+
 HANDLE WINAPI OpenPluginW(
 #if FAR_UNICODE>=2000
 	OpenInfo *Info
@@ -599,6 +634,7 @@ HANDLE WINAPI OpenPluginW(
 	INT_PTR cchMax = 0;
 	SMALL_RECT rcFar = {};
 	int iMaxWidth = 79;
+	int iRightPad = 0; bool bRightPadSpecified = false;
 	EditorUndoRedo ur = {FARSTRUCTSIZE(ur)};
 	FoldWorkMode WorkMode = fwm_None;
 	int *pWrappedEditor = NULL;
@@ -613,21 +649,13 @@ HANDLE WINAPI OpenPluginW(
 	if (psi.AdvControl(PluginNumber, ACTL_GETFARRECT, FADV1988 &rcFar))
 	{
 		iMaxWidth = rcFar.Right - rcFar.Left;
-		// Нет способа проверить через API, включена ли прокрутка
-		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		CONSOLE_SCREEN_BUFFER_INFO csbi = {};
-		GetConsoleScreenBufferInfo(hOut, &csbi);
-		CHAR_INFO ch[2]; COORD crSize = {1,2}; COORD crRead = {0,0};
-		int iTop = 1; // csbi.dwSize.Y - rcFar.Bottom;
-		SMALL_RECT srRegion = {rcFar.Right, rcFar.Top+iTop, rcFar.Right, rcFar.Top+1+iTop};
-		if (ReadConsoleOutput(hOut, ch, crSize, crRead, &srRegion))
+		#if !defined(FAR_UNICODE) || (FAR_UNICODE<3000)
+		// Будет ниже, через макрос
+		if (CheckScrollEnabled(rcFar))
 		{
-			if ((ch[0].Char.UnicodeChar == L'▲')
-				&& ((ch[1].Char.UnicodeChar == L'▓') || (ch[1].Char.UnicodeChar == L'░')))
-			{
-				iMaxWidth--;
-			}
+			iRightPad = 1; bRightPadSpecified = true;
 		}
+		#endif
 	}
 	#endif
 
@@ -713,6 +741,16 @@ HANDLE WINAPI OpenPluginW(
 			else if (p->Values[0].Type == FMVT_DOUBLE)
 				fw = (FoldWorkMode)(int)p->Values[0].Double;
 			#endif
+			if (p->Count > 1)
+			{
+				if (p->Values[1].Type == FMVT_INTEGER)
+					iRightPad = (int)p->Values[1].Integer;
+				#if FAR_UNICODE>=3000
+				else if (p->Values[1].Type == FMVT_DOUBLE)
+					iRightPad = (int)p->Values[1].Double;
+				#endif
+				bRightPadSpecified = true;
+			}
 		}
 		Item = fw;
 		#endif
@@ -732,14 +770,37 @@ HANDLE WINAPI OpenPluginW(
 		goto wrap;
 	}
 
-	ur.Command = EUR_BEGIN;
-	EditCtrl(ECTL_UNDOREDO, &ur);
-
 	if (WorkMode == fwm_ToggleWrap)
 		WorkMode = gbLastWrap ? fwm_Unwrap : fwm_Wrap;
 	else if (WorkMode == fwm_ToggleWordWrap)
 		WorkMode = gbLastWrap ? fwm_Unwrap : fwm_WordWrap;
-	
+
+	// Подготовка места под скролл и отступ
+	if (WorkMode == fwm_Wrap || WorkMode == fwm_WordWrap)
+	{
+		#if FAR_UNICODE>3000
+		if (!bRightPadSpecified)
+		{
+			// Нет способа проверить через API, включена ли прокрутка в конкретном экземпляре редактора
+			wchar_t szMacroRepost[100];
+			wsprintf(szMacroRepost, L"Plugin.Call(\"%s\",%i,Editor.Set(15,-1))", guid_PluginGuidS, (int)WorkMode);
+			MacroSendMacroText mcr = {sizeof(MacroSendMacroText)};
+			mcr.SequenceText = szMacroRepost;
+			psi.MacroControl(&guid_PluginGuid, MCTL_SENDSTRING, 0, &mcr);
+			goto wrap;
+		}
+		#endif
+
+		// Откусывание места по скролл или отступ от правого края
+		if ((iRightPad > 0) && (iRightPad <= 10) && (iRightPad < iMaxWidth))
+		{
+			iMaxWidth -= iRightPad;
+		}
+	}
+
+	ur.Command = EUR_BEGIN;
+	EditCtrl(ECTL_UNDOREDO, &ur);
+
 	if (WorkMode == fwm_Wrap || WorkMode == fwm_WordWrap)
 	{
 		DoWrap((WorkMode == fwm_WordWrap), ei, iMaxWidth);

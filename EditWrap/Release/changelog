@@ -1,3 +1,8 @@
+1.10
++ Editor's scrollbar existence is checked with macro.
++ User may specify right border padding with 3-d arg, ex. 2 cells:
+  Plugin.Call("580F7F4F-7E64-4367-84C1-5A6EB66DAB1F",1,2)
+
 1.9
 + Hack for checking if the scroll bar is visible at the moment of wrap.
 

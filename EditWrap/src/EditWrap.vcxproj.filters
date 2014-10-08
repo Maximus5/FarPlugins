@@ -30,6 +30,9 @@
       <Filter>FarApi</Filter>
     </ClInclude>
     <ClInclude Include="version.h" />
+    <ClInclude Include="..\..\common\far3l\PluginSettings.hpp">
+      <Filter>FarApi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">

@@ -5,6 +5,7 @@
 *.7z
 _*.sln
 Descript.ion
+Deploy.cmd
 /src/!*.txt
 /_Arc
 /Release/Renewal.xml

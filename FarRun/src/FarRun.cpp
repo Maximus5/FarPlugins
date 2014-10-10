@@ -31,6 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Windows.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <crtdbg.h>
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -57,8 +58,26 @@ int _tmain(int argc, _TCHAR* argv[])
 		return 101;
 	}
 
+	int iFrom = 1;
+	for (int i = iFrom; i < argc; i++)
+	{
+		if (_tcsicmp(argv[i], _T("-r")) == 0)
+		{
+			iFrom++; i++;
+			if ((i < argc) && !_tcschr(_T("-/"), argv[i][0]))
+			{
+				SetEnvironmentVariable(argv[i], NULL);
+				iFrom++; i++;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+
 	size_t cchAddLen = 0;
-	for (int i = 1; i < argc; i++)
+	for (int i = iFrom; i < argc; i++)
 	{
 		cchAddLen += _tcslen(argv[i]) + 3; // Space + two quotes
 	}
@@ -91,7 +110,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		_tcscpy(pszExpand, szIniCmd);
 	}
 
-	for (int i = 1; i < argc; i++)
+	for (int i = iFrom; i < argc; i++)
 	{
 		bool bQuot = (_tcschr(argv[i], _T(' ')) != NULL);
 		_tcscat(pszExpand, bQuot ? _T(" \"") : _T(" "));

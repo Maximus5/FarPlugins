@@ -541,6 +541,27 @@ public:
 			return nFirstID;
 		}
 
+		// Добавляет ComboBox
+		T* AddComboBox(int Width, FarList* ListItems, int *Value, DWORD AddFlags=DIF_DROPDOWNLIST)
+		{
+			T *Item = AddDialogItem(DI_COMBOBOX, nullptr);
+
+			for(int i = 0; i < ListItems->ItemsNumber; i++)
+			{
+				if(i == *Value)
+					ListItems->Items[i].Flags |= LIF_SELECTED;
+				else if(ListItems->Items[i].Flags & LIF_SELECTED)
+					ListItems->Items[i].Flags &= ~LIF_SELECTED;
+			}
+
+			Item->ListItems = ListItems;
+			Item->Flags |= AddFlags;
+			SetNextY(Item);
+			Item->X2 = Item->X1 + Width;
+			SetLastItemBinding(CreateComboBoxBinding(Value));
+			return Item;
+		}
+
 		// Добавляет поле типа DI_FIXEDIT для редактирования указанного числового значения.
 		virtual T *AddIntEditField(int *Value, int Width)
 		{
@@ -870,6 +891,24 @@ class PluginRadioButtonBinding: public DialogAPIBinding
 		}
 };
 
+class PluginComboBoxBinding: public DialogAPIBinding
+{
+	private:
+		int *Value;
+
+	public:
+		PluginComboBoxBinding(const PluginStartupInfo &aInfo, HANDLE *aHandle, int aID, int *aValue)
+			: DialogAPIBinding(aInfo, aHandle, aID),
+			  Value(aValue)
+		{
+		}
+
+		virtual void SaveValue(FarDialogItem *Item, int RadioGroupIndex)
+		{
+			*Value = (int)Info.SendDlgMessage(*DialogHandle, DM_LISTGETCURPOS, ID, 0);
+		}
+};
+
 #ifdef UNICODE
 
 class PluginEditFieldBinding: public DialogAPIBinding
@@ -1104,6 +1143,15 @@ class PluginDialogBuilder: public DialogBuilderBase<FarDialogItem>
 			return new PluginRadioButtonBinding(Info, &DialogHandle, DialogItemsCount-1, Value);
 #else
 			return new RadioButtonBinding<FarDialogItem>(Value);
+#endif
+		}
+
+		virtual DialogItemBinding<FarDialogItem>* CreateComboBoxBinding(int *Value)
+		{
+#ifdef UNICODE
+			return new PluginComboBoxBinding(Info, &DialogHandle, DialogItemsCount-1, Value);
+#else
+			return new PluginComboBoxBinding<FarDialogItem>(Value);
 #endif
 		}
 

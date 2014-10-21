@@ -434,6 +434,37 @@ HANDLE WINAPI OpenFilePluginW(
 	return hPlugin;
 }
 
+TCHAR* ExpandFileName(LPCTSTR asFromCmd)
+{
+	TCHAR* pszFull = NULL;
+#ifdef _UNICODE
+	int nLen = (int)fsf.ConvertPath(CPM_FULL, asFromCmd, NULL, 0);
+	if (nLen > 0)
+	{
+		pszFull = (TCHAR*)calloc(nLen,sizeof(TCHAR));
+		fsf.ConvertPath(CPM_FULL, asFromCmd, pszFull, nLen);
+	}
+#else
+	pszFull = (TCHAR*)calloc(MAX_PATH*2,sizeof(TCHAR));
+	TCHAR* pszFilePart = NULL;
+	if (!GetFullPathName(asFromCmd, MAX_PATH*2, pszFull, &pszFilePart))
+	{
+		free(pszFull);
+		pszFull = NULL;
+	}
+#endif
+	return pszFull;
+}
+
+bool FileExists(LPCTSTR asFilePath)
+{
+	HANDLE hFile = CreateFile(asFilePath, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, NULL);
+	if (!hFile || hFile == INVALID_HANDLE_VALUE)
+		return false;
+	CloseHandle(hFile);
+	return true;
+}
+
 HANDLE WINAPI OpenPluginW(
 	#if FAR_UNICODE>=2041
 	const struct OpenInfo *Info
@@ -578,6 +609,23 @@ HANDLE WINAPI OpenPluginW(
 				if (pszQ) *pszQ = 0;
 				pszName = pszTemp;
 			}
+
+			pszFull = ExpandFileName(pszName);
+			if (!pszFull || (_tcschr(pszFull, _T('%')) && !FileExists(pszFull)))
+			{
+				if (_tcschr(pszName, _T('%')) != NULL)
+				{
+					if (pszFull) free(pszFull);
+					DWORD cchMax = MAX_PATH*2;
+					TCHAR* pszExpand = (TCHAR*)calloc(cchMax, sizeof(*pszExpand));
+					DWORD cchRet = ExpandEnvironmentStrings(pszName, pszExpand, cchMax);
+					if (cchRet && (cchRet <= cchMax))
+						pszFull = ExpandFileName(pszExpand);
+					free(pszExpand);
+				}
+			}
+			if (pszFull != NULL)
+				pszName = pszFull;
 
 			#ifdef _UNICODE
 				int nLen = (int)fsf.ConvertPath(CPM_FULL, pszName, NULL, 0);

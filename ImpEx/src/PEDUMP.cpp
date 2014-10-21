@@ -83,7 +83,7 @@ bool DumpFile(MPanelItem* pRoot, LPCTSTR filename, bool abForceDetect)
 
     if ( hFile == INVALID_HANDLE_VALUE )
     {
-        merror(_T("Couldn't open file with CreateFile()\n"));
+        merror(_T("Couldn't open file with CreateFile()\n%s\nErrCode=%u"), filename, GetLastError());
         return false;
     }
 
@@ -106,7 +106,7 @@ bool DumpFile(MPanelItem* pRoot, LPCTSTR filename, bool abForceDetect)
     if ( hFileMapping == 0 )
     {
         CloseHandle(hFile);
-        merror(_T("Couldn't open file mapping with CreateFileMapping()\n"));
+        merror(_T("Couldn't open file mapping with CreateFileMapping()\n%s\nErrCode=%u"), filename, GetLastError());
         return false;
     }
 
@@ -115,7 +115,7 @@ bool DumpFile(MPanelItem* pRoot, LPCTSTR filename, bool abForceDetect)
     {
         CloseHandle(hFileMapping);
         CloseHandle(hFile);
-        merror(_T("Couldn't map view of file with MapViewOfFile()\n"));
+        merror(_T("Couldn't map view of file with MapViewOfFile()\n%s\nErrCode=%u"), filename, GetLastError());
         return false;
     }
 

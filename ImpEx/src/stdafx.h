@@ -11,6 +11,7 @@
 // Windows Header Files:
 #include <windows.h>
 #include <TCHAR.h>
+#include <malloc.h>
 
 #if !defined(__GNUC__)
 	#include <crtdbg.h>

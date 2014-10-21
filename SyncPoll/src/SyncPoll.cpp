@@ -93,11 +93,21 @@ void WINAPI GetPluginInfoW(struct PluginInfo *pi)
 	pi->Flags = PF_PRELOAD;
 }
 
+HANDLE WINAPI OpenW(const struct OpenInfo *Info)
+{
+	return NULL;
+}
+
 intptr_t WINAPI ProcessSynchroEventW(const struct ProcessSynchroEventInfo *Info)
 {
 	if (Info->Event != SE_COMMONSYNCHRO)
 		return 0;
 	wchar_t szDbg[100];
+	OutputDebugString(L"Posting macro\n");
+	MacroSendMacroText mcr = {sizeof(MacroSendMacroText)};
+	mcr.SequenceText = L"i = 0; if APanel.Plugin then i=i+1; end; if PPanel.Plugin then i=i+2; end; Plugin.Call(\"6197AF6C-4755-49A5-84A1-8F227BF4790E\",i)";
+	psi.MacroControl(&guid_PluginGuid, MCTL_SENDSTRING, 0, &mcr);
+#if 0
 	static LONG nCount; nCount++;
 	wsprintf(szDbg, L"%i: PanelControl(FCTL_GETPANELINFO, PANEL_ACTIVE)...", nCount);
 	PanelInfo piA = {sizeof(piA)}, piP = {sizeof(piP)};
@@ -105,6 +115,7 @@ intptr_t WINAPI ProcessSynchroEventW(const struct ProcessSynchroEventInfo *Info)
 	OutputDebugString(L" and PANEL_PASSIVE...");
 	INT_PTR nPRc = psi.PanelControl(PANEL_PASSIVE, FCTL_GETPANELINFO, 0, &piP);
 	OutputDebugString(L" Done\n");
+#endif
 	return 0;
 }
 

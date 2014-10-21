@@ -742,7 +742,7 @@ HANDLE MImpEx::Open(LPCTSTR asFileName, bool abForceDetect)
 
 	if (!bRc) {
 		delete pImpEx;
-		return INVALID_HANDLE_VALUE;
+		return FAR_PANEL_NONE;
 	}
 	
 	return (HANDLE)pImpEx;

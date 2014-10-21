@@ -565,7 +565,12 @@ HANDLE WINAPI OpenPluginW(
 		{
 			TCHAR *pszTemp = NULL;
 			TCHAR *pszFull = NULL;
-			LPCTSTR pszName = (LPCTSTR)Item;
+			LPCTSTR pszName;
+			#if FAR_UNICODE>=3000
+			pszName = ((OpenCommandLineInfo*)Item)->CommandLine;
+			#else
+			pszName = (LPCTSTR)Item;
+			#endif
 			if (*pszName == _T('"'))
 			{
 				pszTemp = _tcsdup(pszName+1);

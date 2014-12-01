@@ -93,8 +93,16 @@ void WINAPI GetPluginInfoW(struct PluginInfo *pi)
 	pi->Flags = PF_PRELOAD;
 }
 
+LONG gnInCall = 0;
+
 HANDLE WINAPI OpenW(const struct OpenInfo *Info)
 {
+	InterlockedDecrement(&gnInCall);
+	OpenMacroInfo* pm;
+	if (Info->OpenFrom == OPEN_FROMMACRO)
+	{
+		pm = (OpenMacroInfo*)Info->Data;
+	}
 	return NULL;
 }
 
@@ -102,12 +110,27 @@ intptr_t WINAPI ProcessSynchroEventW(const struct ProcessSynchroEventInfo *Info)
 {
 	if (Info->Event != SE_COMMONSYNCHRO)
 		return 0;
-	wchar_t szDbg[100];
+	if (gnInCall > 0)
+		return 0;
+#if 1
 	OutputDebugString(L"Posting macro\n");
 	MacroSendMacroText mcr = {sizeof(MacroSendMacroText)};
-	mcr.SequenceText = L"i = 0; if APanel.Plugin then i=i+1; end; if PPanel.Plugin then i=i+2; end; Plugin.Call(\"6197AF6C-4755-49A5-84A1-8F227BF4790E\",i)";
-	psi.MacroControl(&guid_PluginGuid, MCTL_SENDSTRING, 0, &mcr);
+	//mcr.SequenceText = L"i = 0; if APanel.Plugin then i=i+1; end; if PPanel.Plugin then i=i+2; end; Plugin.Call(\"6197AF6C-4755-49A5-84A1-8F227BF4790E\",i)";
+	mcr.SequenceText = L"Plugin.Call(\"6197AF6C-4755-49A5-84A1-8F227BF4790E\",APanel.Plugin and \"\" or APanel.Path0,PPanel.Plugin and \"\" or PPanel.Path0)";
+	INT_PTR i = psi.MacroControl(&guid_PluginGuid, MCTL_SENDSTRING, MSSC_POST, &mcr);
+	MacroParseResult* mpr;
+	if (!i)
+	{
+		mpr = (MacroParseResult*)calloc(4096,1);
+		mpr->StructSize = sizeof(*mpr);
+		psi.MacroControl(&guid_PluginGuid, MCTL_GETLASTERROR, 4096, mpr);
+		free(mpr);
+	}
+	else
+		InterlockedIncrement(&gnInCall);
+#endif
 #if 0
+	wchar_t szDbg[100];
 	static LONG nCount; nCount++;
 	wsprintf(szDbg, L"%i: PanelControl(FCTL_GETPANELINFO, PANEL_ACTIVE)...", nCount);
 	PanelInfo piA = {sizeof(piA)}, piP = {sizeof(piP)};

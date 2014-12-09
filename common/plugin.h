@@ -15,3 +15,5 @@
 	#include "ascii/pluginA.hpp"
 	#undef FAR_UNICODE
 #endif
+
+#define MAKEFARVERSION2(major,minor,build) ( ((major)<<8) | (minor) | ((build)<<16))

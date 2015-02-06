@@ -86,8 +86,8 @@ bool CheckBmHeader(const BYTE *pBuf, UINT32 lBuf)
 		&& (*(u16*)pBuf == 'MB')
 		&& (*(u32*)(pBuf + 0x0A) >= 0x36) && (*(u32*)(pBuf + 0x0A) <= 0x436)
 		&& (*(u32*)(pBuf + 0x0E) == 0x28)
-		&& (!pBuf[0x1D])
-		&& (!*(u32*)(pBuf + 0x1E))
+		&& (!pBuf[0x1D]) // upper BYTE of bits?
+		&& (!*(u32*)(pBuf + 0x1E)) // compression
 		;
 	#endif
 	return true;
@@ -99,6 +99,7 @@ struct FileMap
 	//HANDLE hFile, hMapping;
 	DWORD lSize;
 	u8 *pMapping;
+	u8 *pBGRcopy;
 	DWORD nErrNumber;
 
 	const u8 *Open(const wchar_t *pName)
@@ -154,17 +155,11 @@ struct FileMap
 			HeapFree(GetProcessHeap(), 0, pMapping);
 			pMapping = NULL;
 		}
-		//if (hFile && hFile != INVALID_HANDLE_VALUE)
-		//{
-		//	if (pMapping) {
-		//		UnmapViewOfFile((void*)pMapping); // BUGGY GCC(?), argument marked as void*
-		//		pMapping = NULL;
-		//	}
-		//	if (hMapping) {
-		//		CloseHandle(hMapping); hMapping = NULL;
-		//	}
-		//	CloseHandle(hFile); hFile = INVALID_HANDLE_VALUE;
-		//}
+		if (pBGRcopy)
+		{
+			HeapFree(GetProcessHeap(), 0, pBGRcopy);
+			pBGRcopy = NULL;
+		}
 	}
 };
 
@@ -252,7 +247,7 @@ BOOL __stdcall pvdFileOpen2(void *pContext, const wchar_t *pFileName, INT64 lFil
 	if (*(u16*)(pFile->pMapping+0x1C) == 32)
 	{
 		// May be alpha channel?
-		pImageInfo->nPages = 2;
+		pImageInfo->nPages = (*(u32*)(pBuf + 0x1E) == BI_BITFIELDS) ? 3 : 2;
 	} else {
 		pImageInfo->nPages = 1;
 	}
@@ -280,7 +275,7 @@ BOOL __stdcall pvdPageInfo2(void *pContext, void *pImageContext, pvdInfoPage2 *p
 	pPageInfo->lHeight = abs(*(i32*)(p + 0x16));
 	pPageInfo->nBPP = *(u16*)(p + 0x1C);
 
-	if (!pPageInfo->iPage || (pPageInfo->iPage == 1 && pPageInfo->nBPP == 32))
+	if (!pPageInfo->iPage || (pPageInfo->iPage <= 2 && pPageInfo->nBPP == 32))
 	{
 		return TRUE;
 	}
@@ -299,14 +294,59 @@ BOOL __stdcall pvdPageDecode2(void *pContext, void *pImageContext, pvdInfoDecode
 	if (!pDecodeInfo->iPage // ѕоддерживаетс€ только страница #0
 		|| (pDecodeInfo->iPage == 1 && pDecodeInfo->nBPP == 32)) // страница #1 добавлена дл€ прозрачности
 	{
-		pDecodeInfo->pImage = p + *(u32*)(p + 0x0A);
+		if ((*(u32*)(p + 0x1E) == BI_BITFIELDS) && (pDecodeInfo->nBPP == 32))
+		{
+			if (!((FileMap*)pImageContext)->pBGRcopy)
+			{
+				INT_PTR cbSize = pDecodeInfo->lWidth * pDecodeInfo->lHeight * pDecodeInfo->nBPP / 8;
+				((FileMap*)pImageContext)->pBGRcopy = (u8*)HeapAlloc(GetProcessHeap(), 0, cbSize);
+				if (((FileMap*)pImageContext)->pBGRcopy)
+				{
+					memmove(((FileMap*)pImageContext)->pBGRcopy, p + *(u32*)(p + 0x0A), cbSize);
+					cbSize /= 4;
+					struct BGRA
+					{
+						union {
+							struct {
+								BYTE red, green, blue, alpha;
+							};
+							DWORD raw;
+						};
+					};
+					for (BGRA* pdw = (BGRA*)((FileMap*)pImageContext)->pBGRcopy; cbSize > 0; cbSize--, pdw++)
+					{
+						//*pdw = _byteswap_ulong(*pdw);
+						// BYTE0=A, BYTE1=R, BYTE2=G, BYTE3=B
+						DWORD dw = pdw->raw;
+						pdw->alpha = ALPHA_FROM_ARGB(dw);
+						pdw->red = RED_FROM_ARGB(dw);
+						pdw->blue = BLUE_FROM_ARGB(dw);
+						pdw->green = GREEN_FROM_ARGB(dw);
+					}
+				}
+			}
+			if (((FileMap*)pImageContext)->pBGRcopy)
+				pDecodeInfo->pImage = ((FileMap*)pImageContext)->pBGRcopy;
+		}
+		else
+		{
+			pDecodeInfo->pImage = p + *(u32*)(p + 0x0A);
+		}
 		pDecodeInfo->pPalette = (pDecodeInfo->nBPP > 8) ? NULL : (UINT32*)(p + 0x36);
 		pDecodeInfo->Flags = PVD_IDF_READONLY | (pDecodeInfo->iPage ? PVD_IDF_ALPHA : 0);
 		pDecodeInfo->nColorsUsed = *(u32*)(p + 0x2E);
 		pDecodeInfo->lImagePitch = *(i32*)(p + 0x16) < 0 
 				? (*(u32*)(p + 0x12) * *(u16*)(p + 0x1C) + 0x1F & ~0x1F) / 8 
 				: -(i32)((*(u32*)(p + 0x12) * *(u16*)(p + 0x1C) + 0x1F & ~0x1F) / 8);
-		pDecodeInfo->ColorModel = pDecodeInfo->iPage ? PVD_CM_BGRA : PVD_CM_BGR;
+		switch (pDecodeInfo->iPage)
+		{
+		case 1:
+			pDecodeInfo->ColorModel = PVD_CM_BGRA; break;
+		case 2:
+			pDecodeInfo->ColorModel = PVD_CM_ABRG; break;
+		default:
+			pDecodeInfo->ColorModel = PVD_CM_BGR;
+		}
 		return TRUE;
 	}
 	return FALSE;

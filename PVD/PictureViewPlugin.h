@@ -767,6 +767,11 @@ void __stdcall pvdCancel2(void *pContext);
 #define RED_FROM_BGRA(x) ((((DWORD)x) & 0xFF0000) >> 16)
 #define ALPHA_FROM_BGRA(x) ((((DWORD)x) & 0xFF000000) >> 24)
 //
+#define ALPHA_FROM_ARGB(x) (BYTE)((((DWORD)x) & 0xFF))
+#define RED_FROM_ARGB(x) (BYTE)((((DWORD)x) & 0xFF00) >> 8)
+#define GREEN_FROM_ARGB(x) (BYTE)((((DWORD)x) & 0xFF0000) >> 16)
+#define BLUE_FROM_ARGB(x) (BYTE)((((DWORD)x) & 0xFF000000) >> 24)
+//
 #define BGRA_FROM_RGBA(x) ((BLUE_FROM_RGBA(x)) | (((DWORD)x) & 0xFF00) | (RED_FROM_RGBA(x) << 16) | (ALPHA_FROM_RGBA(x) << 24))
 
 #ifndef sizeofarray

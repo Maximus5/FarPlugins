@@ -1,0 +1,67 @@
+NAME = pvdBMP
+SRCS = pvdBMP.cpp
+
+WIDE = 0
+RCWIDE = 
+#-D UNICODE -D _UNICODE
+CXXWIDE = 
+#-D UNICODE -D _UNICODE
+CCWIDE = 
+#-D UNICODE -D _UNICODE
+
+OBJDIR = gcc
+DLLDIR = ../../bin
+EXT = dll
+DLLNAME = BMP.pvd
+DLLFULLNAME = $(DLLDIR)/$(DLLNAME)
+DEF = pvdBMP.gcc.def
+#RC_NAME = $(NAME).rc
+#RES = $(OBJDIR)/$(NAME).res.o
+
+NOSTART = -nostartfiles
+
+NODEFLIBS = -nodefaultlibs
+
+COMMONLIB = -lCRT
+
+CXX = g++
+CC = gcc
+DLLTOOL = dlltool
+RM = rm -f
+CP = cp -f
+M4 = m4 -P
+MV = mv -f
+MKDIR = mkdir -p
+WINDRES = windres
+AR = ar
+RANLIB = ranlib
+CXXFLAGS = -mno-cygwin -Wall -Os -funsigned-char -fomit-frame-pointer -fstrict-aliasing -fno-rtti -fno-exceptions $(CXXWIDE) $(USERCPP)
+CCFLAGS = -mno-cygwin -Wall -Os -funsigned-char -fomit-frame-pointer -fstrict-aliasing -fno-exceptions $(CCWIDE) $(USERCPP)
+LNKFLAGS = -mno-cygwin -mdll -luser32 -lkernel32
+RCFLAGS = $(RCWIDE) $(USERRC)
+
+OBJS = $(patsubst %.cpp,$(OBJDIR)/%.o,$(filter %.cpp,$(SRCS)))
+MAP = $(patsubst %.$(EXT),%.map,$(DLLFULLNAME))
+
+
+all: $(DLLFULLNAME)
+
+$(OBJDIR)/%.o: %.cpp
+	@echo compiling $<
+	@$(MKDIR) -p $(@D)
+	@$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+#$(RES): $(RC_NAME) $(COMINC)/farversion.hpp $(COMINC)/plugin.hpp
+#	@echo compiling $<
+#	@$(MKDIR) -p $(@D)
+#	@$(WINDRES) $(RCFLAGS) -i $< -o $@
+
+$(DLLFULLNAME): $(OBJS) $(DEF)
+	@echo linking $@
+	@$(MKDIR) -p $(@D)
+	@$(CXX) -mdll -o $(DLLNAME) -Xlinker --base-file -Xlinker $(DLLNAME).base $(OBJS) $(LNKFLAGS)
+	@$(DLLTOOL) --dllname $(DLLNAME) --base-file $(DLLNAME).base --output-exp $(DLLNAME).exp --def $(DEF)
+	@$(CXX) -mdll  -o $(DLLNAME) $(OBJS) $(DLLNAME).exp $(LNKFLAGS) -Xlinker -Map -Xlinker $(MAP)
+	@$(MV) $(DLLNAME) $(DLLDIR)
+	@$(RM) $(DLLNAME).base
+	@$(RM) $(DLLNAME).exp

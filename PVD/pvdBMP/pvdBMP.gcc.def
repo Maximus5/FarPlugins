@@ -1,0 +1,10 @@
+LIBRARY
+EXPORTS
+	pvdInit=pvdInit@0
+	pvdExit=pvdExit@0
+	pvdPluginInfo=pvdPluginInfo@4
+	pvdFileOpen=pvdFileOpen@28
+	pvdPageInfo=pvdPageInfo@12
+	pvdPageDecode=pvdPageDecode@20
+	pvdPageFree=pvdPageFree@8
+	pvdFileClose=pvdFileClose@4

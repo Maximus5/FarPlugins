@@ -1,0 +1,16 @@
+!if exists(../make_vc_defs)
+!include ../make_vc_defs
+!endif
+
+NAME = pvdBMP
+OUTNAME = BMP
+
+USERCPP=/D_NO_EXEPTION_=1
+
+LINK_OBJS = $(OBJDIR)\pvdBMP.obj $(OBJDIR)\PVD1Helper.obj $(OBJDIR)\PVD2Helper.obj $(OBJDIR)\PVD_CRT.obj
+
+!include ..\makefile_vc_def_inc
+
+!include ..\makefile_vc_target_inc
+
+$(OBJDIR)\pvdBMP.obj: pvdBMP.cpp ..\PictureViewPlugin.h

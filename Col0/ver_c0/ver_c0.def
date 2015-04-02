@@ -2,5 +2,7 @@ EXPORTS
 	GetGlobalInfoW
 	GetPluginInfoW
 	SetStartupInfoW
-	GetCustomDataW
-	FreeCustomDataW
+	GetContentFieldsW
+	GetContentDataW
+	FreeContentDataW
+

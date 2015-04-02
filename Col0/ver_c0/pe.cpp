@@ -2712,7 +2712,7 @@ VOID WINAPI CET_Cancel(LPVOID pContext)
 #else // #ifndef verc0_EXPORTS
 
 // для унификации col0host & PanelView
-#include "../farplugin.h"
+#include "../../common/plugin.h"
 
 // {ECF8A2AF-7AAF-4038-8FF9-49B333E2BAE9}
 static const GUID guid_VerC0 = 
@@ -2813,9 +2813,35 @@ void cpytag(char* &psz, const char* src, int nMax)
 	*psz = 0;
 }
 
-int WINAPI GetCustomDataW(const wchar_t *FilePath, wchar_t **CustomData)
+intptr_t WINAPI GetContentFieldsW(const struct GetContentFieldsInfo *Info)
 {
-	*CustomData = NULL;
+	for (size_t i = 0; i < Info->Count; i++)
+	{
+		if (!fsf.LStricmp(Info->Names[i], L"ver")
+			|| !fsf.LStricmp(Info->Names[i], L"C0"))
+			return 1;
+	}
+	return 0;
+}
+
+intptr_t WINAPI GetContentDataW(struct GetContentDataInfo *Info)
+{
+	if (!Info)
+		return FALSE;
+	LPCWSTR FilePath = Info->FilePath;
+	wchar_t** CustomData = NULL;
+
+	for (size_t i = 0; i < Info->Count; i++)
+	{
+		if (!fsf.LStricmp(Info->Names[i], L"ver")
+			|| !fsf.LStricmp(Info->Names[i], L"C0"))
+		{
+			CustomData = (wchar_t**)(Info->Values + i);
+		}
+	}
+
+	if (!FilePath || !CustomData)
+		return FALSE;
 	int nLen = lstrlenW(FilePath);
 
 	// Путь должен быть, просто имя файла (без пути) - пропускаем
@@ -2999,10 +3025,20 @@ int WINAPI GetCustomDataW(const wchar_t *FilePath, wchar_t **CustomData)
 	return lbRc;
 }
 
-void WINAPI FreeCustomDataW(wchar_t *CustomData)
+void WINAPI FreeContentDataW(const struct GetContentDataInfo *Info)
 {
-	if (CustomData)
-		free(CustomData);
+	for (size_t i = 0; i < Info->Count; i++)
+	{
+		if (!fsf.LStricmp(Info->Names[i], L"ver")
+			|| !fsf.LStricmp(Info->Names[i], L"C0"))
+		{
+			if (Info->Values[i])
+			{
+				wchar_t* ptr = (wchar_t*)Info->Values[i];
+				if (ptr) free(ptr);
+			}
+		}
+	}
 }
 
 #endif // #ifndef verc0_EXPORTS

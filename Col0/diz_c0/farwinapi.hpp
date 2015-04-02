@@ -33,7 +33,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "../common/pluginW3.hpp"
+#include "../../common/plugin.h"
 #include "UnicodeString.hpp"
 
 #define NT_MAX_PATH 32768

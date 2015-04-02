@@ -66,25 +66,27 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|Win32'">
-    <OutDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\$(Platform).$(Configuration)\</OutDir>
     <IntDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|x64'">
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\$(Platform).$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|Win32'">
-    <OutDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\$(Platform).$(Configuration)\</OutDir>
     <IntDir>C:\Temp\CE\$(ProjectName).$(Platform).$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>diz_c0</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_C0|x64'">
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\$(Platform).$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>diz_c0_x64</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_C0|Win32'">
     <ClCompile>
@@ -114,7 +116,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN64;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FAR_UNICODE=4040;WIN64;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -125,7 +127,7 @@
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>\\WIN7X64\FAR\FAR2x64\Plugins\ConEmu\Thumbs\diz.t64</OutputFile>
-      <ModuleDefinitionFile>diz.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>diz_c0.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
@@ -136,7 +138,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;verc0_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FAR_UNICODE=4040;WIN32;NDEBUG;_WINDOWS;_USRDLL;verc0_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -147,7 +149,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>diz_c0.dll</OutputFile>
+      <OutputFile>$(OutputPath)$(TargetFileName)</OutputFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>diz_c0.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -167,7 +169,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;diz_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FAR_UNICODE=4040;WIN32;NDEBUG;_WINDOWS;_USRDLL;diz_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader />
@@ -176,9 +178,9 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\plugins\ConEmu\Thumbs\diz.t64</OutputFile>
+      <OutputFile>$(OutputPath)$(TargetFileName)</OutputFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <ModuleDefinitionFile>diz.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>diz_c0.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

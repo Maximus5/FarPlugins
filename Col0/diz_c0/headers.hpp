@@ -169,7 +169,7 @@ inline const T Round(const T &a, const T &b) { return a/b+(a%b*2>b?1:0); }
 #include "UnicodeString.hpp"
 #include "format.hpp"
 #include "local.hpp"
-#include "../common/pluginW3.hpp"
+#include "../../common/plugin.h"
 #include "farwinapi.hpp"
 #include "cvtname.hpp"
 #endif // __cplusplus

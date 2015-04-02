@@ -123,9 +123,35 @@ void WINAPI GetPluginInfoW(struct PluginInfo *Info)
 	Info->Flags = PF_PRELOAD;
 }
 
-int WINAPI GetCustomDataW(const wchar_t *FilePath, wchar_t **CustomData)
+intptr_t WINAPI GetContentFieldsW(const struct GetContentFieldsInfo *Info)
 {
-	*CustomData = NULL;
+	for (size_t i = 0; i < Info->Count; i++)
+	{
+		if (!fsf.LStricmp(Info->Names[i], L"diz")
+			|| !fsf.LStricmp(Info->Names[i], L"C0"))
+			return 1;
+	}
+	return 0;
+}
+
+intptr_t WINAPI GetContentDataW(struct GetContentDataInfo *Info)
+{
+	if (!Info)
+		return FALSE;
+	LPCWSTR FilePath = Info->FilePath;
+	wchar_t** CustomData = NULL;
+
+	for (size_t i = 0; i < Info->Count; i++)
+	{
+		if (!fsf.LStricmp(Info->Names[i], L"diz")
+			|| !fsf.LStricmp(Info->Names[i], L"C0"))
+		{
+			CustomData = (wchar_t**)(Info->Values + i);
+		}
+	}
+
+	if (!FilePath || !CustomData)
+		return FALSE;
 	
 	const wchar_t* pszSlash = wcsrchr(FilePath, L'\\');
 	if (!pszSlash || pszSlash <= FilePath) return FALSE;
@@ -166,8 +192,18 @@ int WINAPI GetCustomDataW(const wchar_t *FilePath, wchar_t **CustomData)
 	return TRUE;
 }
 
-void WINAPI FreeCustomDataW(wchar_t *CustomData)
+void WINAPI FreeContentDataW(const struct GetContentDataInfo *Info)
 {
-	if (CustomData)
-		free(CustomData);
+	for (size_t i = 0; i < Info->Count; i++)
+	{
+		if (!fsf.LStricmp(Info->Names[i], L"diz")
+			|| !fsf.LStricmp(Info->Names[i], L"C0"))
+		{
+			if (Info->Values[i])
+			{
+				wchar_t* ptr = (wchar_t*)Info->Values[i];
+				if (ptr) free(ptr);
+			}
+		}
+	}
 }

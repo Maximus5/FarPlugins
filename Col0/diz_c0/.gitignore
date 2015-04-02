@@ -11,3 +11,5 @@
 *.tlog
 *.lastbuildstate
 *.res
+*.pch
+*.dep

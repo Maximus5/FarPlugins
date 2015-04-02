@@ -95,6 +95,12 @@ int WINAPI GetMinFarVersionW(void)
 }
 #endif
 
+#if FAR_UNICODE>=4200
+#pragma message("FAR_UNICODE>=4200")
+#else
+#pragma message("FAR_UNICODE<4200")
+#endif
+
 void WINAPI GetGlobalInfoW(struct GlobalInfo *Info)
 {
 	//_ASSERTE(Info->StructSize >= sizeof(GlobalInfo));

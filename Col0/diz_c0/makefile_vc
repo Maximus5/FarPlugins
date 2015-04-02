@@ -85,8 +85,8 @@ OUTDIR=$(DIRNAME).$(DIRBIT).vc
 
 LINK=link.exe
 ULINK=ulink.exe
-M4=tools\m4 -P -DFARBIT=$(DIRBIT)
-GAWK=..\tools\gawk
+M4=..\..\tools\m4 -P -DFARBIT=$(DIRBIT)
+GAWK=..\..\tools\gawk
 
 INTDIR=$(OUTDIR)\obj
 !ifdef FARSYSLOG
@@ -149,6 +149,7 @@ UCD_OBJS=\
 LINK_LIBS=kernel32.lib user32.lib winspool.lib advapi32.lib shell32.lib mpr.lib ole32.lib secur32.lib
 
 DEFINES=\
+	/DFAR_UNICODE=4245 \
 	/D "UNICODE"\
 	/D "_UNICODE"\
 	/D "$(USEDEBUG)"\
@@ -216,7 +217,7 @@ ALL: AllDirs lng depfile
 .PHONY: lng
 lng: dizlang.templ
 	echo generating language files
-	..\tools\lng.generator.exe -nc -i dizlang.ini -ol . dizlang.templ
+	..\..\tools\lng.generator.exe -nc -i dizlang.ini -ol . dizlang.templ
 
 .PHONY: depfile
 depfile:

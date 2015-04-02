@@ -1,9 +1,13 @@
+/_Arc
+
 *.lng
 *.dll
 *.pdb
 *.ini
 
 /!*.txt
-/*.log
 
-/_Arc
+*.log
+*.tlog
+*.lastbuildstate
+*.res

@@ -33,6 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <crtdbg.h>
 
+#define isDriveLetter(x) (((x) >= 'A' && (x) <= 'Z') || ((x) >= 'a' && (x) <= 'z'))
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 #ifdef _DEBUG
@@ -114,7 +116,18 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		bool bQuot = (_tcschr(argv[i], _T(' ')) != NULL);
 		_tcscat(pszExpand, bQuot ? _T(" \"") : _T(" "));
-		_tcscat(pszExpand, argv[i]);
+		TCHAR* psz = argv[i];
+		// Cygwin ignores Windows standards
+		if (_tcsnicmp(psz, _T("/cygdrive"), 9) == 0)
+		{
+			psz += 9;
+		}
+		if (psz[0] == '/' && isDriveLetter(psz [1]) && psz [2] == '/')
+		{
+			psz[0] = psz[1]; psz[1] = ':';
+		}
+		// Append args
+		_tcscat(pszExpand, psz );
 		if (bQuot) _tcscat(pszExpand, _T("\""));
 	}
 

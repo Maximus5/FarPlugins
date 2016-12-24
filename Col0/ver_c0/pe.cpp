@@ -660,7 +660,7 @@ void DumpNEResourceTable(PEData *pData, PIMAGE_DOS_HEADER dosHeader, LPBYTE pRes
 			//	}
 			//}
 			//if (szResName[0]) {
-			//	wsprintfA(szResName+strlen(szResName), ".0x%08X", pResName->rnID);
+			//	wsprintfA(szResName+lstrlenA(szResName), ".0x%08X", pResName->rnID);
 			//} else {
 			//	wsprintfA(szResName, "ResID=0x%08X", pResName->rnID);
 			//}
@@ -1123,7 +1123,7 @@ void ParseVersionInfoVariableStringA(PEData *pData, LPVOID ptrRes, DWORD &resSiz
 			//wcscat(psz, L"    BEGIN\n");
 			//psz += lstrlen(psz);
 			// Padding - Contains as many zero words as necessary to align the Children member on a 32-bit boundary.
-			pToken = (char*)(pSFI->szKey+strlen(pSFI->szKey)+1);
+			pToken = (char*)(pSFI->szKey+lstrlenA(pSFI->szKey)+1);
 			//while (*pToken == 0 && pToken < pEnd1) pToken++;
 			//ALIGN_TOKEN(pToken); ???
 			pToken++; // ???
@@ -1168,7 +1168,7 @@ void ParseVersionInfoVariableStringA(PEData *pData, LPVOID ptrRes, DWORD &resSiz
 					// Выровнять текст в результирующем .rc
 					//for (int k = lstrlenA(pS->szKey); k < 17; k++) *(psz++) = L' ';
 					//*(psz++) = L'"'; *psz = 0;
-					pToken = (char*)(pS->szKey+strlen(pS->szKey)+1);
+					pToken = (char*)(pS->szKey+lstrlenA(pS->szKey)+1);
 
 					while(*pToken == 0 && pToken < pNext) pToken++;
 

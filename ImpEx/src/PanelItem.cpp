@@ -242,14 +242,18 @@ void MPanelItem::printf(LPCSTR asFormat, ...)
     static char szBuffer[1025]; //2010-03-15 для ускорения - их очень много
 	szBuffer[0] = 0;
     
-    int nLen = vsprintf(szBuffer, asFormat, args);
+	int nLen = _vscprintf(asFormat, args);
+	char* ptrBuf = (nLen < countof(szBuffer)) ? szBuffer : new char[nLen+1];
+    nLen = vsprintf(ptrBuf, asFormat, args);
     
     if (nLen > 0) {
-    	_ASSERTE(nLen<1023);
-    	szBuffer[nLen] = 0;
+    	ptrBuf[nLen] = 0;
 
-		AddText(szBuffer, nLen);
+		AddText(ptrBuf, nLen);
 	}
+
+	if (ptrBuf && ptrBuf != szBuffer)
+		delete[] ptrBuf;
 }
 
 void MPanelItem::AddText(LPCSTR asText, int nLen /*= -1*/, BOOL abDoNotAppend /*= FALSE*/)

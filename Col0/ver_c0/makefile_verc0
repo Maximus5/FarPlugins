@@ -322,7 +322,7 @@ clean:
 !else
 .PHONY: clean
 clean:
-	@echo ConEmuHk done
+	@echo ver_c0 done
 !endif
 
 $(OBJDIR)\pe.obj: pe.cpp

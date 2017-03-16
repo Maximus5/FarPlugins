@@ -1,6 +1,6 @@
 ﻿
 /*
-Copyright (c) 2014 Maximus5
+Copyright (c) 2014-2017 Maximus5
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -208,13 +208,29 @@ protected:
 					if (ReadFile(hFile, ptrData, nSize, &nRead, NULL) && nRead)
 					{
 						ptrData[nRead] = ptrData[nRead+1] = 0;
-						if (*((LPWORD)ptrData) != 0xFEFF)
+						wchar_t* pszData = NULL;
+						if (*((LPWORD)ptrData) == 0xFEFF)
 						{
-							_ASSERTE(FALSE && "CP 1200 BOM not found!");
+							pszData = (wchar_t*)(ptrData+2);
+						}
+						else if (ptrData[0] == 0xEF && ptrData[1] == 0xBB && ptrData[2] == 0xBF)
+						{
+							wchar_t* from_utf8 = (wchar_t*)malloc(nRead*sizeof(*from_utf8));
+							int new_len = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)(ptrData+3), nRead-1, from_utf8, nRead);
+							if (new_len > 0)
+							{
+								free(ptrData);
+								ptrData = (LPBYTE)from_utf8;
+								pszData = (wchar_t*)(ptrData);
+							}
 						}
 						else
 						{
-							wchar_t* pszData = (wchar_t*)(ptrData+2);
+							_ASSERTE(FALSE && "CP 1200 BOM not found!");
+						}
+						
+						if (pszData)
+						{
 							while (*pszData)
 							{
 								while (*pszData == L'\r' || *pszData == L'\n') pszData++;
@@ -376,7 +392,7 @@ void WINAPI GetGlobalInfoW(struct GlobalInfo *Info)
 {
 	Info->MinFarVersion = MAKEFARVERSION(3,0,0,4040,VS_RELEASE);
 
-	Info->Version = MAKEFARVERSION(3,0,0,0,VS_RELEASE);
+	Info->Version = MAKEFARVERSION(3,1,0,0,VS_RELEASE);
 	
 	Info->Guid = guid_PluginGuid;
 	Info->Title = L"LightAlloy for C0";

@@ -231,13 +231,25 @@ protected:
 						
 						if (pszData)
 						{
-							while (*pszData)
+							wchar_t* pszEnd = pszData;
+							struct LF
 							{
-								while (*pszData == L'\r' || *pszData == L'\n') pszData++;
+								static bool NextLine(wchar_t*& pszData, wchar_t*& pszEnd)
+								{
+									if (pszData && *pszData)
+									{
+										while (*pszData == L'\r' || *pszData == L'\n')
+											pszData++;
+										pszEnd = wcspbrk(pszData, L"\r\n");
+										if (!pszEnd)
+											pszEnd = pszData + lstrlen(pszData);
+									}
+									return (pszData && *pszData);
+								}
+							};
 
-								wchar_t* pszEnd = wcspbrk(pszData, L"\r\n");
-								if (!pszEnd) pszEnd = pszData + lstrlen(pszEnd);
-
+							while (LF::NextLine(pszData, pszEnd))
+							{
 								if ((pszEnd > pszData) && (*pszData != L'>'))
 								{
 									size_t cchLen = (pszEnd - pszData);
@@ -251,7 +263,32 @@ protected:
 											f.LowerCased[cchLen] = 0;
 											CharLowerBuff(f.LowerCased, cchLen);
 											f.PathNameCRC32 = CalcCRC((BYTE*)f.LowerCased, cchLen*sizeof(*f.LowerCased));
-											m_Files.push_back(f);
+
+											// Don't add "not played" files, they have ">D 0" line below
+											bool not_played = false;
+											while (*pszData)
+											{
+												while (*pszEnd == L'\r' || *pszEnd == L'\n')
+													pszEnd++;
+												if (!*pszEnd || *pszEnd != L'>')
+													break;
+												pszData = pszEnd;
+												if (!LF::NextLine(pszData, pszEnd))
+													break;
+												if (pszData[0] != L'>' || pszData[1] != L'D')
+													continue;
+												if ((pszEnd - pszData) == 4 && pszData[2] == L' ' && pszData[3] == L'0')
+													not_played = true;
+												break;
+											}
+											if (!not_played)
+											{
+												m_Files.push_back(f);
+											}
+											else
+											{
+												free(f.LowerCased);
+											}
 										}
 									}
 								}
@@ -392,7 +429,7 @@ void WINAPI GetGlobalInfoW(struct GlobalInfo *Info)
 {
 	Info->MinFarVersion = MAKEFARVERSION(3,0,0,4040,VS_RELEASE);
 
-	Info->Version = MAKEFARVERSION(3,1,0,0,VS_RELEASE);
+	Info->Version = MAKEFARVERSION(3,2,0,0,VS_RELEASE);
 	
 	Info->Guid = guid_PluginGuid;
 	Info->Title = L"LightAlloy for C0";

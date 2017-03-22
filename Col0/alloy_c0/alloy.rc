@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,0
- PRODUCTVERSION 3,1,0,0
+ FILEVERSION 3,2,0,0
+ PRODUCTVERSION 3,2,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,7 +70,7 @@ BEGIN
         BLOCK "041904b0"
         BEGIN
             VALUE "FileDescription", "Shows 'Played in LightAllow' in C0 column"
-            VALUE "FileVersion", "3.1"
+            VALUE "FileVersion", "3.2"
             VALUE "InternalName", "Alloy_c0"
             VALUE "LegalCopyright", "(C) 2014-2017 Maximus5"
             VALUE "OriginalFilename", "alloy_c0.dll"

@@ -1,0 +1,8 @@
+EXPORTS
+	GetGlobalInfoW
+	GetPluginInfoW
+	SetStartupInfoW
+	GetContentFieldsW
+	GetContentDataW
+	FreeContentDataW
+

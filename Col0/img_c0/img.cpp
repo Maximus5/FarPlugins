@@ -49,8 +49,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ARRAYSIZE(x) (sizeof(x)/sizeof(x[0]))
 #endif
 
-#include "../../common/MStream.h"
-// для унификации col0host & PanelView
 #include "../../common/plugin.h"
 
 #ifdef _DEBUG
@@ -371,7 +369,6 @@ struct GDIPlusImage
 	wchar_t szTempFile[MAX_PATH+1];
 	GDIPlusDecoder *gdi;
 	Gdiplus::GpImage *img;
-	MStream* strm;
 	HRESULT nErrNumber, nLastError;
 	//
 	UINT lWidth, lHeight, pf, nBPP, nPages, /*lFrameTime,*/ nActivePage, nTransparent; //, nImgFlags;
@@ -382,7 +379,6 @@ struct GDIPlusImage
 	GDIPlusImage(GDIPlusDecoder *gdi_)
 		: gdi(gdi_)
 		, img(NULL)
-		, strm(NULL)
 	{
 		nMagic = eGdiStr_Image;
 		szTempFile[0] = 0;
@@ -533,12 +529,6 @@ struct GDIPlusImage
 		{
 			lRc = gdi->GdipDisposeImage(img);
 			img = NULL;
-		}
-
-		if (strm)
-		{
-			delete strm;
-			strm = NULL;
 		}
 
 		if (szTempFile[0])

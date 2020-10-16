@@ -6,13 +6,15 @@
 // Extract progress callbacks
 typedef int (CALLBACK *ExtractProgressFunc)(HANDLE, __int64);
 
+#pragma pack(push, 1)
+
 struct ExtractProcessCallbacks
 {
 	HANDLE signalContext;
 	ExtractProgressFunc FileProgress;
 };
 
-#define ACTUAL_API_VERSION 3
+#define ACTUAL_API_VERSION 6
 #define STORAGE_FORMAT_NAME_MAX_LEN 32
 #define STORAGE_PARAM_MAX_LEN 64
 
@@ -26,44 +28,62 @@ struct StorageGeneralInfo
 
 struct StorageOpenParams
 {
+	size_t StructSize;
 	const wchar_t* FilePath;
 	const char* Password;
+	const void* Data;
+	size_t DataSize;
 };
 
 struct StorageItemInfo
 {
-	DWORD Attributes;
 	__int64 Size;
+	__int64 PackedSize;
+	DWORD Attributes;
 	FILETIME CreationTime;
 	FILETIME ModificationTime;
+	WORD NumHardlinks;
+	wchar_t Owner[64];
 	wchar_t Path[1024];
 };
 
 struct ExtractOperationParams 
 {
-	int item;
-	int flags;
-	const wchar_t* destFilePath;
-	ExtractProcessCallbacks callbacks;
+	int ItemIndex;
+	int Flags;
+	const wchar_t* DestPath;
+	const char* Password;
+	ExtractProcessCallbacks Callbacks;
 };
 
-typedef int (MODULE_EXPORT *OpenStorageFunc)(StorageOpenParams, HANDLE*, StorageGeneralInfo*);
-typedef void (MODULE_EXPORT *CloseStorageFunc)(HANDLE);
-typedef int (MODULE_EXPORT *GetItemFunc)(HANDLE, int, StorageItemInfo*);
-typedef int (MODULE_EXPORT *ExtractFunc)(HANDLE, ExtractOperationParams params);
+typedef int (MODULE_EXPORT *OpenStorageFunc)(StorageOpenParams params, HANDLE *storage, StorageGeneralInfo *info);
+typedef int (MODULE_EXPORT *PrepareFilesFunc)(HANDLE storage);
+typedef void (MODULE_EXPORT *CloseStorageFunc)(HANDLE storage);
+typedef int (MODULE_EXPORT *GetItemFunc)(HANDLE storage, int item_index, StorageItemInfo* item_info);
+typedef int (MODULE_EXPORT *ExtractFunc)(HANDLE storage, ExtractOperationParams params);
 
-struct ModuleLoadParameters
+struct module_cbs
 {
-	//IN
-	const wchar_t* Settings;
-	//OUT
-	DWORD ModuleVersion;
-	DWORD ApiVersion;
 	OpenStorageFunc OpenStorage;
 	CloseStorageFunc CloseStorage;
 	GetItemFunc GetItem;
 	ExtractFunc ExtractItem;
+	PrepareFilesFunc PrepareFiles;
 };
+
+struct ModuleLoadParameters
+{
+	//IN
+	size_t StructSize;
+	const wchar_t* Settings;
+	//OUT
+	GUID ModuleId;
+	DWORD ModuleVersion;
+	DWORD ApiVersion;
+	module_cbs ApiFuncs;
+};
+
+#pragma pack(pop)
 
 // Function that should be exported from modules
 typedef int (MODULE_EXPORT *LoadSubModuleFunc)(ModuleLoadParameters*);
@@ -88,13 +108,6 @@ typedef void (MODULE_EXPORT *UnloadSubModuleFunc)(void);
 #define SER_ERROR_READ 2
 #define SER_ERROR_SYSTEM 3
 #define SER_USERABORT 4
-
-// Extract error reactions
-#define EEN_ABORT 1
-#define EEN_RETRY 2
-#define EEN_SKIP 3
-#define EEN_SKIPALL 4
-#define EEN_CONTINUE 5
-#define EEN_CONTINUESILENT 6
+#define SER_PASSWORD_REQUIRED 5
 
 #endif

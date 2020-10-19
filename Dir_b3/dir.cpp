@@ -7,6 +7,7 @@
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 #include <stdlib.h>
+#include <windows.h>
 #include "plugin.hpp"
 #include "fmt.hpp"
 #include <crtdbg.h>
@@ -88,7 +89,7 @@ enum {  // смещение для WIN XP/2003/VISTA:
 };
 
 struct DirInfo;
-DirInfo* gpCur = NULL;
+DirInfo* gpCur = nullptr;
 
 //static struct PluginStartupInfo Info;
 struct DirInfo
@@ -176,31 +177,30 @@ struct DirInfo
 		return true;
 	};
 
-	BOOL openArchive(int *Type)
+	BOOL openArchive(int* Type)
 	{
-		//Handle=CreateFile(Name, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-		//                  FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-		if (Handle!=INVALID_HANDLE_VALUE)
+		//Handle=CreateFile(Name, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING,
+		//                  FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+		if (Handle != INVALID_HANDLE_VALUE)
 		{
-			MapHandle=CreateFileMapping(Handle, NULL, PAGE_READONLY, 0, 0, NULL);
+			MapHandle = CreateFileMapping(Handle, nullptr, PAGE_READONLY, 0, 0, nullptr);
 			if (MapHandle)
 			{
-				Pos = Data = (char *)MapViewOfFile(MapHandle, FILE_MAP_READ, 0, 0, 0);
+				Pos = Data = static_cast<char*>(MapViewOfFile(MapHandle, FILE_MAP_READ, 0, 0, 0));
 				if (Data)
 				{
-					*Type=0;
-					*Prefix=0; nPrefixLen = 0;
-					*Descrip=0;
-					nSkipLen=0;
-					Edge = Data + GetFileSize(Handle, NULL);
+					*Type = 0;
+					*Prefix = 0; nPrefixLen = 0;
+					*Descrip = 0;
+					nSkipLen = 0;
+					Edge = Data + GetFileSize(Handle, nullptr);
 
-					PluginPanelItem* Item = (PluginPanelItem*)calloc(1,sizeof(PluginPanelItem));
-					ArcItemInfo* Info = (ArcItemInfo*)calloc(1,sizeof(ArcItemInfo));
-					bool lbRc = (getArcItem(Item, Info) == GETARC_SUCCESS);
-					free(Item); free(Info);
+					PluginPanelItem Item{};
+					ArcItemInfo Info{};
+					const bool lbRc = (getArcItem(&Item, &Info) == GETARC_SUCCESS);
 
 					nStrLen = nSkipLen = 0;
-					*Prefix=0; nPrefixLen = 0;
+					*Prefix = 0; nPrefixLen = 0;
 					Pos = Data;
 
 					if (lbRc)
@@ -210,31 +210,31 @@ struct DirInfo
 						return true;
 					}
 				}
-				CloseHandle(MapHandle); MapHandle = NULL;
+				CloseHandle(MapHandle); MapHandle = nullptr;
 			}
 			CloseHandle(Handle);
 		}
-		Handle = NULL;
+		Handle = nullptr;
 		return false;
-	};
+	}
 
-	int getArcItem(struct PluginPanelItem *Item, struct ArcItemInfo *Info)
+	int getArcItem(struct PluginPanelItem* Item, struct ArcItemInfo* Info)
 	{
-		static const char *LabelHeader[]={ " Том", " Volume in" };
-		static const char *SerialHeader[]={ " Серийный", " Volume Serial" };
-		static const char *DirHeader[]={ " Содержимое папки", " Directory of" };
-		static const char *DirEndHeader[]={ "     Всего файлов:", "     Total Files" };
-		static char  DirID[]="<DIR>";
-		static char  JunID[]="<JUNCTION>";
+		static const char* LabelHeader[] = { " Том", " Volume in" };
+		static const char* SerialHeader[] = { " Серийный", " Volume Serial" };
+		static const char* DirHeader[] = { " Содержимое папки", " Directory of" };
+		static const char* DirEndHeader[] = { "     Всего файлов:", "     Total Files" };
+		static char  DirID[] = "<DIR>";
+		static char  JunID[] = "<JUNCTION>";
 		//char* Buf = (char*)malloc(4096);
-		bool First=false;
-		size_t nLines=0;
+		bool First = false;
+		size_t nLines = 0;
 
 		//if (isBtanch) nSkipLen=0;
-		while (GetS(Buf,ARRAYSIZE(Buf)-2))
+		while (GetS(Buf, ARRAYSIZE(Buf) - 2))
 		{
 			nLines++;
-			if ((First = Compare(Buf, LabelHeader[0], true)) || Compare(Buf, LabelHeader[1]))
+			if (((First = Compare(Buf, LabelHeader[0], true))) || Compare(Buf, LabelHeader[1]))
 			{
 				FormatOk = true;
 				isRus = First;
@@ -252,13 +252,13 @@ struct DirInfo
 
 				// 26.11.2008 Maks -
 				//lstrcpy(Descrip, "  Label:");
-				Descrip[0]=0;
+				Descrip[0] = 0;
 				// 26.11.2008 Maks - лидирующий пробел не нужен
 				//if (isRus?*(Buf+20)=='и':*(Buf+19)=='i' ) lstrcat(Descrip, Buf+(isRus?31:21));
-				char *lpszPtr = NULL;
-				if (isRus?*(Buf+20)=='и':*(Buf+19)=='i' ) lpszPtr = Buf+(isRus?31:21);
+				char* lpszPtr = nullptr;
+				if (isRus ? *(Buf + 20) == 'и' : *(Buf + 19) == 'i') lpszPtr = Buf + (isRus ? 31 : 21);
 				if (!lpszPtr) continue;
-				while (*lpszPtr==' ') lpszPtr++;
+				while (*lpszPtr == ' ') lpszPtr++;
 
 				// 26.11.2008 Maks - Сразу вернем элемент если есть метка диска
 				if (!*lpszPtr) continue;
@@ -266,17 +266,19 @@ struct DirInfo
 
 				lstrcpy(Item->FindData.cFileName, "<VOLUMELABEL:");
 				// Ограничить длину метки
-				if (lstrlenA(lpszPtr)>=(MAX_PATH-20)) lpszPtr[MAX_PATH-20] = 0;
+				if (lstrlenA(lpszPtr) >= (MAX_PATH - 20))
+					lpszPtr[MAX_PATH - 20] = 0;
 				lstrcat(Item->FindData.cFileName, lpszPtr);
 				lstrcat(Item->FindData.cFileName, ">");
 
-				Item->FindData.dwFileAttributes=FILE_ATTRIBUTE_DIRECTORY;
+				Item->FindData.dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
+				Item->UserData = 0;
 
 				SYSTEMTIME st;
 				GetSystemTime(&st);
 				FILETIME ft;
-				SystemTimeToFileTime(&st,&ft);
-				LocalFileTimeToFileTime(&ft,&Item->FindData.ftLastWriteTime);
+				SystemTimeToFileTime(&st, &ft);
+				LocalFileTimeToFileTime(&ft, &Item->FindData.ftLastWriteTime);
 
 				lstrcpy(Info->Description, lpszPtr);
 				return GETARC_SUCCESS;
@@ -299,9 +301,9 @@ struct DirInfo
 					nSkipLen = nStrLen;
 				else
 				{
-					lstrcpyn(Prefix, Buf+nSkipLen+(Buf[nSkipLen]=='\\'?1:0), ARRAYSIZE(Prefix)-2);
+					lstrcpyn(Prefix, Buf + nSkipLen + (Buf[nSkipLen] == '\\' ? 1 : 0), ARRAYSIZE(Prefix) - 2);
 					nPrefixLen = lstrlen(Prefix);
-					if (nPrefixLen && Prefix[nPrefixLen-1] != '\\')
+					if (nPrefixLen && Prefix[nPrefixLen - 1] != '\\')
 					{
 						Prefix[nPrefixLen++] = '\\';
 						Prefix[nPrefixLen] = 0;
@@ -319,16 +321,16 @@ struct DirInfo
 					continue;
 			}
 
-			if ( (nStrLen==NAME_DISP+1 && *(Buf+NAME_DISP)=='.') ||
-				(nStrLen==NAME_DISP+2 && *(Buf+NAME_DISP+1)=='.') )
+			if ((nStrLen == NAME_DISP + 1 && *(Buf + NAME_DISP) == '.') ||
+				(nStrLen == NAME_DISP + 2 && *(Buf + NAME_DISP + 1) == '.'))
 				continue;
 			if (Compare(Buf, DirEndHeader[0]) || Compare(Buf, DirEndHeader[1]))
 			{
-				nSkipLen=0; *Prefix=0; nPrefixLen = 0;
+				nSkipLen = 0; *Prefix = 0; nPrefixLen = 0;
 				continue;
 			}
 			//2008-11-30 Смысла нет, если
-			if (nStrLen>NAME_DISP && *Buf!=' ' && *(Buf+1)!=' ')
+			if (nStrLen > NAME_DISP && *Buf != ' ' && *(Buf + 1) != ' ')
 			{
 				memset(Item, 0, sizeof(PluginPanelItem));
 
@@ -340,43 +342,70 @@ struct DirInfo
 				if (CP_Check == cp_NonChecked)
 				{
 					//TODO: Проверить, может это UTF8?
-					int iUtf = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, Buf+NAME_DISP, -1, Utf8, ARRAYSIZE(Utf8));
+					const int iUtf = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, Buf, -1, Utf8, ARRAYSIZE(Utf8));
 					//BUGBUG: ?? OEM ?
-					int iWide = MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, Buf+NAME_DISP, -1, Wide, ARRAYSIZE(Wide));
+					const int iWide = MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, Buf, -1, Wide, ARRAYSIZE(Wide));
 					if (iUtf > 0 && iWide > 0 && iUtf < iWide)
 					{
 						CP_Check = cp_UTF8;
 					}
 				}
-				lstrcpyn(Item->FindData.cFileName+nPrefixLen, Buf+NAME_DISP, ARRAYSIZE(Item->FindData.cFileName)-nPrefixLen);
 
-				if (Compare(Buf+ID_DIR_DISP, DirID) || Compare(Buf+ID_DIR_DISP, JunID))
-					Item->FindData.dwFileAttributes=FILE_ATTRIBUTE_DIRECTORY;
+				bool copied = false;
+				const int cchMaxLen = ARRAYSIZE(Item->FindData.cFileName) - nPrefixLen;
+				if (CP_Check == cp_UTF8)
+				{
+					const int iUtf = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, Buf, -1, Utf8, ARRAYSIZE(Utf8));
+					if (iUtf > NAME_DISP) {
+						const int iWide = WideCharToMultiByte(CP_UTF8, 0, Utf8 + NAME_DISP, -1,
+							Item->FindData.cFileName + nPrefixLen, cchMaxLen, nullptr, nullptr);
+						copied = (iWide > 0 && iWide < cchMaxLen);
+					}
+				}
+				if (!copied)
+				{
+					lstrcpyn(Item->FindData.cFileName + nPrefixLen, Buf + NAME_DISP, cchMaxLen);
+				}
+
+				switch (CP_Check)
+				{
+				case cp_ANSI:
+					Item->UserData = CP_ACP; break;
+				case cp_OEM:
+					Item->UserData = CP_OEMCP; break;
+				case cp_UTF8:
+					Item->UserData = CP_UTF8; break;
+				default:
+					Item->UserData = 0;
+				}
+
+				if (Compare(Buf + ID_DIR_DISP, DirID) || Compare(Buf + ID_DIR_DISP, JunID))
+					Item->FindData.dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
 				else
 				{
 					FARINT64 nFileSize;
-					nFileSize.i64=AtoI(Buf+SIZE_DISP, 16);
-					Item->FindData.nFileSizeLow=nFileSize.Part.LowPart;
-					Item->FindData.nFileSizeHigh=nFileSize.Part.HighPart;
+					nFileSize.i64 = AtoI(Buf + SIZE_DISP, 16);
+					Item->FindData.nFileSizeLow = nFileSize.Part.LowPart;
+					Item->FindData.nFileSizeHigh = nFileSize.Part.HighPart;
 				}
 
 				SYSTEMTIME st;
-				st.wDayOfWeek=st.wSecond=st.wMilliseconds=0;
-				st.wDay=(WORD)AtoI(Buf+DATA_DISP, 2);
-				st.wMonth=(WORD)AtoI(Buf+DATA_DISP+3, 2);
-				st.wYear=(WORD)AtoI(Buf+DATA_DISP+6, 4);
-				st.wHour=(WORD)AtoI(Buf+TIME_DISP, 2);
-				st.wMinute=(WORD)AtoI(Buf+TIME_DISP+3, 2);
+				st.wDayOfWeek = st.wSecond = st.wMilliseconds = 0;
+				st.wDay = (WORD)AtoI(Buf + DATA_DISP, 2);
+				st.wMonth = (WORD)AtoI(Buf + DATA_DISP + 3, 2);
+				st.wYear = (WORD)AtoI(Buf + DATA_DISP + 6, 4);
+				st.wHour = (WORD)AtoI(Buf + TIME_DISP, 2);
+				st.wMinute = (WORD)AtoI(Buf + TIME_DISP + 3, 2);
 				//st.wYear+=st.wYear<50?2000:1900;
 				FILETIME ft;
-				SystemTimeToFileTime(&st,&ft);
-				LocalFileTimeToFileTime(&ft,&Item->FindData.ftLastWriteTime);
+				SystemTimeToFileTime(&st, &ft);
+				LocalFileTimeToFileTime(&ft, &Item->FindData.ftLastWriteTime);
 
 				//lstrcpy(Info->Description, Descrip); -- Maks поставить VolumeID в Description
-				char *Temp = Pos; //дурацкая поддержка описаний внутри DIR файла
-				if(GetS(Buf, 4095))
-					if(Compare(Buf, " @"))
-						lstrcpyn(Info->Description, Buf+2, 256);
+				char* Temp = Pos; //дурацкая поддержка описаний внутри DIR файла
+				if (GetS(Buf, 4095))
+					if (Compare(Buf, " @"))
+						lstrcpyn(Info->Description, Buf + 2, 256);
 					else
 						Pos = Temp;
 
@@ -384,66 +413,69 @@ struct DirInfo
 			}
 		}
 		return GETARC_EOF;
-	};
+	}
 
 	BOOL closeArchive()
 	{
 		if (Data)
 			UnmapViewOfFile(Data);
-		Data = NULL;
+		Data = nullptr;
 
 		if (MapHandle && (MapHandle != INVALID_HANDLE_VALUE))
 			CloseHandle(MapHandle);
-		MapHandle = NULL;
+		MapHandle = nullptr;
 
 		if (Handle && (Handle != INVALID_HANDLE_VALUE))
 			CloseHandle(Handle);
-		Handle = NULL;
+		Handle = nullptr;
 
 		DirInfo* p = this;
 		if (p == gpCur)
-			gpCur = NULL;
+			gpCur = nullptr;
 		free(p);
 
 		return true;
-	};
+	}
 };
 
 
 
-BOOL WINAPI _export IsArchive(char *Name, const unsigned char *Data, int DataSize)
+BOOL WINAPI _export IsArchive(char* Name, const unsigned char* Data, int DataSize)
 {
-	_ASSERTE(gpCur!=NULL);
-	static const char *ID[]={ " Том в устройстве ", " Volume in drive ", "Queued to drive " };
-	BOOL lbRc =
-		gpCur->Compare((char *)Data, ID[0], true, min(lstrlen(ID[0]), DataSize)) ||
-		gpCur->Compare((char *)Data, ID[1], false, min(lstrlen(ID[1]), DataSize)) ||
-		gpCur->Compare((char *)Data, ID[2], false, min(lstrlen(ID[2]), DataSize))  ;
+	_ASSERTE(gpCur != nullptr);
+	static const char* ID[] = { " Том в устройстве ", " Volume in drive ", "Queued to drive " };
+	BOOL lbRc = FALSE;
+	const char* strData = reinterpret_cast<const char*>(Data);
+	for (const auto* id : ID) {
+		if (gpCur->Compare(strData, id, true, min(lstrlen(id), DataSize)))
+		{
+			lbRc = TRUE;
+			break;
+		}
+
+	}
 	return lbRc;
 }
-/*
-void WINAPI SetFarInfo(const struct PluginStartupInfo *Info)
+
+BOOL WINAPI _export OpenArchive(char* Name, int* Type)
 {
-::Info=*Info;
-}
-*/
-BOOL WINAPI _export OpenArchive(char *Name, int *Type)
-{
-	_ASSERTE(gpCur==NULL);
-	gpCur = (DirInfo*)calloc(1,sizeof(DirInfo));
-	gpCur->Handle=CreateFile(Name, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-		FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	_ASSERTE(gpCur == nullptr);
+	gpCur = static_cast<DirInfo*>(calloc(1, sizeof(DirInfo)));
+	if (!gpCur)
+		return FALSE;
+	gpCur->Handle = CreateFile(Name, GENERIC_READ, FILE_SHARE_READ, nullptr,
+		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
 	return gpCur->openArchive(Type);
 }
 
-int WINAPI _export GetArcItem(struct PluginPanelItem *Item, struct ArcItemInfo *Info)
+int WINAPI _export GetArcItem(struct PluginPanelItem* Item, struct ArcItemInfo* Info)
 {
 	if (!gpCur)
 		return GETARC_EOF;
 	return gpCur->getArcItem(Item, Info);
 }
 
-BOOL WINAPI _export CloseArchive(struct ArcInfo *Info)
+BOOL WINAPI _export CloseArchive(struct ArcInfo* Info)
 {
 	if (gpCur)
 	{
@@ -454,34 +486,34 @@ BOOL WINAPI _export CloseArchive(struct ArcInfo *Info)
 
 //??эту функцию надо бы выбросить, чтобы модуль не появлялся в меню MultiArc,
 //но тогда нарушается работа самого MultiArc :(
-BOOL WINAPI _export GetFormatName(int Type, char *FormatName, char *DefaultExt)
+BOOL WINAPI _export GetFormatName(int Type, char* FormatName, char* DefaultExt)
 {
-	if (Type==0)
+	if (Type == 0)
 	{
 		lstrcpy(FormatName, "DIR");
-		lstrcpy(DefaultExt,"dir");
+		lstrcpy(DefaultExt, "dir");
 		return true;
 	}
 	return false;
 }
 
-BOOL WINAPI _export GetDefaultCommands(int Type,int Command,char *Dest)
+BOOL WINAPI _export GetDefaultCommands(int Type, int Command, char* Dest)
 {
-	if (Type==0)
+	if (Type == 0)
 	{
-		if (Command==0)
+		if (Command == 0)
 		{
 			//extract (распаковка)
 			lstrcpyA(Dest, "dir.fmt.exe x %%A %%L");
 		}
-		else if (Command==1)
+		else if (Command == 1)
 		{
 			//extract without path (распаковка без путей)
 			lstrcpyA(Dest, "dir.fmt.exe e %%A %%L");
 		}
 		else
 		{
-			*Dest=0;
+			*Dest = 0;
 		}
 		return true;
 	}
@@ -492,16 +524,18 @@ BOOL WINAPI _export GetDefaultCommands(int Type,int Command,char *Dest)
 
 int nLastItemIndex = -1;
 
-int MODULE_EXPORT OpenStorage(StorageOpenParams params, HANDLE *storage, StorageGeneralInfo* info)
+int MODULE_EXPORT OpenStorage(StorageOpenParams params, HANDLE* storage, StorageGeneralInfo* info)
 {
 	nLastItemIndex = -1;
-	gpCur = (DirInfo*)calloc(1,sizeof(DirInfo));
-	gpCur->Handle = CreateFileW(params.FilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-		FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	gpCur = static_cast<DirInfo*>(calloc(1, sizeof(DirInfo)));
+	if (!gpCur)
+		return SOR_INVALID_FILE;
+	gpCur->Handle = CreateFileW(params.FilePath, GENERIC_READ, FILE_SHARE_READ, nullptr,
+		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
 	int Type = 0;
 	if (gpCur->openArchive(&Type))
 	{
-		*storage = (HANDLE)gpCur;
+		*storage = static_cast<HANDLE>(gpCur);
 		lstrcpyW(info->Format, L"Dir");
 		lstrcpyW(info->Compression, L"");
 		lstrcpyW(info->Comment, L"");
@@ -513,7 +547,7 @@ int MODULE_EXPORT OpenStorage(StorageOpenParams params, HANDLE *storage, Storage
 
 void MODULE_EXPORT CloseStorage(HANDLE storage)
 {
-	DirInfo* p = (DirInfo*)storage;
+	DirInfo* p = static_cast<DirInfo*>(storage);
 	if (p)
 		p->closeArchive();
 }
@@ -521,22 +555,21 @@ void MODULE_EXPORT CloseStorage(HANDLE storage)
 int MODULE_EXPORT GetStorageItem(HANDLE storage, int item_index, StorageItemInfo* item_info)
 {
 	int iRc = GET_ITEM_NOMOREITEMS;
-	_ASSERTE(item_index>nLastItemIndex);
-	DirInfo* p = (DirInfo*)storage;
+	_ASSERTE(item_index > nLastItemIndex);
+	DirInfo* p = static_cast<DirInfo*>(storage);
 	nLastItemIndex = item_index;
-	PluginPanelItem* Item = (PluginPanelItem*)calloc(1,sizeof(PluginPanelItem));
-	ArcItemInfo* Info = (ArcItemInfo*)calloc(1,sizeof(ArcItemInfo));
-	if (p->getArcItem(Item, Info) == GETARC_SUCCESS)
+	PluginPanelItem Item{};
+	ArcItemInfo Info{};
+	if (p->getArcItem(&Item, &Info) == GETARC_SUCCESS)
 	{
-		item_info->Attributes = Item->FindData.dwFileAttributes;
-		LARGE_INTEGER li; li.LowPart = Item->FindData.nFileSizeLow; li.HighPart = Item->FindData.nFileSizeHigh;
+		item_info->Attributes = Item.FindData.dwFileAttributes;
+		LARGE_INTEGER li; li.LowPart = Item.FindData.nFileSizeLow; li.HighPart = Item.FindData.nFileSizeHigh;
 		item_info->Size = li.QuadPart;
-		item_info->CreationTime = Item->FindData.ftLastWriteTime;
-		item_info->ModificationTime = Item->FindData.ftLastWriteTime;
-		MultiByteToWideChar((p->CP_Check == p->cp_UTF8) ? CP_UTF8 : CP_OEMCP, 0, Item->FindData.cFileName, -1, item_info->Path, ARRAYSIZE(item_info->Path));
+		item_info->CreationTime = Item.FindData.ftLastWriteTime;
+		item_info->ModificationTime = Item.FindData.ftLastWriteTime;
+		MultiByteToWideChar((p->CP_Check == p->cp_UTF8) ? CP_UTF8 : CP_OEMCP, 0, Item.FindData.cFileName, -1, item_info->Path, ARRAYSIZE(item_info->Path));
 		iRc = GET_ITEM_OK;
 	}
-	free(Item); free(Info);
 	return iRc;
 }
 

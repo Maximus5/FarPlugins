@@ -23,6 +23,10 @@
     <None Include="dir_b3.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="resource." />
+    <None Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="dir_b3.rc">

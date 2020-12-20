@@ -54,3 +54,11 @@ $^#Uninstall entry information#
  Use #PgUp#/#PgDn# to view previous/next program
 
  ~Contents~@Contents@
+
+@ActionMenu
+$^#<(NAME)> <(VER_MAJOR)>.<(VER_MINOR)>.<(VER_PATCH)>#
+$^#Select action#
+
+ #F7# change proirity of uninstall process
+
+ ~Contents~@Contents@

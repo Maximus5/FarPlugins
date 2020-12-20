@@ -198,7 +198,7 @@ class DialogBuilderBase
 			}
 		}
 
-		T *AddDialogItem(int Type, const TCHAR *Text)
+		T* AddDialogItem(int Type, const TCHAR *Text)
 		{
 			if (DialogItemsCount == DialogItemsAllocated)
 			{
@@ -365,7 +365,7 @@ public:
 			return -1;
 		}
 
-		DialogItemBinding<T> *FindBinding(const T *Item)
+		DialogItemBinding<T>* FindBinding(const T *Item)
 		{
 			int Index = static_cast<int>(Item - DialogItems);
 			if (Index >= 0 && Index < DialogItemsCount)
@@ -388,7 +388,7 @@ public:
 			}
 		}
 
-		virtual const TCHAR *GetLangString(int MessageID)
+		virtual const TCHAR* GetLangString(int MessageID)
 		{
 			return nullptr;
 		}
@@ -398,12 +398,17 @@ public:
 			return -1;
 		}
 
-		virtual DialogItemBinding<T> *CreateCheckBoxBinding(BOOL *Value, int Mask)
+		virtual DialogItemBinding<T>* CreateCheckBoxBinding(BOOL *Value, int Mask)
 		{
 			return nullptr;
 		}
 
-		virtual DialogItemBinding<T> *CreateRadioButtonBinding(int *Value)
+		virtual DialogItemBinding<T>* CreateComboBoxBinding(int *Value)
+		{
+			return nullptr;
+		}
+
+		virtual DialogItemBinding<T>* CreateRadioButtonBinding(int *Value)
 		{
 			return nullptr;
 		}
@@ -423,17 +428,17 @@ public:
 			}
 			delete [] DialogItems;
 			delete [] Bindings;
-		}
+		};
 
 	public:
 		// Добавляет статический текст, расположенный на отдельной строке в диалоге.
-		T *AddText(int LabelId)
+		T* AddText(int LabelId)
 		{
 			T *Item = AddDialogItem(DI_TEXT, GetLangString(LabelId));
 			SetNextY(Item);
 			return Item;
 		}
-		T *AddText(const TCHAR* asText)
+		T* AddText(const TCHAR* asText)
 		{
 			T *Item = AddDialogItem(DI_TEXT, asText);
 			SetNextY(Item);
@@ -446,7 +451,7 @@ public:
 		//}
 
 		// Добавляет чекбокс.
-		T *AddCheckbox(int TextMessageId, BOOL *Value, int Mask=0)
+		T* AddCheckbox(int TextMessageId, BOOL *Value, int Mask=0)
 		{
 			T *Item = AddDialogItem(DI_CHECKBOX, GetLangString(TextMessageId));
 			SetNextY(Item);
@@ -489,14 +494,33 @@ public:
 			return nFirstID;
 		}
 
+		// Добавляет ComboBox
+		T* AddComboBox(int Width, FarList* ListItems, int *Value, DWORD AddFlags=DIF_DROPDOWNLIST)
+		{
+			T *Item = AddDialogItem(DI_COMBOBOX, nullptr);
+			for (int i = 0; i < ListItems->ItemsNumber; i++)
+			{
+				if (i == *Value)
+					ListItems->Items[i].Flags |= LIF_SELECTED;
+				else if (ListItems->Items[i].Flags & LIF_SELECTED)
+					ListItems->Items[i].Flags &= ~LIF_SELECTED;
+			}
+			Item->ListItems = ListItems;
+			Item->Flags |= AddFlags;
+			SetNextY(Item);
+			Item->X2 = Item->X1 + Width;
+			SetLastItemBinding(CreateComboBoxBinding(Value));
+			return Item;
+		}
+
 		// Добавляет поле типа DI_FIXEDIT для редактирования указанного числового значения.
-		virtual T *AddIntEditField(int *Value, int Width)
+		virtual T* AddIntEditField(int *Value, int Width)
 		{
 			return nullptr;
 		}
 
 		// Добавляет указанную текстовую строку слева от элемента RelativeTo.
-		T *AddTextBefore(T *RelativeTo, int LabelId)
+		T* AddTextBefore(T *RelativeTo, int LabelId)
 		{
 			T *Item = AddDialogItem(DI_TEXT, GetLangString(LabelId));
 			Item->Y1 = Item->Y2 = RelativeTo->Y1;
@@ -545,7 +569,7 @@ public:
 		}
 
 		// Добавляет указанную текстовую строку справа от элемента RelativeTo.
-		T *AddTextAfter(T *RelativeTo, int LabelId)
+		T* AddTextAfter(T *RelativeTo, int LabelId)
 		{
 			T *Item = AddDialogItem(DI_TEXT, GetLangString(LabelId));
 			Item->Y1 = Item->Y2 = RelativeTo->Y1;
@@ -735,6 +759,24 @@ class PluginRadioButtonBinding: public DialogAPIBinding
 		}
 };
 
+class PluginComboBoxBinding: public DialogAPIBinding
+{
+	private:
+		int *Value;
+
+	public:
+		PluginComboBoxBinding(const PluginStartupInfo &aInfo, HANDLE *aHandle, int aID, int *aValue)
+			: DialogAPIBinding(aInfo, aHandle, aID),
+			  Value(aValue)
+		{
+		}
+
+		virtual void SaveValue(FarDialogItem *Item, int RadioGroupIndex)
+		{
+			*Value = (int)Info.SendDlgMessage(*DialogHandle, DM_LISTGETCURPOS, ID, 0);
+		}
+};
+
 #ifdef UNICODE
 
 class PluginEditFieldBinding: public DialogAPIBinding
@@ -781,12 +823,12 @@ public:
 		*Value = Info.FSF->atoi(DataPtr);
 	}
 
-	TCHAR *GetBuffer()
+	TCHAR* GetBuffer()
 	{
 		return Buffer;
 	}
 
-	const TCHAR *GetMask()
+	const TCHAR* GetMask()
 	{
 		return Mask;
 	}
@@ -834,7 +876,7 @@ public:
 		*Value = Info.FSF->atoi(Item->Data);
 	}
 
-	const TCHAR *GetMask()
+	const TCHAR* GetMask()
 	{
 		return Mask;
 	}
@@ -857,11 +899,14 @@ class PluginDialogBuilder: public DialogBuilderBase<FarDialogItem>
 		virtual void InitDialogItem(FarDialogItem *Item, const TCHAR *Text)
 		{
 			memset(Item, 0, sizeof(FarDialogItem));
-#ifdef UNICODE
-			Item->PtrData = Text;
-#else
-			lstrcpyn(Item->Data, Text, sizeof(Item->Data)/sizeof(Item->Data[0]));
-#endif
+			if (Text)
+			{
+				#ifdef UNICODE
+					Item->PtrData = Text;
+				#else
+					lstrcpyn(Item->Data, Text, sizeof(Item->Data)/sizeof(Item->Data[0]));
+				#endif
+			}
 		}
 
 		virtual int TextWidth(const FarDialogItem &Item)
@@ -873,7 +918,7 @@ class PluginDialogBuilder: public DialogBuilderBase<FarDialogItem>
 #endif
 		}
 
-		virtual const TCHAR *GetLangString(int MessageID)
+		virtual const TCHAR* GetLangString(int MessageID)
 		{
 			return Info.GetMsg(Info.ModuleNumber, MessageID);
 		}
@@ -892,7 +937,7 @@ class PluginDialogBuilder: public DialogBuilderBase<FarDialogItem>
 #endif
 		}
 
-		virtual DialogItemBinding<FarDialogItem> *CreateCheckBoxBinding(BOOL *Value, int Mask)
+		virtual DialogItemBinding<FarDialogItem>* CreateCheckBoxBinding(BOOL *Value, int Mask)
 		{
 #ifdef UNICODE
 			return new PluginCheckBoxBinding(Info, &DialogHandle, DialogItemsCount-1, Value, Mask);
@@ -901,12 +946,21 @@ class PluginDialogBuilder: public DialogBuilderBase<FarDialogItem>
 #endif
 		}
 
-		virtual DialogItemBinding<FarDialogItem> *CreateRadioButtonBinding(BOOL *Value)
+		virtual DialogItemBinding<FarDialogItem>* CreateRadioButtonBinding(BOOL *Value)
 		{
 #ifdef UNICODE
 			return new PluginRadioButtonBinding(Info, &DialogHandle, DialogItemsCount-1, Value);
 #else
 			return new RadioButtonBinding<FarDialogItem>(Value);
+#endif
+		}
+
+		virtual DialogItemBinding<FarDialogItem>* CreateComboBoxBinding(int *Value)
+		{
+#ifdef UNICODE
+			return new PluginComboBoxBinding(Info, &DialogHandle, DialogItemsCount-1, Value);
+#else
+			return new PluginComboBoxBinding<FarDialogItem>(Value);
 #endif
 		}
 
@@ -928,7 +982,7 @@ public:
 #endif
 		}
 
-		FarDialogItem *GetItemByIndex(int Index)
+		FarDialogItem* GetItemByIndex(int Index)
 		{
 			if (Index >= 0 && Index < DialogItemsCount)
 				return (DialogItems + Index);
@@ -940,7 +994,7 @@ public:
 			return GetItemID(p);
 		}
 
-		virtual FarDialogItem *AddIntEditField(int *Value, int Width)
+		virtual FarDialogItem* AddIntEditField(int *Value, int Width)
 		{
 			FarDialogItem *Item = AddDialogItem(DI_FIXEDIT, EMPTY_TEXT);
 			Item->Flags |= DIF_MASKEDIT;
@@ -965,7 +1019,7 @@ public:
 			return Item;
 		}
 
-		FarDialogItem *AddEditField(TCHAR *Value, int MaxSize, int Width, const TCHAR *HistoryID = nullptr)
+		FarDialogItem* AddEditField(TCHAR *Value, int MaxSize, int Width, const TCHAR *HistoryID = nullptr)
 		{
 			FarDialogItem *Item = AddDialogItem(DI_EDIT, Value);
 			SetNextY(Item);

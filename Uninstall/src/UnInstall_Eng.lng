@@ -1,0 +1,40 @@
+﻿.Language=English,English
+
+"UnInstall"
+
+"Ok"
+
+"Uninstall Entry"
+"Uninstall Entry (Windows Installer)"
+
+"&Name:"
+"Sub&key name:"
+"&Install location:"
+"&Modify command:"
+"&Uninstall command:"
+"&Publisher:"
+"&Support information:"
+"Product &updates:"
+"&Comments:"
+"&Version:"
+"Install &date:"
+
+"Mx86"
+"Mx64"
+"HKLM"
+"HKCU"
+
+"Error of running program"
+"Cancelled by user"
+"Error of deleting uninstall info"
+"UnInstall\nDo you wish to delete the uninstall entry?\n%s\nOk\nCancel"
+"[Shift-]Enter: run, F8: del entry, F3: info, Ctrl-R: update"
+"Filter: [%s], Entries: [%d/%d]"
+"Waiting for the command completion"
+
+"Show in the &Editor"
+"Show in the &Viewer"
+"Enter: &wait for completion"
+"&Use elevation"
+"OK"
+"Cancel"

@@ -38,6 +38,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../../common/plugin.h"
 
+#include <algorithm>
+using namespace std;	//FIXME: bad practice. https://stackoverflow.com/questions/1452721/why-is-using-namespace-std-considered-bad-practice
 
 #ifdef MDEBUG
 //#include "/VCProject/MLib/MLibDef.h"
@@ -849,50 +851,82 @@ BOOL DoTabLeft()
 	return TRUE;
 }
 
-void SetCommentDefaults(LPCTSTR psExt)
+bool filename_match(LPCTSTR fn, LPCTSTR ref)
 {
-	if (_tcsicmp(psExt, _T(".bat"))==0 || _tcsicmp(psExt, _T(".cmd"))==0)
+	LPCTSTR _fn = & fn[ lstrlen(fn)-lstrlen(ref) ];
+	return (_tcsicmp(_fn, ref) == 0);
+}
+
+//match string to one from to comma separated list
+bool _ext_match_to_any(LPCTSTR str, LPCTSTR clst)
+{
+	int slen = lstrlen(str);
+	int clen = lstrlen(clst);
+	for (int idx=0, i=0; i<clen;)
+	{
+		idx = (str[idx] == clst[i++]) ? idx+1 : 0;
+		if ( (idx == slen) && ((i == clen) || clst[i] == _T(',')) )
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void SetCommentDefaults(LPCTSTR pszFileName, LPCTSTR psExt)
+{
+	if ( filename_match(pszFileName, _T("makefile")) )
+	{
+		psComment = _T("#");
+		lbSkipNonSpace    = FALSE;
+		lbSkipCommentMenu = TRUE;
+		return;
+	}
+
+	if (psExt == NULL) return;
+
+#define EXT_MATCH(x) _ext_match_to_any(psExt, _T(x))
+	if ( EXT_MATCH("bat,cmd") )
 	{
 		psComment = _T("rem \0REM \0");
 		lbSkipNonSpace = FALSE;
 		lbSkipCommentMenu = TRUE;
 	}
-	else if (_tcsicmp(psExt, _T(".sql"))==0)
+	else if ( EXT_MATCH("sql") )
 	{
 		psComment = _T("--");
 		psCommentBegin = _T("/*");
 		psCommentEnd = _T("*/");
 		lbSkipNonSpace = FALSE;
 	}
-	else if (_tcsicmp(psExt, _T(".bas"))==0 || _tcsicmp(psExt, _T(".vbs"))==0)
+	else if ( EXT_MATCH("bas,vbs") )
 	{
 		psComment = _T("'");
 	}
-	else if (_tcsicmp(psExt, _T(".cpp"))==0 || _tcsicmp(psExt, _T(".c"))==0 || _tcsicmp(psExt, _T(".cxx"))==0 ||
-		_tcsicmp(psExt, _T(".hpp"))==0 || _tcsicmp(psExt, _T(".h"))==0 || _tcsicmp(psExt, _T(".hxx"))==0)
+	else if ( EXT_MATCH("cpp,c,cxx,hpp,h,hxx") )
 	{
 		psCommentBegin = _T("/*");
-		psCommentEnd = _T("*/");
+		psCommentEnd   = _T("*/");
 	}
-	else if (_tcsicmp(psExt, _T(".htm"))==0 || _tcsicmp(psExt, _T(".html"))==0 || _tcsicmp(psExt, _T(".xml"))==0)
+	else if ( EXT_MATCH("htm,html,xml") )
 	{
 		psCommentBegin = _T("<!--");
 		psCommentEnd = _T("-->");
 		psComment = _T("");
 	}
-	else if (_tcsicmp(psExt, _T(".php"))==0)
+	else if ( EXT_MATCH("php") )
 	{
 		psCommentBegin = _T("<!--\0/*\0");
 		psCommentEnd = _T("-->\0*/\0");
 		psComment = _T("//\0#\0");
 	}
-	else if (_tcsicmp(psExt, _T(".ps1"))==0 || _tcsicmp(psExt, _T(".psm1"))==0)
+	else if ( EXT_MATCH("ps1,psm1") )
 	{
 		psCommentBegin = _T("<#");
 		psCommentEnd = _T("#>");
 		psComment = _T("#");
 	}
-	else if (_tcsicmp(psExt, _T(".lua"))==0 || _tcsicmp(psExt, _T(".psm1"))==0)
+	else if ( EXT_MATCH("lua,psm1") )
 	{
 		psComment = _T("--");
 	}
@@ -991,9 +1025,7 @@ void LoadCommentSettings(LPCTSTR pszFileName, TCHAR (&szComment)[100], TCHAR (&s
 		}
 	}
 
-	// Если НЕ NULL - значит в настройках плагина ничего прописано не было
-	if (psExt)
-		SetCommentDefaults(psExt);
+	SetCommentDefaults(pszFileName, psExt);
 }
 
 BOOL DoComment()

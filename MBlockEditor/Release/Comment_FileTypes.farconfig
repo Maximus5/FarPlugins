@@ -51,6 +51,12 @@
 						<value name="CommentEnd" type="text" value="--&gt;" />
 					</key>
 
+					<key name=".svg" description="">
+						<value name="Comment" type="text" value="" />
+						<value name="CommentBegin" type="text" value="&lt;!--" />
+						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
+
 					<key name=".htm" description="">
 						<value name="Comment" type="text" value="" />
 						<value name="CommentBegin" type="text" value="&lt;!--" />
@@ -77,6 +83,32 @@
 						<value name="CommentBegin" type="text" value="/*&#x0A;&lt;!--" />
 						<value name="CommentEnd" type="text" value="*/&#x0A;--&gt;" />
 						<value name="CommentSkipMenu" type="text" value="off" />
+					</key>
+
+					<key name=".lpf" description="">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentFromBegin" type="text" value="on" />
+						<value name="CommentSkipMenu" type="text" value="on" />
+					</key>
+					<key name=".py" description="">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentBegin" type="text" value="''' " />
+						<value name="CommentEnd" type="text" value=" '''" />
+						<value name="CommentFromBegin" type="text" value="on" />
+						<value name="CommentSkipMenu" type="text" value="on" />
+					</key>
+					<key name=".pe" description="PyExpander">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentBegin" type="text" value="''' " />
+						<value name="CommentEnd" type="text" value=" '''" />
+						<value name="CommentFromBegin" type="text" value="on" />
+						<value name="CommentSkipMenu" type="text" value="on" />
+					</key>
+
+					<key name=".tcl" description="">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentFromBegin" type="text" value="on" />
+						<value name="CommentSkipMenu" type="text" value="on" />
 					</key>
 
 					<key name=".ps1" description="">
@@ -115,6 +147,31 @@
 						<value name="Comment" type="text" value="" />
 						<value name="CommentBegin" type="text" value="&lt;!--" />
 						<value name="CommentEnd" type="text" value="--&gt;" />
+					</key>
+
+					<key name=".vhdl" description="">
+						<value name="Comment" type="text" value="-- " />
+						<value name="CommentFromBegin" type="text" value="on" />
+					</key>
+					<key name=".vhd" description="">
+						<value name="Comment" type="text" value="-- " />
+						<value name="CommentFromBegin" type="text" value="on" />
+					</key>
+
+					<key name=".ucf" description="">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentFromBegin" type="text" value="on" />
+						<value name="CommentSkipMenu" type="text" value="on" />
+					</key>
+					<key name=".xdc" description="">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentFromBegin" type="text" value="on" />
+						<value name="CommentSkipMenu" type="text" value="on" />
+					</key>
+					<key name=".mk" description="Makefile">
+						<value name="Comment" type="text" value="#" />
+						<value name="CommentFromBegin" type="text" value="on" />
+						<value name="CommentSkipMenu" type="text" value="on" />
 					</key>
 
 				 </key>

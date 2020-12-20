@@ -83,6 +83,10 @@ MLowPriority
 "Запуск с &низким приоритетом"
 "Start with &low priority"
 
+MForceMsiUse
+"&Всегда использовать MsiExec"
+"&Force use MsiExec"
+
 MEnterAction
 "Ente&r:      "
 "Ente&r:      "
@@ -175,8 +179,8 @@ MInstallDate
 
 MBottomLine
 l:// Menu's top and bottom lines
-"[Shift-]Enter: run, F8: del entry, F3: info, Ctrl-R: update"
-"[Shift-]Enter: run, F8: del entry, F3: info, Ctrl-R: update"
+"[Shift-]Enter: run, F8: del entry, F2: sort, F3: info, Ctrl-R: update"
+"[Shift-]Enter: run, F8: del entry, F2: sort, F3: info, Ctrl-R: update"
 
 MFilter
 "Filter: [%s], Entries: [%d/%d]"
@@ -187,12 +191,16 @@ MMenuBottomLine1
 "{Normal priority} F7"
 
 MMenuBottomLine2
-"{Low priority} F7"
-"{Low priority} F7"
+"  {Low priority}  F7"
+"  {Low priority}  F7"
 
 MMenuTopLine
 "Выберите действие"
 "Select action"
+
+MMenuTopLineN
+"Действие для %u элементов"
+"Action for %u items"
 
 MListHKLMx86
 l:// Install location (registry)

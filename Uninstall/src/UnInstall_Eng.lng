@@ -13,6 +13,7 @@
 "Enter: &wait for completion"
 "&Use elevation"
 "Start with &low priority"
+"&Force use MsiExec"
 "Ente&r:      "
 "Shif&t-Enter:"
 "Uninstall (wait)"
@@ -38,11 +39,12 @@
 "&Version:"
 "Install &date:"
 // Menu's top and bottom lines
-"[Shift-]Enter: run, F8: del entry, F3: info, Ctrl-R: update"
+"[Shift-]Enter: run, F8: del entry, F2: sort, F3: info, Ctrl-R: update"
 "Filter: [%s], Entries: [%d/%d]"
 "{Normal priority} F7"
-"{Low priority} F7"
+"  {Low priority}  F7"
 "Select action"
+"Action for %u items"
 // Install location (registry)
 "Mx86"
 "Mx64"

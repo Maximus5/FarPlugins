@@ -1613,7 +1613,7 @@ typedef struct FarStandardFunctions
 	FARSTDITOA                 itoa;
 	FARSTDITOA64               itoa64;
 	// <C&C++>
-	FARSTDSPRINTF              sprintf;
+	FARSTDSPRINTF              sprintf_;
 	FARSTDSSCANF               sscanf;
 	// </C&C++>
 	FARSTDQSORT                qsort;

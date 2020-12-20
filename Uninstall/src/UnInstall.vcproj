@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\Debug\UnInstallW.dll"
+				OutputFile="F:\Far3\Plugins\Uninstall\UnInstallW.dl_"
 				LinkIncremental="2"
 				ModuleDefinitionFile="UnInstallW.def"
 				GenerateDebugInformation="true"

@@ -1,0 +1,107 @@
+﻿При последовательном наборе "VID" имеем странное позиционирование
+V:   VC Runtimes MSI
+VI:  VirtuaGirl, версия 1.0.6.00
+VID: Xvid 1.2.1 final uninstall
+Учитывая, что была установлена Logitech Vid - позиционирование в конец списка выглядит странно.
+
+В папке !ToDo лежат "задваивающиеся" элементы с комментариями по ним.
+Общее правило - приоритет у standalone Setup/Ininstall, кроме тех случаев,
+когда у записи WindowsInstaller имеется флаг Modify?
+Причем именно 'standalone', т.к. чисто exeшник, без параметров, и не называющийся "Uninstall.exe"
+
+В менюшку добавить ProductUrl, HelpUrl, и пр. ссылки, которые можно выцепить из реестра.
+
+Пожелание: отображать колонку с датой инсталляции, с возможностью упорядочивания по ней.
+
+по Enter не запускать сразу "снос" а вываливать менюшку, в которой будет "Unistall / Repair / Modify". В этой менюшке, в частности, можно в статусной строке приоритет показывать/менять.
+А для сноса в фоне - можно подумать про выделение нескольких элементов Insert-ом, например, для "пакетного" сноса.
+
+Мониторить ключи реестра, чтобы можно было на лету обновить список приложений
+
+В диалоге информации хорошо бы обработать кнопочки "PgUp/PgDn" или "Gray+/Gray-"
+Чтобы удобнее прыгать между элементами
+
+Показывать в списке источник (откуда получен ключ HKLM/HKCU/32/64)
+
+Показывать в списке доступные действия (UnInstall/Change)
+
+Чего-то неладно с билдером
+
+╔═════════════════════════════════════   ╔══════════ UnInstall ══════════╗
+║    PowerBuilder 12.1                   ║   Error of running program    ║
+║--> Sybase PowerBuilder 12.1            ║ C:\Program Files (x86)\Sybase ║
+║    Sybase PowerBuilder 12.1            ║     ErrorCode=0x00000002      ║
+╚═════════════════════════ [Shift-]Ent   ╟───────────────────────────────╢
+                                         ║            { Ok }             ║
+                      │                  ╚═══════════════════════════════╝
+
+ControlPanel похоже не показывате строки, у которых нет Uninstall string
+
+
+Запускать msiexec сразу под админом (runas)
+В настройку добавить флажок "DisableElevation", чтобы отключить RunAs и только CreateProcess.
+
+Ожидание сделать человеческим, с диалогом, который можно отменить.
+
+Переделать действия. По Enter - показывать меню (даже если это один пункт, добавить пустую строку для отмены)
+В меню - действия. Uninstall/Modify/Repair/что-там еще...
+
+
+А здесь, хоть и есть "ModifyPath", но ControlPanel показывает только "Uninstall"
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9CCC78EF-027E-40E0-9B61-39932C65E3FE}]
+; Acronis Disk Director Home
+"ModifyPath"=hex(2):4d,00,73,00,69,00,45,00,78,00,65,00,63,00,2e,00,65,00,78,\
+  00,65,00,20,00,2f,00,58,00,7b,00,39,00,43,00,43,00,43,00,37,00,38,00,45,00,\
+  46,00,2d,00,30,00,32,00,37,00,45,00,2d,00,34,00,30,00,45,00,30,00,2d,00,39,\
+  00,42,00,36,00,31,00,2d,00,33,00,39,00,39,00,33,00,32,00,43,00,36,00,35,00,\
+  45,00,33,00,46,00,45,00,7d,00,00,00
+"UninstallString"=hex(2):4d,00,73,00,69,00,45,00,78,00,65,00,63,00,2e,00,65,00,\
+  78,00,65,00,20,00,2f,00,58,00,7b,00,39,00,43,00,43,00,43,00,37,00,38,00,45,\
+  00,46,00,2d,00,30,00,32,00,37,00,45,00,2d,00,34,00,30,00,45,00,30,00,2d,00,\
+  39,00,42,00,36,00,31,00,2d,00,33,00,39,00,39,00,33,00,32,00,43,00,36,00,35,\
+  00,45,00,33,00,46,00,45,00,7d,00,00,00
+"NoModify"=dword:00000001
+"NoRepair"=dword:00000001
+
+
+А вот это - WindowsInstaller, но ключика нет, поэтому "W" не показывается
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{4ECF4BDC-8387-329A-ABE9-CF5798F84BB2}.KB946040]
+"ReleaseType"="Hotfix"
+@="KB946040"
+"Comments"="This hotfix is for Microsoft Visual Studio 2007 Tools for Applications - ENU.\r\nIf you later install a more recent service pack, this hotfix will be uninstalled automatically.\r\nFor more information, visit http://support.microsoft.com/kb/946040."
+"DisplayName"="Hotfix for Microsoft Visual Studio 2007 Tools for Applications - ENU (KB946040)"
+"DisplayVersion"="1"
+"HelpLink"="http://support.microsoft.com/kb/946040"
+"NoModify"=dword:00000001
+"NoRepair"=dword:00000001
+"ParentKeyName"="Microsoft Visual Studio Tools for Applications 2.0 - ENU"
+"ParentDisplayName"="Microsoft Visual Studio 2007 Tools for Applications - ENU"
+"Publisher"="Microsoft Corporation"
+"RegistryLocation"="HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Updates\\Microsoft Visual Studio Tools for Applications 2.0 - ENU\\KB946040"
+"UninstallString"="c:\\Windows\\SysWOW64\\msiexec.exe /package {4ECF4BDC-8387-329A-ABE9-CF5798F84BB2} /uninstall  /qb+ REBOOTPROMPT=\"\""
+"URLInfoAbout"="http://support.microsoft.com"
+
+
+В первом не только описание, но и указатель на второй (который уже MSI),
+а второй в списке не показывается, и правильно
+Host OpenAL.reg
+Host OpenAL {AAEF329E-F353-46C9-933D-24A571986093}.reg
+
+
+Uninstall обламывается, грит "C:\Program" not found
+╔══════════════════════════════════════════════════ Uninstall Entry ═══════════════════════════════════════════════════╗
+║ Name:                                                                                                                ║
+║ Microsoft Visual Studio Team System 2008 Team Suite - ENU                                                            ║
+║ Subkey name:                                                                                                         ║
+║ HKLM[32]\...\Microsoft Visual Studio Team System 2008 Team Suite - ENU                                               ║
+║ Install location:                                                                                                    ║
+║ C:\Program Files (x86)\Microsoft Visual Studio 9.0\                                                                  ║
+║ Uninstall command:                                                                                                   ║
+║ Program Files (x86)\Microsoft Visual Studio 9.0\Microsoft Visual Studio Team System 2008 Team Suite - ENU\setup.exe  ║
+║ Publisher:                                                                                                           ║
+║ Microsoft Corporation                                                                                                ║
+║ Product updates:                                                                                                     ║
+║ http://go.microsoft.com/fwlink/?LinkId=96789                                                                         ║
+║ Install date:                                                                                                        ║
+║ 29.12.2010 13:24:18                                                                                                  ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝

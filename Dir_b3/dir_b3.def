@@ -1,0 +1,9 @@
+EXPORTS                                              
+  IsArchive                                          
+  OpenArchive                                        
+  GetArcItem                                         
+  CloseArchive                                       
+  GetFormatName
+  GetDefaultCommands
+  LoadSubModule
+  UnloadSubModule

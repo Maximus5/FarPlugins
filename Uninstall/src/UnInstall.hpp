@@ -636,11 +636,19 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
   ZeroMemory(&pi, sizeof(pi));
 
   TCHAR cmd_line[MAX_PATH*2+1], cmd_file[MAX_PATH+1], cmd_parm[MAX_PATH*2+1];
-  LPCTSTR pszString = p[Sel].Keys[UninstallString];
+  
+  LPCTSTR pszString = NULL;
+  
   if ((Action == Action_ModifyWait) || (Action == Action_Modify))
     pszString = p[Sel].Keys[ModifyPath];
-  else if ((Action == Action_RepairWait) || (Action == Action_Repair))
-    pszString = NULL;
+  //else if ((Action == Action_RepairWait) || (Action == Action_Repair))
+  //  pszString = NULL;
+  else if ((Action == Action_UninstallWait) || (Action == Action_Uninstall))
+  {
+    if (!p[Sel].WindowsInstaller)
+      pszString = p[Sel].Keys[UninstallString];
+  }
+    
   if (pszString && !*pszString)
     pszString = NULL;
 

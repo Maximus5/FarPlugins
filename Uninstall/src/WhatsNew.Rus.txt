@@ -1,4 +1,7 @@
-﻿v1.10.12
+﻿v1.10.13
+  - '[ ] Force use MsiExec' не влияет на 'Uninstall action', всегда выполняется msiexec /x ...
+
+v1.10.12
   - '[ ] Force use MsiExec' off by default
   - не запускался режим 'Repair' для MSI
 

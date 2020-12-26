@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileTypesper", "FileTypes.vcproj", "{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}"
+EndProject
+Global
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		ReleaseA|Win32 = ReleaseA|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}.Debug|Win32.Build.0 = Debug|Win32
+		{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}.Release|Win32.ActiveCfg = Release|Win32
+		{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}.Release|Win32.Build.0 = Release|Win32
+		{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}.ReleaseA|Win32.ActiveCfg = ReleaseA|Win32
+		{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}.ReleaseA|Win32.Build.0 = ReleaseA|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

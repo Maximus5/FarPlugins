@@ -1,0 +1,38 @@
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\.jpg]
+@="ACDC_JPG"
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell]
+@="Open_with_FAR"
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\edit]
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\edit\command]
+@="C:\\WINDOWS\\system32\\mspaint.exe \"%1\""
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\Open]
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\Open\command]
+@="\"E:\\Utils\\Viewers\\ACDSee32\\ACDSee32.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\Open\ddeexec]
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\Open\ddeexec\Application]
+@="ACDSee32"
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\Open\ddeexec\Topic]
+@="System"
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\Open_with_FAR]
+@="Open with FAR"
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\Open_with_FAR\command]
+@="E:\\Source\\FARUnicode\\trunk\\unicode_far\\Debug.32.vc\\ConEmu.exe /single /cmd E:\\Source\\FARUnicode\\trunk\\unicode_far\\Debug.32.vc\\Far.exe \"pic:%1\""
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\printto]
+@=""
+
+[HKEY_CLASSES_ROOT\ACDC_JPG\shell\printto\command]
+@="rundll32.exe C:\\WINDOWS\\system32\\shimgvw.dll,ImageView_PrintTo /pt \"%1\" \"%2\" \"%3\" \"%4\""
+

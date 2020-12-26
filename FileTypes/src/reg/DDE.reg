@@ -1,0 +1,21 @@
+REGEDIT4
+
+; Для отключения DDE - убить ключ ddeexec
+
+[HKEY_CLASSES_ROOT\ACDSee.jpg\shell\Open]
+@="Open with ACDSee"
+
+[HKEY_CLASSES_ROOT\ACDSee.jpg\shell\Open\command]
+@="\"C:\\Utils\\Far180\\FarS.exe\" \"pic:%1\""
+
+[HKEY_CLASSES_ROOT\ACDSee.jpg\shell\Open\ddeexec]
+@="[open(\"%1\")]"
+
+[HKEY_CLASSES_ROOT\ACDSee.jpg\shell\Open\ddeexec\application]
+@="ACDSee"
+
+[HKEY_CLASSES_ROOT\ACDSee.jpg\shell\Open\ddeexec\ifexec]
+@=""
+
+[HKEY_CLASSES_ROOT\ACDSee.jpg\shell\Open\ddeexec\topic]
+@="System"

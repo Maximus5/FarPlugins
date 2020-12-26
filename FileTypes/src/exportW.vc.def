@@ -1,0 +1,13 @@
+EXPORTS
+	SetStartupInfoW
+	GetPluginInfoW
+	GetMinFarVersionW
+	ExitFARW
+	OpenPluginW
+	GetFindDataW
+	FreeFindDataW
+	GetOpenPluginInfoW
+	ClosePluginW
+	SetDirectoryW
+	ProcessKeyW
+;	ProcessEditorEventW

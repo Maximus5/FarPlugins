@@ -15,13 +15,12 @@ if %COMPUTERNAME%==MAX goto skip_svn
 xcopy /S /U /M /Y *.lng F:\VCProject\FarPlugin\ConEmu\WWW\root\trunk\FileTypes\
 xcopy /S /U /M /Y src\*.* F:\VCProject\FarPlugin\ConEmu\WWW\root\trunk\FileTypes\src\
 
+:skip_svn
 
 
 if exist FileTypes.1.%~1.7z del FileTypes.1.%~1.7z
-7z a -r FileTypes.1.%~1.7z *.dll *.lng
+7z a FileTypes.1.%~1.7z *.dll *.lng changelog
 if errorlevel 1 goto err7z
-
-:skip_svn
 
 if exist FileTypes.1.%~1.src.7z del FileTypes.1.%~1.src.7z
 7z a -r FileTypes.1.%~1.src.7z * %ex7zlist%

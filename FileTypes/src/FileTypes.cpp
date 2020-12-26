@@ -1,6 +1,3 @@
-//DEBUG:
-//F:\VCProject\FarPlugin\#FAR180\far.exe
-//C:\Temp\1000-very-long-path\F1..567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\F2..567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 
 #include <windows.h>
 #include <tchar.h>
@@ -30,8 +27,32 @@
 #define MCHKHEAP
 #endif
 
+#ifdef _UNICODE
+    #define _tcsscanf swscanf
+    #define SETMENUTEXT(itm,txt) itm.Text = txt;
+    #define F757NA 0, (LONG_PTR)
+    #define _GetCheck(i) (int)psi.SendDlgMessage(hDlg,DM_GETCHECK,i,0)
+    #define GetDataPtr(i) ((const TCHAR *)psi.SendDlgMessage(hDlg,DM_GETCONSTTEXTPTR,i,0))
+    #define SETTEXT(itm,txt) itm.PtrData = txt
+    #define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
+    #define _tcstoi _wtoi
+#else
+    #define _tcsscanf sscanf
+    #define SETMENUTEXT(itm,txt) lstrcpy(itm.Text, txt);
+    #define F757NA (void*)
+    #define _GetCheck(i) items[i].Selected
+    #define GetDataPtr(i) items[i].Ptr.PtrData
+    #define SETTEXT(itm,txt) lstrcpy(itm.Data, txt)
+    #define SETTEXTPRINT(itm,fmt,arg) wsprintf(itm.Data, fmt, arg)
+    #define _tcstoi atoi
+#endif
+#define NUM_ITEMS(X) (sizeof(X)/sizeof(X[0]))
+
 struct PluginStartupInfo psi;
 struct FarStandardFunctions FSFW;
+
+int WINAPI _export SetDirectoryW ( HANDLE hPlugin, LPCTSTR Dir, int OpMode );
+
 
 LONG GetString(LPCWSTR asKey, LPCWSTR asName, wchar_t* pszValue, DWORD cCount)
 {
@@ -112,24 +133,35 @@ wchar_t* GetString(LPCWSTR asKey, LPCWSTR asName)
 	return pszValue;
 }
 
+TCHAR *GetMsg(int MsgId) {
+    return((TCHAR *)psi.GetMsg(psi.ModuleNumber, MsgId));
+}
+
 typedef struct tag_FileType {
 	FILETIME  ftModified;
 	wchar_t   szExt[16]; // ≈сли больше - не показываем
-	char      szExtA[16];
+	#ifndef _UNICODE
+	char      szExtO[16];
+	#endif
+	TCHAR     szDesc[128];
 } FileType;
 
 typedef struct tag_FileMethod {
+	FileType* pft;
 	FILETIME  ftModified;
 	wchar_t   szName[MAX_PATH+1]; // ≈сли больше - не показываем
-	wchar_t   *pszExecute;
+	wchar_t  *pszRealName;
+	
 	wchar_t   szType[MAX_PATH+1];
 
-#ifndef _UNICODE
-	char      szNameA[MAX_PATH+1];
+#ifdef _UNICODE
+	wchar_t  *pszExecute;
+#else
 	char     *pszExecuteA;
+	char     *pszExecuteO;
+	char      szNameO[MAX_PATH+1];
 #endif
 
-	//wchar_t   szTempFileName[32];
 } FileMethod;
 
 #define MAX_PLUG_PATH (MAX_PATH*3)
@@ -146,19 +178,46 @@ public:
 	
 	//
 	int nFileTypesCount, nMaxTypesCount;
-	FileType* pTypes;
+	FileType* pTypes, *pCurType;
 	//
 	int nMethCount, nMaxMethCount;
 	wchar_t szDefaultMethod[MAX_PATH+1];
 	FileMethod* pMethods;
+	
+	//
+	PanelMode pPanelModes[10], ExtPanelMode, MethPanelMode;
+	const TCHAR* sExtPanelTitles[4];
+	const TCHAR* sMethPanelTitles[2];
+
+	//
+	wchar_t sTemp1[MAX_PATH+1], sTemp2[MAX_PATH+1], sTemp3[MAX_PATH+1];
+	TCHAR sDialogExecBuf[8000];
 	
 public:
 	FTPlugin() {
 		szDir[0] = szDefaultMethod[0] = 0;
 		UpdateTitle();
 		nFileTypesCount = nMaxTypesCount = nMethCount = nMaxMethCount = 0;
-		pTypes = NULL;
+		pTypes = pCurType = NULL;
 		pMethods = NULL;
+		memset(pPanelModes, 0, sizeof(pPanelModes));
+		memset(&ExtPanelMode, 0, sizeof(ExtPanelMode));
+		memset(&MethPanelMode, 0, sizeof(MethPanelMode));
+		
+		sExtPanelTitles[0] = sExtPanelTitles[1] = sExtPanelTitles[2] = sExtPanelTitles[3] = psi.GetMsg(psi.ModuleNumber, FTTitleExt);
+		ExtPanelMode.ColumnTypes = GetMsg(FTListColumnTypes);
+		ExtPanelMode.ColumnWidths = GetMsg(FTListColumnWidth);
+		ExtPanelMode.ColumnTitles = (TCHAR**)sExtPanelTitles;
+		ExtPanelMode.DetailedStatus = TRUE;
+		
+		sMethPanelTitles[0] = GetMsg(FTTitleName);
+		sMethPanelTitles[1] = GetMsg(FTTitleCommand);
+		MethPanelMode.ColumnTypes = GetMsg(FTMethColumnTypes);
+		MethPanelMode.ColumnWidths = GetMsg(FTMethColumnWidth);
+		MethPanelMode.ColumnTitles = (TCHAR**)sMethPanelTitles;
+		MethPanelMode.DetailedStatus = TRUE;
+		
+		pPanelModes[0] = ExtPanelMode;
 	};
 	
 public:
@@ -170,20 +229,49 @@ public:
 			while (nDirLen && szDir[nDirLen-1] == L'\\')
 				szDir[nDirLen--] = 0;
 		}
+
+		pCurType = NULL;
+		for (int i=0; i<nFileTypesCount; i++) {
+			if (!lstrcmpiW(szDir, pTypes[i].szExt)) {
+				pCurType = pTypes+i; break;
+			}
+		}
+		if (!pCurType) {
+			szDir[0] = 0; nDirLen = 0;
+		}
 		
 		if (szDir[0]) {
+			#ifndef _UNICODE
+			lstrcpy_t(szDirA, MAX_PLUG_PATH, szDir);
+			lstrcpyn(szTitle+10, szDirA, MAX_PATH*2);
+			#else
 			lstrcpy_t(szTitle+10, MAX_PATH*2, szDir);
+			#endif
+		} 
+		#ifndef _UNICODE
+		else
+		{
+			szDirA[0] = 0;
 		}
+		#endif
+
+		if (szDir[0])
+			pPanelModes[0] = MethPanelMode;
+		else
+			pPanelModes[0] = ExtPanelMode;
 	};
 	void FreeMethods() {
 		if (pMethods) {
 			for (int i = 0; i < nMethCount; i++) {
+				#ifdef _UNICODE
 				if (pMethods[i].pszExecute)
 					free(pMethods[i].pszExecute);
-#ifndef _UNICODE
+				#else
 				if (pMethods[i].pszExecuteA)
 					free(pMethods[i].pszExecuteA);
-#endif
+				if (pMethods[i].pszExecuteO)
+					free(pMethods[i].pszExecuteO);
+				#endif
 			}
 			free(pMethods); pMethods = NULL;
 		}
@@ -210,15 +298,17 @@ public:
 			nMaxTypesCount = nMaxTypes;
 		}
 		_ASSERTE(lstrlenW(pszExt) < 16);
+
 		lstrcpyW(pTypes[nFileTypesCount].szExt, pszExt);
 #ifndef _UNICODE
-		lstrcpy_t((char*)(pTypes[nFileTypesCount].szExtA), 16, pszExt);
+		lstrcpy_t((char*)(pTypes[nFileTypesCount].szExtO), 16, pszExt);
 #endif
 		pTypes[nFileTypesCount].ftModified = ftModified;
+		pTypes[nFileTypesCount].szDesc[0] = 0;
 		nFileTypesCount++;
 		return TRUE;
 	};
-	BOOL AddMethod(const wchar_t* pszType, const wchar_t* pszName, wchar_t** pszExecute, FILETIME ftModified) {
+	BOOL AddMethod(const wchar_t* pszType, const wchar_t* pszName, wchar_t** pszExecute, FILETIME ftModified, FileType* pft) {
 		_ASSERTE(nMaxMethCount > 0 && pMethods != NULL);
 		_ASSERTE(pszExecute && *pszExecute);
 		
@@ -232,35 +322,57 @@ public:
 			pMethods = pNewMethods; pNewMethods = NULL;
 			nMaxMethCount = nMaxMth;
 		}
+
+		pMethods[nMethCount].pft = pft;
 		
 		_ASSERTE(lstrlenW(pszName) <= (MAX_PATH-1));
 		_ASSERTE(lstrlenW(pszType) <= (MAX_PATH));
 		if (szDefaultMethod[0] && lstrcmpiW(pszName, szDefaultMethod) == 0) {
 			pMethods[nMethCount].szName[0] = L'*';
 			lstrcpyW(pMethods[nMethCount].szName+1, pszName);
+			pMethods[nMethCount].pszRealName = pMethods[nMethCount].szName+1;
 		} else {
 			lstrcpyW(pMethods[nMethCount].szName, pszName);
+			pMethods[nMethCount].pszRealName = pMethods[nMethCount].szName;
 		}
 		lstrcpyW(pMethods[nMethCount].szType, pszType);
-		pMethods[nMethCount].pszExecute = *pszExecute;
-		*pszExecute = NULL;
 		pMethods[nMethCount].ftModified = ftModified;
 
-#ifndef _UNICODE
-		lstrcpy_t(pMethods[nMethCount].szNameA, MAX_PATH+1, pMethods[nMethCount].szName);
-		if (pMethods[nMethCount].pszExecute && pMethods[nMethCount].pszExecute[0]) {
-			int nLen = lstrlenW(pMethods[nMethCount].pszExecute);
-			pMethods[nMethCount].pszExecuteA = (char*)malloc(nLen+1);
-			lstrcpy_t(pMethods[nMethCount].pszExecuteA, nLen+1, pMethods[nMethCount].pszExecute);
+#ifdef _UNICODE
+		pMethods[nMethCount].pszExecute = *pszExecute;
+		*pszExecute = NULL;
+#else
+		lstrcpy_t(pMethods[nMethCount].szNameO, MAX_PATH+1, pMethods[nMethCount].szName);
+		
+		if (*pszExecute && **pszExecute) {
+			int nLen = lstrlenW(*pszExecute) + 1;
+			
+			pMethods[nMethCount].pszExecuteA = (char*)malloc(nLen);
+			WideCharToMultiByte(CP_ACP, 0, *pszExecute, nLen, pMethods[nMethCount].pszExecuteA, nLen, 0,0);
+			
+			pMethods[nMethCount].pszExecuteO = (char*)malloc(nLen+1);
+			WideCharToMultiByte(CP_OEMCP, 0, *pszExecute, nLen, pMethods[nMethCount].pszExecuteO, nLen, 0,0);
+			
 		} else {
 			pMethods[nMethCount].pszExecuteA = NULL;
+			pMethods[nMethCount].pszExecuteO = NULL;
 		}
 #endif
 
-		//pMethods[nMethCount].szTempFileName[0] = 0;
 		nMethCount++;
 		
 		return TRUE;
+	};
+	void LoadTypeDesc(FileType* pft) {
+		pft->szDesc[0] = 0;
+		sTemp1[0] = L'.'; lstrcpyW(sTemp1+1, pft->szExt);
+		if (0==GetString(sTemp1, L"", sTemp2, MAX_PATH+1)) {
+			if (0==GetString(sTemp2, L"", sTemp3, MAX_PATH+1)) {
+				lstrcpy_t(pft->szDesc, 128, sTemp3);
+			} else {
+				lstrcpy_t(pft->szDesc, 128, sTemp2);
+			}
+		}
 	};
 	HANDLE LoadTypeList() {
 		wchar_t szName[255];
@@ -297,6 +409,9 @@ public:
 				_ASSERT(nRegRc==0);
 			}
 		}
+
+		for (i = 0; i<(DWORD)nFileTypesCount; i++)
+			LoadTypeDesc(pTypes+i);
 		
 		
 		return (HANDLE)this;
@@ -355,7 +470,7 @@ public:
 				pszExecute = GetString(szPath, L"");
 				if (!pszExecute) pszExecute = lstrdup(L"");
 					
-				if (!AddMethod(szType, szName, &pszExecute, ftModified)) {
+				if (!AddMethod(szType, szName, &pszExecute, ftModified, pCurType)) {
 					_ASSERT(FALSE);
 					if (pszExecute) { free(pszExecute); pszExecute = NULL; }
 					break;
@@ -378,182 +493,212 @@ public:
 		return TRUE;
 	};
 	
-	void EditCurrentItem() {
-		if (szDir[0] == 0)
-			return; // только дл€ методов
-		if (nMethCount == 0)
-			return; // пусто
-			
-		PanelInfo inf; memset(&inf, 0, sizeof(inf));
-		INT_PTR nCurLen = 0, i, iMeth = -1;
-		PluginPanelItem* item=NULL;
-		TCHAR szTemp[MAX_PATH], *pszSlash = NULL;
-		TCHAR szTitle[MAX_PATH*2];
-		HANDLE hFile = INVALID_HANDLE_VALUE;
-		DWORD nWrite = 0, nLen = 0;
+	void EditMethod(FileMethod* pM) {
 
-#ifdef _UNICODE
-		if (!psi.Control((HANDLE)this, FCTL_GETPANELINFO, 0, (LONG_PTR)&inf)) goto wrap;
-#else
-		if (!psi.Control((HANDLE)this, FCTL_GETPANELINFO, (void*)&inf)) goto wrap;
-#endif
-		if (inf.ItemsNumber<=0 || inf.CurrentItem==0) goto wrap;
-		
-#ifdef _UNICODE
-		nCurLen = psi.Control((HANDLE)this, FCTL_GETPANELITEM, inf.CurrentItem, NULL);
-		item = (PluginPanelItem*)calloc(nCurLen,1);
-		if (!psi.Control((HANDLE)this, FCTL_GETPANELITEM, inf.CurrentItem, (LONG_PTR)item)) goto wrap;
-#else
-		item = &(inf.PanelItems[inf.CurrentItem]);
-#endif
-		
-		if ((item->FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) goto wrap;
-		//nCurLen = lstrlenW(item->FindData.lpwszFileName);
-		for (i = 0; i < nMethCount; i++) {
-#ifdef _UNICODE
-			if (lstrcmpi(item->FindData.lpwszFileName, pMethods[i].szName) == 0) {
-				iMeth = i; break;
-			}
-#else
-			if (lstrcmpi(item->FindData.cFileName, pMethods[i].szNameA) == 0) {
-				iMeth = i; break;
-			}
-#endif
+	    int height = 13, width = 60;
+	    wchar_t szFullPath[MAX_PATH*3];
+	    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	    CONSOLE_SCREEN_BUFFER_INFO sbi = {{0,0}};
+	    if (GetConsoleScreenBufferInfo(hOut, &sbi)) {
+	    	width = sbi.dwSize.X - 8;
+	    }
+	    
+	    int cw = width - 4;
+	    int iw = cw - 2;
+
+		wsprintfW(szFullPath, L"%s\\shell\\%s", pM->szType, pM->pszRealName);
+
+		TCHAR szMethodName[MAX_PATH];
+		lstrcpy(szMethodName, GetMsg(FTMethodDlg));
+		int nLen = lstrlen(szMethodName);
+		if (0==GetString(szFullPath, L"", sTemp1, MAX_PATH)) {
+			lstrcpy_t(szMethodName+nLen, MAX_PATH-nLen, sTemp1);
+		} else {
+			lstrcpy_t(szMethodName+nLen, MAX_PATH-nLen, pM->pszRealName);
 		}
-		if (iMeth == -1) goto wrap;
-		
-		//if (pMethods[iMeth].szTempFileName[0]) {
-		//	// этот метод уже редактируетс€ - хорошо бы редактор активировать...
-		//	goto wrap;
-		//}
-		
-		szTemp[0] = 0;
-#ifdef _UNICODE
-		FSFW.MkTemp(szTemp, MAX_PATH, L"FLTP");
-#else
-		FSFW.MkTemp(szTemp, "FLTP");
-#endif
-		if (!szTemp[0]) goto wrap;
-		
-		hFile = CreateFile(szTemp, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-		if (hFile == INVALID_HANDLE_VALUE) goto wrap;
-#ifdef _UNICODE
-		nLen = lstrlen(pMethods[iMeth].pszExecute)*2;
-		WriteFile(hFile, pMethods[iMeth].pszExecute, nLen, &nWrite, NULL);
-#else
-		nLen = lstrlen(pMethods[iMeth].pszExecuteA);
-		WriteFile(hFile, pMethods[iMeth].pszExecuteA, nLen, &nWrite, NULL);
-#endif
-		CloseHandle(hFile); hFile = INVALID_HANDLE_VALUE;
-		
-		pszSlash = _tcsrchr(szTemp, _T('\\'));
-		if (pszSlash) pszSlash++; else pszSlash = szTemp;
-		//lstrcpyn(pMethods[iMeth].szTempFileName, pszSlash, 32);
 
-		lstrcpy_t(szTitle, MAX_PATH, pMethods[iMeth].szType);
-		lstrcat(szTitle, _T("\\"));
+
+		enum {
+			FTMDTitle = 0,
+			FTMDMethodName,
+			FTMDMethodLabel,
+			FTMDMethodValue,
+			//
+			FTMDOK,
+			FTMDCancel
+		};
+
+	    FarDialogItem items[] = {
+	        // Common options
+	        {DI_DOUBLEBOX,  3,  1,  cw, height - 2, false,  0,              0,                  0,},        //FTMDTitle
+
+			{DI_TEXT,       5,  3, 0,  0,          0,      0,              0,                  0,},        //FTMDMethodName
+	        {DI_TEXT,       5,  5, 0,  0,          0,      0,              0,                  0,},        //FTMDMethodLabel
+	        {DI_EDIT,       5,  6, iw, 0,          false,  NULL,           0,       0,},        //FTMDMethodValue
+
+	        {DI_BUTTON,     0,  9, 0,  0,          true,   true,           DIF_CENTERGROUP,    true,},     //FTMDOK
+	        {DI_BUTTON,     0,  9, 0,  0,          true,   false,          DIF_CENTERGROUP,    false,},    //FTMDCancel
+	    };
+	    
+		TCHAR *pszTitle = pM->pft->szDesc;
 #ifdef _UNICODE
-		lstrcat(szTitle, pMethods[iMeth].szName);
+		if (!*pszTitle) pszTitle = pM->pft->szExt;
 #else
-		lstrcat(szTitle, pMethods[iMeth].szNameA);
+		if (!*pszTitle) pszTitle = pM->pft->szExtO;
 #endif
-		
-		i = psi.Editor(szTemp, szTitle, 0,0,-1,-1,
-				/*EF_NONMODAL|EF_IMMEDIATERETURN|EF_DELETEONLYFILEONCLOSE|*/EF_DISABLEHISTORY,
-				1, 1
+		SETTEXT(items[FTMDTitle], pszTitle);
+	    
+		SETTEXT(items[FTMDMethodName], szMethodName);
+	    SETTEXT(items[FTMDMethodLabel], GetMsg(FTMethodLabel));
+
 #ifdef _UNICODE
-				, 1200
+	    SETTEXT(items[FTMDMethodValue], pM->pszExecute);
+#else
+		items[FTMDMethodValue].Flags |= DIF_VAREDIT;
+		if (lstrlen(pM->pszExecuteO) < sizeof(sDialogExecBuf)) {
+			lstrcpy(sDialogExecBuf, pM->pszExecuteO);
+			items[FTMDMethodValue].Ptr.PtrData = sDialogExecBuf;
+			items[FTMDMethodValue].Ptr.PtrLength = sizeof(sDialogExecBuf);
+		} else {
+			items[FTMDMethodValue].Ptr.PtrData = pM->pszExecuteO;
+			items[FTMDMethodValue].Ptr.PtrLength = lstrlen(pM->pszExecuteO)+1;
+		}
 #endif
-				);
-		//if (i == EEC_OPEN_ERROR || i == EEC_LOADING_INTERRUPTED) {
-		//	// Ќеудача
-		//pMethods[iMeth].szTempFileName[0] = 0;
-		//}
-		
-		if (i == EEC_MODIFIED) {
-			hFile = CreateFile(szTemp, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-			if (hFile != INVALID_HANDLE_VALUE) {
-				DWORD nCurSize = GetFileSize(hFile, NULL);
-				wchar_t* pszNewValue = NULL;
-				char* pszNewValueA = NULL;
-				if (nCurSize != INVALID_FILE_SIZE) {
-					nLen = lstrlenW(pMethods[iMeth].pszExecute);
-					if (nLen <= nCurSize) {
-						pszNewValue = (wchar_t*)malloc(nCurSize*2+2);
-						if (pszNewValue) {
-							free(pMethods[iMeth].pszExecute); pMethods[iMeth].pszExecute = pszNewValue;
-						}
-#ifndef _UNICODE
-						pszNewValueA = (char*)malloc(nCurSize+1);
-						if (pszNewValueA) {
-							free(pMethods[iMeth].pszExecuteA); pMethods[iMeth].pszExecuteA = pszNewValueA;
-						} else {
-							free(pMethods[iMeth].pszExecute); pMethods[iMeth].pszExecute = NULL;
-						}
-#endif
-					} else {
-						pszNewValue = pMethods[iMeth].pszExecute;
-						#ifndef _UNICODE
-						pszNewValueA = pMethods[iMeth].pszExecuteA;
-						#endif
+		SETTEXT(items[FTMDOK], GetMsg(FTOK));
+		SETTEXT(items[FTMDCancel], GetMsg(FTCancel));
+
+		items[FTMDMethodValue].Focus = TRUE;
+	    
+	    int dialog_res = 0;
+	
+		#ifdef _UNICODE
+		HANDLE hDlg = psi.DialogInit ( psi.ModuleNumber, -1, -1, width, height,
+			GetMsg(FTMethodDlg), items, NUM_ITEMS(items), 0, 0/*Flags*/, NULL, 0/*DlgProcParam*/ );
+		#endif
+
+
+	    #ifndef _UNICODE
+		dialog_res = psi.DialogEx(psi.ModuleNumber,-1,-1,width,height, GetMsg(FTMethodDlg), items, NUM_ITEMS(items), 0, 0,
+			NULL, NULL);
+	    #else
+	    dialog_res = psi.DialogRun ( hDlg );
+	    #endif
+
+	    if (dialog_res != -1 && dialog_res != FTMDCancel)
+	    {
+			const TCHAR *pszData = GetDataPtr(FTMDMethodValue);
+			if (pszData) {
+				wsprintfW(szFullPath, L"%s\\shell\\%s\\command", pM->szType, pM->pszRealName);
+				HKEY hk = NULL;
+				if (RegCreateKeyExW(HKEY_CLASSES_ROOT, szFullPath, NULL, NULL, 0, KEY_ALL_ACCESS, NULL, &hk, NULL)) {
+					wsprintfW(szFullPath, L"Software\\Classes\\%s\\shell\\%s\\command", pM->szType, pM->pszRealName);
+					if (RegCreateKeyExW(HKEY_CURRENT_USER, szFullPath, NULL, NULL, 0, KEY_ALL_ACCESS, NULL, &hk, NULL))
+						hk = NULL;							
+				}
+				if (hk) {
+					#ifndef _UNICODE
+					_ASSERTE(pszData == sDialogExecBuf || pszData == pM->pszExecuteO);
+					OemToCharBuff(pszData, (TCHAR*)pszData, lstrlen(pszData));
+					#endif
+					RegSetValueEx(hk, _T(""), 0, REG_SZ, (LPBYTE)pszData, sizeof(TCHAR)*(lstrlen(pszData)+1));
+					RegCloseKey(hk);
+				}
+			}
+
+			// ѕеречитать реестр
+			LoadMethods();
+			// » обновить панель
+			#ifdef _UNICODE
+			psi.Control((HANDLE)this, FCTL_UPDATEPANEL, TRUE, 0);
+			#else
+			psi.Control((HANDLE)this, FCTL_UPDATEPANEL, (void*)TRUE);
+			#endif
+			psi.Control((HANDLE)this, FCTL_REDRAWPANEL, F757NA NULL);
+	    }
+	    #ifdef _UNICODE
+	    psi.DialogFree ( hDlg );
+	    #endif
+	    
+	    return;
+	};
+	
+	void EditCurrentItem(BOOL abRegBrowser) {
+		PanelInfo inf; memset(&inf, 0, sizeof(inf));
+		INT_PTR nCurLen = 0;
+		PluginPanelItem* item=NULL;
+		FileMethod* pfm = NULL;
+		FileType* pft = NULL;
+
+		if (psi.Control((HANDLE)this, FCTL_GETPANELINFO, F757NA &inf))
+		{
+			if (inf.ItemsNumber>0 && inf.CurrentItem>0)
+			{
+				#ifdef _UNICODE
+				nCurLen = psi.Control((HANDLE)this, FCTL_GETPANELITEM, inf.CurrentItem, NULL);
+				item = (PluginPanelItem*)calloc(nCurLen,1);
+				if (!psi.Control((HANDLE)this, FCTL_GETPANELITEM, inf.CurrentItem, (LONG_PTR)item)) {
+					free(item);
+					return;
+				}
+				#else
+				item = &(inf.PanelItems[inf.CurrentItem]);
+				#endif
+				
+				if (!abRegBrowser)
+				{
+					if ((item->FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+					{
+						pfm = (FileMethod*)item->UserData;
+						if (pfm && pfm>=pMethods && pfm<(pMethods+nMethCount))
+							EditMethod(pfm);
 					}
-					if (pszNewValue) {
-#ifdef _UNICODE
-						if (!ReadFile(hFile, pMethods[iMeth].pszExecute, nCurSize, &nWrite, NULL)) nWrite = 0;
-						pszNewValue[nWrite/2] = 0;
-						for (wchar_t* pch = pszNewValue; *pch; pch++) {
-							if (*pch == L'\t' || *pch == L'\r' || *pch == L'\n')
-								*pch = L' ';
+				} else {
+					// ќткрыть в плагине "Registry Browser"
+					TCHAR szMacro[MAX_PATH*6]; szMacro[0] = 0;
+					TCHAR szRegPath[MAX_PATH*3]; szRegPath[0] = 0;
+					if ((item->FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+					{
+						pfm = (FileMethod*)item->UserData;
+						if (pfm && pfm>=pMethods && pfm<(pMethods+nMethCount)) {
+							sTemp1[0] = _T('.');
+							lstrcpyW(sTemp1+1, pfm->pft->szExt);
+							if (0==GetString(sTemp1, L"", sTemp2, MAX_PATH)) {
+								lstrcpy_t(szRegPath, MAX_PATH, sTemp2);
+								lstrcpy(szRegPath+lstrlen(szRegPath), _T("\\\\shell\\\\"));							
+								lstrcpy_t(szRegPath+lstrlen(szRegPath), MAX_PATH, pfm->pszRealName);
+							}
 						}
-#else
-						if (!ReadFile(hFile, pMethods[iMeth].pszExecuteA, nCurSize, &nWrite, NULL)) nWrite = 0;
-						pszNewValueA[nWrite] = 0;
-						for (char* pch = pszNewValueA; *pch; pch++) {
-							if (*pch == '\t' || *pch == '\r' || *pch == '\n')
-								*pch = ' ';
+					} else {
+						pft = (FileType*)item->UserData;
+						if (pft && pft>=pTypes && pft<(pTypes+nFileTypesCount)) {
+							szRegPath[0] = _T('.');
+							lstrcpy_t(szRegPath+1, MAX_PATH, pft->szExt);
 						}
-						lstrcpy_t(pszNewValue, nCurSize+1, pszNewValueA);
-#endif
+					}
+					if (szRegPath[0]) {
+						wsprintf(szMacro,
+						#ifdef _UNICODE
+							GetMsg(FTMacro2)
+						#else
+							GetMsg(FTMacro1)
+						#endif
+							, szRegPath);
+					}
 
-						// ”становить в реестре!
-						/*
-						[HKEY_CLASSES_ROOT\ACDC_JPG\shell\edit\command]
-						@="C:\\WINDOWS\\system32\\mspaint.exe \"%1\""
-						*/
-						wchar_t szFullPath[MAX_PATH*3];
-						wchar_t *pszName = pMethods[iMeth].szName;
-						if (*pszName == L'*') {
-							if (lstrcmpiW(pszName+1, szDefaultMethod) == 0)
-								pszName++;
-						}
-						wsprintfW(szFullPath, L"%s\\shell\\%s\\command", pMethods[iMeth].szType, pszName);
-						HKEY hk = NULL;
-						if (RegCreateKeyExW(HKEY_CLASSES_ROOT, szFullPath, NULL, NULL, 0, KEY_ALL_ACCESS, NULL, &hk, NULL)) {
-							wsprintfW(szFullPath, L"Software\\Classes\\%s\\shell\\%s\\command", pMethods[iMeth].szType, pszName);
-							if (RegCreateKeyExW(HKEY_CURRENT_USER, szFullPath, NULL, NULL, 0, KEY_ALL_ACCESS, NULL, &hk, NULL))
-								hk = NULL;							
-						}
-						if (hk) {
-							RegSetValueExW(hk, L"", 0, REG_SZ, (LPBYTE)pszNewValue, 2*(lstrlenW(pszNewValue)+1));
-							RegCloseKey(hk);
-						}
+					if (szMacro[0]) {
+						ActlKeyMacro km = {MCMD_POSTMACROSTRING};
+						km.Param.PlainText.SequenceText = szMacro;
+						psi.AdvControl(psi.ModuleNumber, ACTL_KEYMACRO, &km);
 					}
 				}
-				CloseHandle(hFile); hFile = INVALID_HANDLE_VALUE;
 			}
 		}
-		DeleteFile(szTemp);
-		
-	wrap:
+
 #ifdef _UNICODE
 		if (item) {
 			free(item); item = NULL;
 		}
 #endif
-
-		if (hFile != INVALID_HANDLE_VALUE) {
-			CloseHandle(hFile); hFile = INVALID_HANDLE_VALUE;
-		}
 	};
 	
 public:	
@@ -629,7 +774,7 @@ void WINAPI _export GetPluginInfoW(struct PluginInfo *pi)
 	pi->PluginMenuStringsNumber = 1;
 	pi->PluginConfigStrings = NULL;
 	pi->PluginConfigStringsNumber = 0;
-	pi->CommandPrefix = NULL;
+	pi->CommandPrefix = psi.GetMsg(psi.ModuleNumber, FTPluginPrefix); // "ftypes"
 	pi->Reserved = 'FlTp';
 	MCHKHEAP
 }
@@ -652,6 +797,10 @@ HANDLE WINAPI _export OpenPluginW(int OpenFrom,INT_PTR Item)
 	pPlugin = new FTPlugin();
 	if (!pPlugin) return INVALID_HANDLE_VALUE;
 
+	if ((OpenFrom & 0xFF) == OPEN_COMMANDLINE && Item) {
+		SetDirectoryW ((HANDLE)pPlugin, (LPCTSTR)Item, 0);
+	}
+
 	return pPlugin->LoadTypeList();
 }
 
@@ -659,7 +808,6 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 {
 	FTPlugin* pPlugin = (FTPlugin*)hPlugin;
 	int nCount = 0, i;
-	//LARGE_INTEGER ll;
 	PluginPanelItem* ppi = NULL;
 
 	if (pPlugin->szDir[0]) {
@@ -676,6 +824,7 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 			MCHKHEAP
 
 			for (i=0; i<nCount; i++) {
+				ppi[i].UserData = (DWORD_PTR)(pPlugin->pMethods+i);
 				ppi[i].FindData.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
 				ppi[i].FindData.ftCreationTime = pPlugin->pMethods[i].ftModified;
 				ppi[i].FindData.ftLastAccessTime = pPlugin->pMethods[i].ftModified;
@@ -685,9 +834,9 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 				ppi[i].Description = pPlugin->pMethods[i].pszExecute;
 				ppi[i].FindData.nFileSize = lstrlen(pPlugin->pMethods[i].pszExecute)*2;
 #else
-				lstrcpy(ppi[i].FindData.cFileName, pPlugin->pMethods[i].szNameA);
-				ppi[i].Description = pPlugin->pMethods[i].pszExecuteA;
-				ppi[i].FindData.nFileSizeLow = lstrlenW(pPlugin->pMethods[i].pszExecute);
+				lstrcpy(ppi[i].FindData.cFileName, pPlugin->pMethods[i].szNameO);
+				ppi[i].Description = pPlugin->pMethods[i].pszExecuteO;
+				ppi[i].FindData.nFileSizeLow = lstrlen(pPlugin->pMethods[i].pszExecuteO);
 #endif
 			}
 		}
@@ -702,18 +851,18 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 		MCHKHEAP
 
 		for (i=0; i<nCount; i++) {
+			ppi[i].UserData = (DWORD_PTR)(pPlugin->pTypes+i);
 			ppi[i].FindData.dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
 			ppi[i].FindData.ftCreationTime = pPlugin->pTypes[i].ftModified;
 			ppi[i].FindData.ftLastAccessTime = pPlugin->pTypes[i].ftModified;
 			ppi[i].FindData.ftLastWriteTime = pPlugin->pTypes[i].ftModified;
-			//ll.LowPart = iter->nFileSizeLow;
-			//ll.HighPart = iter->nFileSizeHigh;
-			//ppi[i].FindData.nFileSize = ll.QuadPart;
+
 #ifdef _UNICODE
 			ppi[i].FindData.lpwszFileName = pPlugin->pTypes[i].szExt;
 #else
-			lstrcpy(ppi[i].FindData.cFileName, pPlugin->pTypes[i].szExtA);
+			lstrcpy(ppi[i].FindData.cFileName, pPlugin->pTypes[i].szExtO);
 #endif
+			ppi[i].Description = pPlugin->pTypes[i].szDesc;
 		}
 	}
 	MCHKHEAP
@@ -738,8 +887,15 @@ void WINAPI _export GetOpenPluginInfoW(HANDLE hPlugin,struct OpenPluginInfo *Inf
 #endif
 	Info->HostFile = NULL;
 	Info->PanelTitle = pPlugin->szTitle;
-	Info->Flags = OPIF_USEFILTER|OPIF_USESORTGROUPS|OPIF_USEHIGHLIGHTING|OPIF_ADDDOTS;
+	Info->Flags = OPIF_USEFILTER|OPIF_USESORTGROUPS|OPIF_USEHIGHLIGHTING|OPIF_ADDDOTS|OPIF_RAWSELECTION;
 	MCHKHEAP
+
+    Info->StartPanelMode = _T('0');
+    Info->StartSortMode = SM_NAME;
+    Info->StartSortOrder = 0;
+	
+	Info->PanelModesNumber = 1;
+	Info->PanelModesArray = pPlugin->pPanelModes;
 }
 
 void WINAPI _export ClosePluginW(HANDLE hPlugin)
@@ -756,67 +912,70 @@ int WINAPI _export SetDirectoryW ( HANDLE hPlugin, LPCTSTR Dir, int OpMode )
 	FTPlugin* pPlugin = (FTPlugin*)hPlugin;
 	if (!pPlugin)
 		return FALSE;
-		
-	if ((Dir[0] == _T('\\') && Dir[1] == 0) 
-		|| (Dir[0] == _T('.') && Dir[1] == _T('.') && Dir[2] == 0 && pPlugin->szDir[0] == 0))
-	{
 
+	if (Dir[0] == _T('\\')) {
+		pPlugin->szDir[0] = 0;
+		pPlugin->UpdateTitle();
+		while (*Dir == _T('\\'))
+			Dir++;
+	}
+
+	const TCHAR *pszSlash = _tcschr(Dir, _T('\\'));
+	if (pszSlash) {
+		TCHAR szToken[MAX_PATH];
+		while (pszSlash && Dir[0]) {
+			if ((pszSlash - Dir) >= MAX_PATH)
+				return FALSE;
+
+			memcpy(szToken, Dir, (pszSlash-Dir)*sizeof(TCHAR));
+			szToken[(pszSlash-Dir)] = 0;
+			if (!SetDirectoryW(hPlugin, szToken, OpMode))
+				return FALSE;
+
+			Dir = pszSlash+1;
+			while (*Dir == _T('\\'))
+				Dir++;
+			pszSlash = _tcschr(Dir, _T('\\'));
+		}
+	}
+		
+	if (Dir[0] == _T('.') && Dir[1] == _T('.') && Dir[2] == 0)
+	{
+		if (pPlugin->szDir[0] == 0)
+			return TRUE; // и так в корне?
+
+		// поскольку у нас только один уровень - не заморачиваемс€
 		pPlugin->szDir[0] = 0;
 		pPlugin->UpdateTitle();
 
 		return TRUE;
 	}
 	
-	if (lstrcmp(Dir, _T(".."))==0) {
-		_ASSERTE(pPlugin->nDirLen>0);
-		MCHKHEAP
-		pPlugin->szDir[--(pPlugin->nDirLen)] = 0;
-		wchar_t* pszSlash = wcsrchr(pPlugin->szDir, L'\\');
-		MCHKHEAP
-		if (!pszSlash) {
-			pPlugin->szDir[0] = 0;
-			pPlugin->UpdateTitle();
-			return TRUE;
-		}
-		pszSlash[1] = 0;
-		pPlugin->UpdateTitle();
-		return TRUE;
-	}
-	if (Dir[0] != _T('\\')) {
-		MCHKHEAP
-		int nAddLen = lstrlen(Dir)+1;
-		if ((pPlugin->nDirLen + nAddLen + 1) >= MAX_PLUG_PATH)
-			return FALSE;
-
-		if (pPlugin->nDirLen) {	
-			if (pPlugin->szDir[pPlugin->nDirLen-1]!=L'\\') {
-				pPlugin->szDir[pPlugin->nDirLen] = L'\\';
-				pPlugin->szDir[pPlugin->nDirLen+1] = 0;
-				pPlugin->nDirLen ++;
-			}
-		}
-		
-		lstrcpy_t(pPlugin->szDir+pPlugin->nDirLen, MAX_PLUG_PATH-pPlugin->nDirLen, Dir);
-		MCHKHEAP
-		pPlugin->nDirLen = lstrlenW(pPlugin->szDir);
-		
-		MCHKHEAP
-		pPlugin->UpdateTitle();
-		return TRUE;
-	}
-	return FALSE;
+	if (pPlugin->szDir[0])
+		return FALSE; // у нас только один уровень!
+	
+	lstrcpy_t(pPlugin->szDir, MAX_PLUG_PATH, Dir);
+	MCHKHEAP
+	pPlugin->nDirLen = lstrlenW(pPlugin->szDir);
+	
+	MCHKHEAP
+	pPlugin->UpdateTitle();
+	return TRUE;
 }
 
 int WINAPI _export ProcessKeyW(HANDLE hPlugin,int Key,unsigned int ControlState)
 {
-	//if ((Key & 0xFF) >= VK_F1 && (Key & 0xFF) <= VK_F12)
-	//	CheckCurrentDirectory((FTPlugin*)hPlugin, FALSE);
 	if (((Key & 0xFF) == VK_F4) && ControlState == 0) {
 		FTPlugin* pPlugin = (FTPlugin*)hPlugin;
 		if (pPlugin->szDir[0]) {
-			pPlugin->EditCurrentItem();
+			pPlugin->EditCurrentItem(FALSE);
 			return TRUE;
 		}
+	} else
+	if (((Key & 0xFF) == 'J') && ControlState == PKF_CONTROL) {
+		FTPlugin* pPlugin = (FTPlugin*)hPlugin;
+		pPlugin->EditCurrentItem(TRUE);
+		return TRUE;
 	} else
 	if (((Key & 0xFF) == 'R') && ControlState == PKF_CONTROL) {
 		FTPlugin* pPlugin = (FTPlugin*)hPlugin;
@@ -827,20 +986,3 @@ int WINAPI _export ProcessKeyW(HANDLE hPlugin,int Key,unsigned int ControlState)
 	}
 	return FALSE;
 }
-
-//int WINAPI _export ProcessEditorEventW(int Event,void *Param)
-//{
-//	if (Event == EE_SAVE) {
-//		WindowInfo wi = {-1};
-//		if (psi.AdvControl(psi.ModuleNumber, ACTL_GETWINDOWINFO, &wi)
-//			&& wi.Type == WTYPE_EDITOR)
-//		{
-//			wi.Name=(wchar_t *) malloc(wi.NameSize);
-//			if (psi.AdvControl(psi.ModuleNumber, ACTL_GETWINDOWINFO, &wi))
-//			{
-//			}
-//			free(wi.Name);
-//		}
-//	}
-//	return 0;
-//}

@@ -1,0 +1,7 @@
+REGEDIT4
+
+[-HKEY_CURRENT_USER\Software\Classes\.htm_my]
+[-HKEY_CURRENT_USER\Software\Classes\.html_my]
+[-HKEY_CURRENT_USER\Software\Classes\.skype_my]
+[-HKEY_CURRENT_USER\Software\Classes\FirefoxHTML]
+[-HKEY_CURRENT_USER\Software\Classes\Skype.Content]

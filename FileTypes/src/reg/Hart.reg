@@ -1,0 +1,77 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Classes\.htm]
+@="FirefoxHTML"
+
+[HKEY_CURRENT_USER\Software\Classes\.html]
+@="FirefoxHTML"
+
+[HKEY_CURRENT_USER\Software\Classes\.PML]
+@="ProcMon.Logfile.1"
+
+[HKEY_CURRENT_USER\Software\Classes\.shtml]
+@="FirefoxHTML"
+
+[HKEY_CURRENT_USER\Software\Classes\.skype]
+@="Skype.Content"
+
+[HKEY_CURRENT_USER\Software\Classes\.xht]
+@="FirefoxHTML"
+
+[HKEY_CURRENT_USER\Software\Classes\.xhtml]
+@="FirefoxHTML"
+
+[HKEY_CURRENT_USER\Software\Classes\.xml]
+@="MyHTMLFile"
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML]
+@="Firefox Document"
+"FriendlyTypeName"="Firefox Document"
+"EditFlags"=hex:00,00,01,00
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML\DefaultIcon]
+@="C:\\Program Files\\Mozilla Firefox\\firefox.exe,1"
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML\shell]
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML\shell\open]
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML\shell\open\command]
+@="\"C:\\Program Files\\Mozilla Firefox\\firefox.exe\" -requestPending -osint -url \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML\shell\open\ddeexec]
+@="\"%1\",,0,0,,,,"
+"NoActivateHandler"=""
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML\shell\open\ddeexec\Application]
+@="Firefox"
+
+[HKEY_CURRENT_USER\Software\Classes\FirefoxHTML\shell\open\ddeexec\Topic]
+@="WWW_OpenURL"
+
+[HKEY_CURRENT_USER\Software\Classes\ProcMon.Logfile.1]
+@="ProcMon Log File"
+
+[HKEY_CURRENT_USER\Software\Classes\ProcMon.Logfile.1\DefaultIcon]
+@="\"C:\\Program Files\\SysinternalsSuite\\ProcMon.exe\",0"
+
+[HKEY_CURRENT_USER\Software\Classes\ProcMon.Logfile.1\shell]
+
+[HKEY_CURRENT_USER\Software\Classes\ProcMon.Logfile.1\shell\open]
+
+[HKEY_CURRENT_USER\Software\Classes\ProcMon.Logfile.1\shell\open\command]
+@="\"C:\\Program Files\\SysinternalsSuite\\ProcMon.exe\" /OpenLog \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\Skype.Content]
+@="Skype files"
+
+[HKEY_CURRENT_USER\Software\Classes\Skype.Content\DefaultIcon]
+@="C:\\Program Files\\Skype\\Phone\\Skype.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\Skype.Content\Shell]
+
+[HKEY_CURRENT_USER\Software\Classes\Skype.Content\Shell\Open]
+@="&Open"
+
+[HKEY_CURRENT_USER\Software\Classes\Skype.Content\Shell\Open\Command]
+@="\"C:\\Program Files\\Skype\\Phone\\Skype.exe\" /file:\"%1\""

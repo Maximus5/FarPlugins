@@ -1,3 +1,5 @@
 *.dll
 *.pdb
 /_Arc
+*.mht
+*.htm

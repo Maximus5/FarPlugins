@@ -2,3 +2,25 @@
 
 // Plugin title
 "FileTypes"
+// Plugin prefix
+"ftypes"
+// Panel modes
+"N,Z"
+"16,0"
+// Panel modes
+"N,Z"
+"20,0"
+// Column titles
+"Расширение"
+"Имя"
+"Команда"
+// Buttons
+"OK"
+"Отмена"
+// Method dialog
+"Название метода: "
+"Строка запуска:"
+// Macro for open RegBrowser in FAR1
+"%%OldCount=CmdLine.ItemCount; %%OldPos=CmdLine.CurPos; %%OldCmd=CmdLine.Value; Esc Tab $Text \"reg:HKEY_CLASSES_ROOT\\\\%s\" Enter $If (%%OldCount>0) $Text %%OldCmd $end"
+// Macro for open RegBrowser in FAR2
+"%%OldCount=CmdLine.ItemCount; %%OldPos=CmdLine.CurPos; %%OldCmd=CmdLine.Value; Esc Tab print(\"reg:HKEY_CLASSES_ROOT\\\\%s\") Enter $If (%%OldCount>0) print(%%OldCmd) $end"

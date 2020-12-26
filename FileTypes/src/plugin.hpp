@@ -8,10 +8,6 @@
   Plugin API for FAR Manager 2.0 build 1199
 */
 
-#if defined(_MSC_VER)
-#pragma message ("Using plugin.hpp for FAR Manager 2.0 build 1199")
-#endif
-
 /*
 Copyright (c) 1996 Eugene Roshal
 Copyright (c) 2000 Far Group

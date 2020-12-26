@@ -29,6 +29,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #include <wintrust.h>
 
+#ifndef FILE_ATTRIBUTE_RECALL_ON_OPEN
+#define FILE_ATTRIBUTE_RECALL_ON_OPEN 0x00040000  // NOLINT(cppcoreguidelines-macro-usage)
+#endif
+#ifndef FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS
+#define FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS 0x00400000  // NOLINT(cppcoreguidelines-macro-usage)
+#endif
+
 #undef USE_TRACE
 //#define USE_TRACE
 
@@ -49,7 +56,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#include "../../../common/Defines.h"
 	#include "../../../common/Memory.h"
 #else
-	#define _wsprintf wsprintfW
+	// ReSharper disable once CppInconsistentNaming
+	#define _wsprintf wsprintfW  // NOLINT(cppcoreguidelines-macro-usage)
 	#define SKIPLEN(x)
 #endif
 
@@ -58,6 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef _DEBUG
+	// ReSharper disable once CppInconsistentNaming
 	#define Msg(f,s) //MessageBoxA(NULL,s,f,MB_OK|MB_SETFOREGROUND)
 #else
 	#define Msg(f,s)
@@ -2888,6 +2897,17 @@ intptr_t WINAPI GetContentDataW(struct GetContentDataInfo *Info)
 	//	lstrcat(pszBuffer, FilePath);
 	//	pszUNCPath = pszBuffer;
 	//}
+
+	// Don't trigger downloads of cloud files
+	const DWORD fileAttrs = GetFileAttributesW(pszUNCPath);
+	if (fileAttrs & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS || fileAttrs & FILE_ATTRIBUTE_RECALL_ON_OPEN)
+	{
+		LPCWSTR pszCloud = L"[cloud]";
+		nLen = lstrlen(pszCloud)+1;
+		*CustomData = (wchar_t*)malloc(nLen*2);
+		lstrcpy(*CustomData, pszCloud);
+		return TRUE;
+	}
 	
 	HANDLE hFile = CreateFileW(pszUNCPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0,0);
 	if (hFile == INVALID_HANDLE_VALUE)

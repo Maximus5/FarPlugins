@@ -1,3 +1,10 @@
+Version 3.2
+
+* Don't load cloud files (OneDrive free up space feature).
+
+
+Version 3.1
+
 * '.sys' extension added
 
 * More extensions supported (dl, so, fmt, module, fll, ahp, t32, t64, sfx).

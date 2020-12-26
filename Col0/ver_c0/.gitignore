@@ -15,3 +15,8 @@
 /final.64W.vc
 /makefile_gcc
 /pe.def
+/build
+/debug
+/ver_c0.x86
+/ver_c0.x64
+/.vs

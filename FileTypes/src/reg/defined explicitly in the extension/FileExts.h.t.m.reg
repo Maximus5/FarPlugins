@@ -1,0 +1,17 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm]
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\OpenWithList]
+"a"="notepad.exe"
+"MRUList"="cabdgef"
+"b"="partyp.exe"
+"c"="iexplore.exe"
+"d"="PB90.EXE"
+"e"="lstrade.exe"
+"f"="exchange.exe"
+"g"="VistaStartMenu.exe"
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\OpenWithProgids]
+"htmlfile"=hex(0):
+

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
-	Name="FileTypesper"
+	Version="9.00"
+	Name="FileTypes"
 	ProjectGUID="{199ABD7A-9291-406F-9D92-56AB9E0FA7DB}"
 	RootNamespace="FileTypesper"
 	TargetFrameworkVersion="0"
@@ -76,7 +76,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="C:\Utils\Far180\Plugins\FileTypes\FileTypesW.dll"
+				OutputFile="T:\Far3\Plugins\FileTypes\FileTypesW.dl_"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile="exportW.vc.def"
@@ -528,7 +528,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="$(ProjectDir)lang.cmd $(TargetDir)"
+					CommandLine="$(ProjectDir)lang.cmd $(TargetDir)&#x0D;&#x0A;"
 					Outputs="FileTypes_Lang.h"
 				/>
 			</FileConfiguration>

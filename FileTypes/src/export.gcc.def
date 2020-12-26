@@ -10,4 +10,5 @@ EXPORTS
 	ClosePluginW=ClosePluginW@4
 	SetDirectoryW=SetDirectoryW@12
 	ProcessKeyW=ProcessKeyW@12
+	CompareW=CompareW@16
 ;	ProcessEditorEventW=ProcessEditorEventW@8

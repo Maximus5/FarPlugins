@@ -8,11 +8,13 @@
 "N,Z"
 "16,0"
 // Panel modes
-"N,Z"
-"20,0"
+"N,O,Z"
+"20,1,0"
 // Column titles
 "Extension"
+"Description"
 "Name"
+"#"
 "Command"
 // Buttons
 "OK"

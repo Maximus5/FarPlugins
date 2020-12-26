@@ -1,0 +1,32 @@
+REGEDIT4
+
+
+[HKEY_CLASSES_ROOT\tlhfile]
+@="Typelib Generated C/C++ Header File"
+"AlwaysShowExt"="1"
+
+[HKEY_CLASSES_ROOT\tlhfile\DefaultIcon]
+@="C:\\Program Files\\Microsoft Visual Studio .NET\\Vc7\\vcpackages\\VCProject.dll,-5"
+
+[HKEY_CLASSES_ROOT\tlhfile\shell]
+
+[HKEY_CLASSES_ROOT\tlhfile\shell\&Open with EVC4]
+@="&Open with EVC4"
+
+[HKEY_CLASSES_ROOT\tlhfile\shell\&Open with EVC4\command]
+@="\"C:\\MSVC.CE\\eVC4\\Common\\EVC\\Bin\\evc.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\tlhfile\shell\Open]
+
+[HKEY_CLASSES_ROOT\tlhfile\shell\Open\command]
+@="\"C:\\Program Files\\Microsoft Visual Studio .NET\\Common7\\IDE\\devenv.exe\" /dde"
+
+[HKEY_CLASSES_ROOT\tlhfile\shell\Open\ddeexec]
+@="Open(\"%1\")"
+
+[HKEY_CLASSES_ROOT\tlhfile\shell\Open\ddeexec\application]
+@="devenv"
+
+[HKEY_CLASSES_ROOT\tlhfile\shell\Open\ddeexec\topic]
+@="system"
+

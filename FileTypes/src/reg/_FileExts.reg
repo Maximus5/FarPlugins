@@ -1,0 +1,61 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.tlb\OpenWithList]
+"a"="OLEVIEW.EXE"
+"MRUList"="acb"
+"b"="MSDEV.EXE"
+"c"="vbsedit.exe"
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.tlb\OpenWithProgids]
+"tlbfile"=hex(0):
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Vbsedit.exe]
+@="C:\\Program Files\\Vbsedit\\Vbsedit.exe"
+
+[HKEY_CLASSES_ROOT\tlbfile]
+@="Type Library"
+"AlwaysShowExt"=""
+
+[HKEY_CLASSES_ROOT\tlbfile\DefaultIcon]
+@="C:\\MSVS\\Common\\MSDev98\\Bin\\msdev.exe,-20215"
+
+
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wma]
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wma\OpenWithProgids]
+"WMAFile"=hex(0):
+"VLC.wma"=hex(0):
+"Winamp.File"=hex(0):
+"foobar2000.WMA"=hex(0):
+"Winamp.File.WMA"=hex(0):
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.zip]
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.zip\OpenWithList]
+"a"="partyp.exe"
+"MRUList"="gfdeacb"
+"b"="avp.exe"
+"c"="far.exe"
+"d"="pb90.exe"
+"e"="dexplore.exe"
+"f"="conemu.exe"
+"g"="FarS.exe"
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.zip\OpenWithProgids]
+"CompressedFolder"=hex(0):
+
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\excel.exe]
+"Path"="C:\\Program Files\\Microsoft Office\\OFFICE11\\"
+@="C:\\PROGRA~1\\MICROS~3\\OFFICE11\\EXCEL.EXE"
+"SaveURL"="1"
+"useURL"="1"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Far.exe]
+@="e:\\far\\Far.exe"
+"Path"="e:\\far"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Vbsedit.exe]
+@="C:\\Program Files\\Vbsedit\\Vbsedit.exe"
+

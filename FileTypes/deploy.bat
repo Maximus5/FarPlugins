@@ -12,8 +12,8 @@ set ex7zlist=-x!*.map -x!*.exp -x!*.lib -x!*.pdb -x!*.suo -x!*.user -x!*.ncb -x!
 
 if %COMPUTERNAME%==MAX goto skip_svn
 
-xcopy /S /U /M /Y *.lng F:\VCProject\FarPlugin\ConEmu\WWW\root\trunk\FileTypes\
-xcopy /S /U /M /Y src\*.* F:\VCProject\FarPlugin\ConEmu\WWW\root\trunk\FileTypes\src\
+xcopy /S /U /Y *.lng F:\VCProject\FarPlugin\ConEmu\WWW\root\trunk\FileTypes\
+xcopy /S /U /Y src\*.* F:\VCProject\FarPlugin\ConEmu\WWW\root\trunk\FileTypes\src\
 
 :skip_svn
 

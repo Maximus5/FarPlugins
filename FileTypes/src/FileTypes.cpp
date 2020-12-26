@@ -36,6 +36,7 @@
     #define SETTEXT(itm,txt) itm.PtrData = txt
     #define SETTEXTPRINT(itm,fmt,arg) wsprintf(pszBuf, fmt, arg); SETTEXT(itm,pszBuf); pszBuf+=lstrlen(pszBuf)+2;
     #define _tcstoi _wtoi
+	#define FILENAMEPTR(p) (p).lpwszFileName
 #else
     #define _tcsscanf sscanf
     #define SETMENUTEXT(itm,txt) lstrcpy(itm.Text, txt);
@@ -45,6 +46,7 @@
     #define SETTEXT(itm,txt) lstrcpy(itm.Data, txt)
     #define SETTEXTPRINT(itm,fmt,arg) wsprintf(itm.Data, fmt, arg)
     #define _tcstoi atoi
+	#define FILENAMEPTR(p) (p).cFileName
 #endif
 #define NUM_ITEMS(X) (sizeof(X)/sizeof(X[0]))
 
@@ -54,16 +56,16 @@ struct FarStandardFunctions FSFW;
 int WINAPI _export SetDirectoryW ( HANDLE hPlugin, LPCTSTR Dir, int OpMode );
 
 
-LONG GetString(LPCWSTR asKey, LPCWSTR asName, wchar_t* pszValue, DWORD cCount)
+LONG GetString(LPCWSTR asKey, LPCWSTR asName, wchar_t* pszValue, DWORD cCount, HKEY hRoot=HKEY_CLASSES_ROOT)
 {
 	HKEY hk; LONG nRegRc; DWORD nSize;
 	
 	pszValue[0] = 0;
 
-	nRegRc = RegOpenKeyExW(HKEY_CLASSES_ROOT, asKey, 0, KEY_READ, &hk);
+	nRegRc = RegOpenKeyExW(hRoot, asKey, 0, KEY_READ, &hk);
 	if (!nRegRc) {
 		nSize = (cCount-1)*sizeof(*pszValue);
-		nRegRc = RegQueryValueExW(hk, NULL, NULL, NULL, (LPBYTE)pszValue, &nSize);
+		nRegRc = RegQueryValueExW(hk, asName, NULL, NULL, (LPBYTE)pszValue, &nSize);
 		if (nRegRc) {
 			*pszValue = 0;
 		} else {
@@ -103,13 +105,13 @@ void lstrcpy_t(wchar_t* pszDst, int cMaxSize, const char* pszSrc)
 }
 #endif
 
-wchar_t* GetString(LPCWSTR asKey, LPCWSTR asName)
+wchar_t* GetString(LPCWSTR asKey, LPCWSTR asName, HKEY hRoot=HKEY_CLASSES_ROOT)
 {
 	HKEY hk; LONG nRegRc; DWORD nSize;
 	wchar_t* pszValue = NULL;
 	wchar_t szTemp[MAX_PATH];
 	
-	nRegRc = RegOpenKeyExW(HKEY_CLASSES_ROOT, asKey, 0, KEY_READ, &hk);
+	nRegRc = RegOpenKeyExW(hRoot, asKey, 0, KEY_READ, &hk);
 	if (!nRegRc) {
 		nSize = sizeof(szTemp)-2;
 		nRegRc = RegQueryValueExW(hk, NULL, NULL, NULL, (LPBYTE)szTemp, &nSize);
@@ -137,22 +139,39 @@ TCHAR *GetMsg(int MsgId) {
     return((TCHAR *)psi.GetMsg(psi.ModuleNumber, MsgId));
 }
 
-typedef struct tag_FileType {
+#define FTMAGIC_TYPE 0x71235693
+#define FTMAGIC_METH 0x61245952
+
+#define FTO_HKCR 1       // Информация найдена в HKEY_CLASSES_ROOT (например HKCR\.jpg)
+#define FTO_PROGID 2 // [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.jpg\OpenWithProgids]
+#define FTO_USERCHOICE 4 // [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.jpg\UserChoice]
+
+struct FileType
+{
+	DWORD nMagic;
+	DWORD nFlags; // FTO_xxx
 	FILETIME  ftModified;
 	wchar_t   szExt[16]; // Если больше - не показываем
 	#ifndef _UNICODE
 	char      szExtO[16];
 	#endif
 	TCHAR     szDesc[128];
-} FileType;
+};
 
-typedef struct tag_FileMethod {
+struct FileMethod
+{
+	DWORD nMagic;
+	DWORD nFlags; // FTO_xxx
 	FileType* pft;
 	FILETIME  ftModified;
 	wchar_t   szName[MAX_PATH+1]; // Если больше - не показываем
 	wchar_t  *pszRealName;
+	TCHAR     szSort[2]; // '*' для метода по умолчанию
 	
 	wchar_t   szType[MAX_PATH+1];
+
+	//HKEY      hRegRoot;
+	wchar_t   szRegPath[MAX_PATH*2];
 
 #ifdef _UNICODE
 	wchar_t  *pszExecute;
@@ -162,7 +181,7 @@ typedef struct tag_FileMethod {
 	char      szNameO[MAX_PATH+1];
 #endif
 
-} FileMethod;
+};
 
 #define MAX_PLUG_PATH (MAX_PATH*3)
 
@@ -186,15 +205,16 @@ public:
 	
 	//
 	PanelMode pPanelModes[10], ExtPanelMode, MethPanelMode;
-	const TCHAR* sExtPanelTitles[4];
-	const TCHAR* sMethPanelTitles[2];
+	const TCHAR* sExtPanelTitles[2];
+	const TCHAR* sMethPanelTitles[3];
 
 	//
 	wchar_t sTemp1[MAX_PATH+1], sTemp2[MAX_PATH+1], sTemp3[MAX_PATH+1];
 	TCHAR sDialogExecBuf[8000];
 	
 public:
-	FTPlugin() {
+	FTPlugin()
+	{
 		szDir[0] = szDefaultMethod[0] = 0;
 		UpdateTitle();
 		nFileTypesCount = nMaxTypesCount = nMethCount = nMaxMethCount = 0;
@@ -204,14 +224,16 @@ public:
 		memset(&ExtPanelMode, 0, sizeof(ExtPanelMode));
 		memset(&MethPanelMode, 0, sizeof(MethPanelMode));
 		
-		sExtPanelTitles[0] = sExtPanelTitles[1] = sExtPanelTitles[2] = sExtPanelTitles[3] = psi.GetMsg(psi.ModuleNumber, FTTitleExt);
+		sExtPanelTitles[0] = GetMsg(FTTitleName);
+		sExtPanelTitles[1] = GetMsg(FTTitleDescription);
 		ExtPanelMode.ColumnTypes = GetMsg(FTListColumnTypes);
 		ExtPanelMode.ColumnWidths = GetMsg(FTListColumnWidth);
 		ExtPanelMode.ColumnTitles = (TCHAR**)sExtPanelTitles;
 		ExtPanelMode.DetailedStatus = TRUE;
 		
 		sMethPanelTitles[0] = GetMsg(FTTitleName);
-		sMethPanelTitles[1] = GetMsg(FTTitleCommand);
+		sMethPanelTitles[1] = GetMsg(FTTitleSort);
+		sMethPanelTitles[2] = GetMsg(FTTitleCommand);
 		MethPanelMode.ColumnTypes = GetMsg(FTMethColumnTypes);
 		MethPanelMode.ColumnWidths = GetMsg(FTMethColumnWidth);
 		MethPanelMode.ColumnTitles = (TCHAR**)sMethPanelTitles;
@@ -221,26 +243,32 @@ public:
 	};
 	
 public:
-	void UpdateTitle() {
+	void UpdateTitle()
+	{
 		lstrcpy(szTitle, _T("FileTypes:"));
 		
 		nDirLen = (int)lstrlenW(szDir);
-		if (nDirLen) {
+		if (nDirLen)
+		{
 			while (nDirLen && szDir[nDirLen-1] == L'\\')
 				szDir[nDirLen--] = 0;
 		}
 
 		pCurType = NULL;
-		for (int i=0; i<nFileTypesCount; i++) {
-			if (!lstrcmpiW(szDir, pTypes[i].szExt)) {
+		for (int i=0; i<nFileTypesCount; i++)
+		{
+			if (!lstrcmpiW(szDir, pTypes[i].szExt))
+			{
 				pCurType = pTypes+i; break;
 			}
 		}
-		if (!pCurType) {
+		if (!pCurType)
+		{
 			szDir[0] = 0; nDirLen = 0;
 		}
 		
-		if (szDir[0]) {
+		if (szDir[0])
+		{
 			#ifndef _UNICODE
 			lstrcpy_t(szDirA, MAX_PLUG_PATH, szDir);
 			lstrcpyn(szTitle+10, szDirA, MAX_PATH*2);
@@ -260,9 +288,12 @@ public:
 		else
 			pPanelModes[0] = ExtPanelMode;
 	};
-	void FreeMethods() {
-		if (pMethods) {
-			for (int i = 0; i < nMethCount; i++) {
+	void FreeMethods()
+	{
+		if (pMethods)
+		{
+			for (int i = 0; i < nMethCount; i++)
+			{
 				#ifdef _UNICODE
 				if (pMethods[i].pszExecute)
 					free(pMethods[i].pszExecute);
@@ -278,16 +309,20 @@ public:
 		nMethCount = nMaxMethCount = 0;
 		szDefaultMethod[0] = 0;
 	};
-	void FreeTypeList() {
+	void FreeTypeList()
+	{
 		FreeMethods();
-		if (pTypes) {
+		if (pTypes)
+		{
 			free(pTypes); pTypes = NULL;
 		}
 		nFileTypesCount = nMaxTypesCount = 0;
 	};
-	BOOL AddType(const wchar_t* pszExt, FILETIME ftModified) {
+	BOOL AddType(const wchar_t* pszExt, FILETIME ftModified, DWORD anFlags/*FTO_xxx*/)
+	{
 		_ASSERTE(nMaxTypesCount > 0 && pTypes != NULL);
-		if (nFileTypesCount >= nMaxTypesCount) {
+		if (nFileTypesCount >= nMaxTypesCount)
+		{
 			int nMaxTypes = nMaxTypesCount + 1024;
 			FileType* pNewTypes = (FileType*)malloc(nMaxTypes*sizeof(FileType));
 			if (!pNewTypes)
@@ -298,7 +333,22 @@ public:
 			nMaxTypesCount = nMaxTypes;
 		}
 		_ASSERTE(lstrlenW(pszExt) < 16);
+		
+		if (anFlags & (FTO_PROGID|FTO_USERCHOICE))
+		{
+			for (int i = 0; i < nFileTypesCount; i++)
+			{
+				if (lstrcmpW(pszExt, pTypes[i].szExt) == 0)
+				{
+					pTypes[nFileTypesCount].nFlags |= anFlags;
+					return TRUE; // уже добавлено, обновляем только флаги
+				}
+			}
+			
+		}
 
+		pTypes[nFileTypesCount].nMagic = FTMAGIC_TYPE;
+		pTypes[nFileTypesCount].nFlags = anFlags;
 		lstrcpyW(pTypes[nFileTypesCount].szExt, pszExt);
 #ifndef _UNICODE
 		lstrcpy_t((char*)(pTypes[nFileTypesCount].szExtO), 16, pszExt);
@@ -308,11 +358,14 @@ public:
 		nFileTypesCount++;
 		return TRUE;
 	};
-	BOOL AddMethod(const wchar_t* pszType, const wchar_t* pszName, wchar_t** pszExecute, FILETIME ftModified, FileType* pft) {
+	BOOL AddMethod(const wchar_t* pszType, const wchar_t* pszName, wchar_t** pszExecute, FILETIME ftModified,
+		FileType* pft, /*HKEY hRoot,*/ const wchar_t* pszRegPath, DWORD anFlags/*FTO_xxx*/)
+	{
 		_ASSERTE(nMaxMethCount > 0 && pMethods != NULL);
 		_ASSERTE(pszExecute && *pszExecute);
 		
-		if (nMethCount >= nMaxMethCount) {
+		if (nMethCount >= nMaxMethCount)
+		{
 			int nMaxMth = nMaxMethCount + 1024;
 			FileMethod* pNewMethods = (FileMethod*)malloc(nMaxMth*sizeof(FileMethod));
 			if (!pNewMethods)
@@ -323,18 +376,46 @@ public:
 			nMaxMethCount = nMaxMth;
 		}
 
+		// Одноименные - не добавлять
+		for (int i = 0; i < nMethCount; i++)
+		{
+			if (lstrcmpW(pMethods[i].szName, pszName) == 0)
+				return TRUE;
+		}
+
+		pMethods[nMethCount].nMagic = FTMAGIC_METH;
+		pMethods[nMethCount].nFlags = anFlags;
+		//pMethods[nMethCount].hRegRoot = hRoot;
+		if (lstrlen(pszRegPath) >= NUM_ITEMS(pMethods[nMethCount].szRegPath))
+		{
+			_ASSERTE(lstrlen(pszRegPath) < NUM_ITEMS(pMethods[nMethCount].szRegPath));
+			pMethods[nMethCount].szRegPath[0] = 0;
+		}
+		else
+		{
+			lstrcpyW(pMethods[nMethCount].szRegPath, pszRegPath);
+		}
+
 		pMethods[nMethCount].pft = pft;
 		
 		_ASSERTE(lstrlenW(pszName) <= (MAX_PATH-1));
 		_ASSERTE(lstrlenW(pszType) <= (MAX_PATH));
-		if (szDefaultMethod[0] && lstrcmpiW(pszName, szDefaultMethod) == 0) {
-			pMethods[nMethCount].szName[0] = L'*';
-			lstrcpyW(pMethods[nMethCount].szName+1, pszName);
-			pMethods[nMethCount].pszRealName = pMethods[nMethCount].szName+1;
-		} else {
-			lstrcpyW(pMethods[nMethCount].szName, pszName);
-			pMethods[nMethCount].pszRealName = pMethods[nMethCount].szName;
+		if (szDefaultMethod[0] && lstrcmpiW(pszName, szDefaultMethod) == 0)
+		{
+			//pMethods[nMethCount].szName[0] = L'*';
+			pMethods[nMethCount].szSort[0] = L'*'; pMethods[nMethCount].szSort[1] = 0;
+			//lstrcpyW(pMethods[nMethCount].szName+1, pszName);
+			//pMethods[nMethCount].pszRealName = pMethods[nMethCount].szName+1;
 		}
+		else
+		{
+			//lstrcpyW(pMethods[nMethCount].szName, pszName);
+			pMethods[nMethCount].szSort[0] = 0;
+			//pMethods[nMethCount].pszRealName = pMethods[nMethCount].szName;
+		}
+		lstrcpyW(pMethods[nMethCount].szName, pszName);
+		pMethods[nMethCount].pszRealName = pMethods[nMethCount].szName;
+
 		lstrcpyW(pMethods[nMethCount].szType, pszType);
 		pMethods[nMethCount].ftModified = ftModified;
 
@@ -344,7 +425,8 @@ public:
 #else
 		lstrcpy_t(pMethods[nMethCount].szNameO, MAX_PATH+1, pMethods[nMethCount].szName);
 		
-		if (*pszExecute && **pszExecute) {
+		if (*pszExecute && **pszExecute)
+		{
 			int nLen = lstrlenW(*pszExecute) + 1;
 			
 			pMethods[nMethCount].pszExecuteA = (char*)malloc(nLen);
@@ -353,7 +435,9 @@ public:
 			pMethods[nMethCount].pszExecuteO = (char*)malloc(nLen+1);
 			WideCharToMultiByte(CP_OEMCP, 0, *pszExecute, nLen, pMethods[nMethCount].pszExecuteO, nLen, 0,0);
 			
-		} else {
+		}
+		else
+		{
 			pMethods[nMethCount].pszExecuteA = NULL;
 			pMethods[nMethCount].pszExecuteO = NULL;
 		}
@@ -363,18 +447,24 @@ public:
 		
 		return TRUE;
 	};
-	void LoadTypeDesc(FileType* pft) {
+	void LoadTypeDesc(FileType* pft)
+	{
 		pft->szDesc[0] = 0;
 		sTemp1[0] = L'.'; lstrcpyW(sTemp1+1, pft->szExt);
-		if (0==GetString(sTemp1, L"", sTemp2, MAX_PATH+1)) {
-			if (0==GetString(sTemp2, L"", sTemp3, MAX_PATH+1)) {
+		if (0==GetString(sTemp1, L"", sTemp2, MAX_PATH+1))
+		{
+			if (0==GetString(sTemp2, L"", sTemp3, MAX_PATH+1))
+			{
 				lstrcpy_t(pft->szDesc, 128, sTemp3);
-			} else {
+			}
+			else
+			{
 				lstrcpy_t(pft->szDesc, 128, sTemp2);
 			}
 		}
 	};
-	HANDLE LoadTypeList() {
+	HANDLE LoadTypeList()
+	{
 		wchar_t szName[255];
 		DWORD nSize, i;
 		FILETIME  ftModified;
@@ -384,31 +474,91 @@ public:
 		FreeTypeList();
 		
 		pTypes = (FileType*)malloc(nMaxTypes*sizeof(FileType));
-		if (pTypes == NULL) {
+		if (pTypes == NULL)
+		{
 			_ASSERTE(pTypes!=NULL);
 			goto wrap;
 		}
 		nMaxTypesCount = nMaxTypes;
 		
-		
-		for (i = 0;; i++) {
-			nSize = 255;
-			nRegRc = RegEnumKeyExW(HKEY_CLASSES_ROOT, i, szName, &nSize, NULL, NULL, NULL, &ftModified);
-			if (nRegRc == ERROR_SUCCESS) {
-				if (szName[0] == L'.' && lstrlenW(szName) < 16) {
-					if (!AddType(szName+1, ftModified)) {
-						_ASSERT(FALSE);
-						break;
+
+		for (int t = 0; t <= 1; t++)
+		{
+			HKEY hRoot = HKEY_CLASSES_ROOT;
+			if (t)
+			{
+				if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts", 0, KEY_READ, &hRoot) != 0)
+				{
+					continue;
+				}
+			}
+			
+			for (i = 0;; i++)
+			{
+				nSize = 255;
+				nRegRc = RegEnumKeyExW(hRoot, i, szName, &nSize, NULL, NULL, NULL, &ftModified);
+				if (nRegRc == ERROR_SUCCESS)
+				{
+					if (szName[0] == L'.' && szName[1] && lstrlenW(szName) < 16)
+					{
+						// Переведем в нижний регистр, для удобства сравнения/поиска
+						int nNameLen = lstrlenW(szName);
+						CharLowerBuffW(szName, nNameLen);
+
+						DWORD nFlags = 0;
+						
+						// Проверить, а что там есть, собстно
+						if (t)
+						{
+							HKEY hUserChoice = NULL;
+							lstrcpyW(szName+nNameLen, L"\\UserChoice");
+							if (RegOpenKeyExW(hRoot, szName, 0, KEY_READ, &hUserChoice) == 0)
+							{
+								nFlags = FTO_USERCHOICE;
+								szName[nNameLen] = 0;
+								RegCloseKey(hUserChoice);
+							}
+							else
+							{
+								lstrcpyW(szName+nNameLen, L"\\OpenWithProgids");
+								if (RegOpenKeyExW(hRoot, szName, 0, KEY_READ, &hUserChoice) == 0)
+								{
+									nFlags = FTO_PROGID;
+									szName[nNameLen] = 0;
+									RegCloseKey(hUserChoice);
+								}
+								else
+								{
+									continue; // Другое пока не поддерживается
+								}
+							}
+						}
+						
+						// Добавляем/обновляем
+						if (!AddType(szName+1, ftModified, nFlags))
+						{
+							_ASSERT(FALSE);
+							break;
+						}
 					}
 				}
-			} else if (nRegRc == ERROR_NO_MORE_ITEMS) {
-				break; // Ключи кончились
-			} else if (nRegRc == ERROR_MORE_DATA) {
-				// Слишком длинное имя ключа - не интересует
-			} else {
-				_ASSERT(nRegRc==0);
-			}
-		}
+				else if (nRegRc == ERROR_NO_MORE_ITEMS)
+				{
+					break; // Ключи кончились
+				}
+				else if (nRegRc == ERROR_MORE_DATA)
+				{
+					// Слишком длинное имя ключа - не интересует
+				}
+				else
+				{
+					_ASSERT(nRegRc==0);
+				}
+			} // for (i = 0;; i++)
+			
+			if (hRoot && hRoot != HKEY_CLASSES_ROOT)
+				RegCloseKey(hRoot);
+		} // for (int t = 0; t <= 1; t++)
 
 		for (i = 0; i<(DWORD)nFileTypesCount; i++)
 			LoadTypeDesc(pTypes+i);
@@ -420,86 +570,201 @@ public:
 		return INVALID_HANDLE_VALUE;
 	};
 	
-	BOOL LoadMethods() {
+	// hkFrom - для удобства. Это всегда подключ в HKCR
+	BOOL LoadMethodsFrom(HKEY hkFrom, LPCWSTR asType, DWORD anFlags)
+	{
 		// Показать настроенные методы запуска
 		LONG nRegRc;
-		wchar_t szPath[MAX_PATH*3], szName[MAX_PATH+1], szType[MAX_PATH+1];
-		szPath[0] = L'.'; lstrcpyW(szPath+1, szDir);
+		HKEY hkSubst = NULL;
+		wchar_t szPath[MAX_PATH*3], szName[MAX_PATH+1], szSubstName[MAX_PATH+1];
+
+		// "HKCR\AcroExch.Document" заменить на "HKCR\AcroExch.Document.7"
+		// по значению HKCR\AcroExch.Document\CurVer\(Default)"
+		nRegRc = GetString(L"CurVer", L"", szSubstName, MAX_PATH, hkFrom);
+		if (nRegRc == 0 && *szSubstName)
+		{
+			nRegRc = RegOpenKeyExW(HKEY_CLASSES_ROOT, szSubstName, 0, KEY_READ, &hkSubst);
+			if (nRegRc == 0)
+			{
+				hkFrom = hkSubst;
+				asType = szSubstName;
+			}
+		}
+
+		//szPath[0] = L'.'; lstrcpyW(szPath+1, szDir);
+		//nRegRc = GetString(szPath, L"", szType, MAX_PATH);
+		//if (nRegRc != 0)
+		//	return FALSE;
+		//lstrcpyW(szPath, szType); lstrcatW(szPath, L"\\shell");
 		
-		FreeMethods();
-		
-		nRegRc = GetString(szPath, L"", szType, MAX_PATH);
-		if (nRegRc != 0)
-			return FALSE;
-		
-		
-		lstrcpyW(szPath, szType); lstrcatW(szPath, L"\\shell");
-		nRegRc = GetString(szPath, L"", szDefaultMethod, MAX_PATH);
+		lstrcpyW(szPath, L"shell");
+		nRegRc = GetString(szPath, L"", szDefaultMethod, MAX_PATH, hkFrom);
 		if (nRegRc) szDefaultMethod[0] = 0;
 		
 		
 		HKEY hk = NULL;
 		DWORD nSize, i;
 		FILETIME  ftModified;
-		LONG nMaxMth = 32;
 		wchar_t* pszExecute = NULL;
 		
-		nRegRc = RegOpenKeyExW(HKEY_CLASSES_ROOT, szPath, 0, KEY_READ, &hk);
+		nRegRc = RegOpenKeyExW(hkFrom, szPath, 0, KEY_READ, &hk);
 		if (nRegRc)
-			return FALSE;
-		
-		pMethods = (FileMethod*)malloc(nMaxMth*sizeof(FileMethod));
-		if (pMethods == NULL) {
-			_ASSERTE(pMethods!=NULL);
+		{
+			if (hkSubst)
+				RegCloseKey(hkSubst);
 			return FALSE;
 		}
-		nMaxMethCount = nMaxMth;
+		
+		//LONG nMaxMth = 32;
+		//pMethods = (FileMethod*)malloc(nMaxMth*sizeof(FileMethod));
+		if (pMethods == NULL)
+		{
+			_ASSERTE(pMethods!=NULL);
+			if (hkSubst)
+				RegCloseKey(hkSubst);
+			return FALSE;
+		}
+		//nMaxMethCount = nMaxMth;
 		
 
 		wchar_t* pszSlash = szPath + lstrlenW(szPath);
 		*(pszSlash++) = L'\\';
 		
-		for (i = 0;; i++) {
+		for (i = 0;; i++)
+		{
 			nSize = MAX_PATH-1;
 			nRegRc = RegEnumKeyExW(hk, i, szName, &nSize, NULL, NULL, NULL, &ftModified);
-			if (nRegRc == ERROR_SUCCESS) {
+			if (nRegRc == ERROR_SUCCESS)
+			{
 				if (lstrlenW(szName) >= (MAX_PATH))
 					continue;
 				
 				lstrcpyW(pszSlash, szName); lstrcatW(pszSlash, L"\\command");
-				pszExecute = GetString(szPath, L"");
+				pszExecute = GetString(szPath, L"", hkFrom);
 				if (!pszExecute) pszExecute = lstrdup(L"");
 					
-				if (!AddMethod(szType, szName, &pszExecute, ftModified, pCurType)) {
+				if (!AddMethod(asType, szName, &pszExecute, ftModified, pCurType, /*HKEY_CLASSES_ROOT,*/ szPath, anFlags))
+				{
 					_ASSERT(FALSE);
 					if (pszExecute) { free(pszExecute); pszExecute = NULL; }
 					break;
 				}
 
-			} else if (nRegRc == ERROR_NO_MORE_ITEMS) {
+			}
+			else if (nRegRc == ERROR_NO_MORE_ITEMS)
+			{
 				break; // Ключи кончились
-			} else if (nRegRc == ERROR_MORE_DATA) {
+			}
+			else if (nRegRc == ERROR_MORE_DATA)
+			{
 				// Слишком длинное имя ключа - не интересует
-			} else {
+			}
+			else
+			{
 				_ASSERT(nRegRc==0);
 			}
 		}
 		
 		if (pszExecute) { free(pszExecute); pszExecute = NULL; }
 		
-		if (hk) {
+		if (hk)
+		{
 			RegCloseKey(hk); hk = NULL;
+		}
+		if (hkSubst)
+		{
+			RegCloseKey(hkSubst);
 		}
 		return TRUE;
 	};
+	BOOL LoadMethods()
+	{
+		// Показать настроенные методы запуска
+		
+		BOOL lbHKCR = FALSE;
+		BOOL lbProgId = FALSE;
+		BOOL lbUser = FALSE;
+		
+		FreeMethods();
+		
+		LONG nRegRc;
+		HKEY hkFrom;
+		wchar_t szPath[MAX_PATH*3], szType[MAX_PATH+1];
+		
+		LONG nMaxMth = 32;
+		pMethods = (FileMethod*)malloc(nMaxMth*sizeof(FileMethod));
+		if (pMethods == NULL)
+		{
+			_ASSERTE(pMethods!=NULL);
+			return FALSE;
+		}
+		nMaxMethCount = nMaxMth;
+
+		// Пользовательские настройки (приоритетные)
+		lstrcpyW(szPath, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.");
+		lstrcatW(szPath, szDir);
+		int nPathSlash = lstrlenW(szPath);
+		lstrcpyW(szPath+nPathSlash, L"\\UserChoice");
+		nRegRc = GetString(szPath, L"Progid", szType, MAX_PATH, HKEY_CURRENT_USER);
+		if (nRegRc == 0)
+		{
+			nRegRc = RegOpenKeyExW(HKEY_CLASSES_ROOT, szType, 0, KEY_READ, &hkFrom);
+			if (nRegRc == 0)
+			{
+				lbUser = LoadMethodsFrom(hkFrom, szType, FTO_USERCHOICE);
+				RegCloseKey(hkFrom);
+			}
+		}
+
+		lstrcpyW(szPath+nPathSlash, L"\\OpenWithProgids");
+		HKEY hkProgId = NULL;
+		nRegRc = RegOpenKeyExW(HKEY_CURRENT_USER, szPath, 0, KEY_READ, &hkProgId);
+		if (nRegRc == 0)
+		{
+			for (DWORD i = 0;; i++)
+			{
+				DWORD nCchNameMax = ARRAYSIZE(szType);
+				nRegRc = RegEnumValueW(hkProgId, i, szType, &nCchNameMax, NULL, NULL, NULL, NULL);
+				if (nRegRc != 0)
+					break;
+				nRegRc = RegOpenKeyExW(HKEY_CLASSES_ROOT, szType, 0, KEY_READ, &hkFrom);
+				if (nRegRc == 0)
+				{
+					if (LoadMethodsFrom(hkFrom, szType, FTO_USERCHOICE))
+						lbProgId = TRUE;
+					RegCloseKey(hkFrom);
+				}
+			}
+			RegCloseKey(hkProgId);
+		}
+		
+		// HKCR (classic) - добавляем только те, которые не были добавлены в приоритетных настройках
+		szPath[0] = L'.'; lstrcpyW(szPath+1, szDir);
+		nRegRc = GetString(szPath, L"", szType, MAX_PATH);
+		if (nRegRc == 0)
+		{
+			nRegRc = RegOpenKeyExW(HKEY_CLASSES_ROOT, szType, 0, KEY_READ, &hkFrom);
+			if (nRegRc == 0)
+			{
+				lbHKCR = LoadMethodsFrom(hkFrom, szType, FTO_HKCR);
+				RegCloseKey(hkFrom);
+			}
+		}
+
+		//lbUser = LoadMethodsFrom(FTO_USERCHOICE);
+
+		return (lbHKCR || lbProgId ||lbUser);
+	}
 	
-	void EditMethod(FileMethod* pM) {
+	void EditMethod(FileMethod* pM)
+	{
 
 	    int height = 13, width = 60;
 	    wchar_t szFullPath[MAX_PATH*3];
 	    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	    CONSOLE_SCREEN_BUFFER_INFO sbi = {{0,0}};
-	    if (GetConsoleScreenBufferInfo(hOut, &sbi)) {
+	    if (GetConsoleScreenBufferInfo(hOut, &sbi))
+	    {
 	    	width = sbi.dwSize.X - 8;
 	    }
 	    
@@ -511,14 +776,18 @@ public:
 		TCHAR szMethodName[MAX_PATH];
 		lstrcpy(szMethodName, GetMsg(FTMethodDlg));
 		int nLen = lstrlen(szMethodName);
-		if (0==GetString(szFullPath, L"", sTemp1, MAX_PATH)) {
+		if (0==GetString(szFullPath, L"", sTemp1, MAX_PATH))
+		{
 			lstrcpy_t(szMethodName+nLen, MAX_PATH-nLen, sTemp1);
-		} else {
+		}
+		else
+		{
 			lstrcpy_t(szMethodName+nLen, MAX_PATH-nLen, pM->pszRealName);
 		}
 
 
-		enum {
+		enum
+		{
 			FTMDTitle = 0,
 			FTMDMethodName,
 			FTMDMethodLabel,
@@ -528,7 +797,8 @@ public:
 			FTMDCancel
 		};
 
-	    FarDialogItem items[] = {
+	    FarDialogItem items[] =
+	    {
 	        // Common options
 	        {DI_DOUBLEBOX,  3,  1,  cw, height - 2, false,  0,              0,                  0,},        //FTMDTitle
 
@@ -555,11 +825,14 @@ public:
 	    SETTEXT(items[FTMDMethodValue], pM->pszExecute);
 #else
 		items[FTMDMethodValue].Flags |= DIF_VAREDIT;
-		if (lstrlen(pM->pszExecuteO) < sizeof(sDialogExecBuf)) {
+		if (lstrlen(pM->pszExecuteO) < sizeof(sDialogExecBuf))
+		{
 			lstrcpy(sDialogExecBuf, pM->pszExecuteO);
 			items[FTMDMethodValue].Ptr.PtrData = sDialogExecBuf;
 			items[FTMDMethodValue].Ptr.PtrLength = sizeof(sDialogExecBuf);
-		} else {
+		}
+		else
+		{
 			items[FTMDMethodValue].Ptr.PtrData = pM->pszExecuteO;
 			items[FTMDMethodValue].Ptr.PtrLength = lstrlen(pM->pszExecuteO)+1;
 		}
@@ -587,15 +860,18 @@ public:
 	    if (dialog_res != -1 && dialog_res != FTMDCancel)
 	    {
 			const TCHAR *pszData = GetDataPtr(FTMDMethodValue);
-			if (pszData) {
+			if (pszData)
+			{
 				wsprintfW(szFullPath, L"%s\\shell\\%s\\command", pM->szType, pM->pszRealName);
 				HKEY hk = NULL;
-				if (RegCreateKeyExW(HKEY_CLASSES_ROOT, szFullPath, NULL, NULL, 0, KEY_ALL_ACCESS, NULL, &hk, NULL)) {
+				if (RegCreateKeyExW(HKEY_CLASSES_ROOT, szFullPath, NULL, NULL, 0, KEY_ALL_ACCESS, NULL, &hk, NULL))
+				{
 					wsprintfW(szFullPath, L"Software\\Classes\\%s\\shell\\%s\\command", pM->szType, pM->pszRealName);
 					if (RegCreateKeyExW(HKEY_CURRENT_USER, szFullPath, NULL, NULL, 0, KEY_ALL_ACCESS, NULL, &hk, NULL))
 						hk = NULL;							
 				}
-				if (hk) {
+				if (hk)
+				{
 					#ifndef _UNICODE
 					_ASSERTE(pszData == sDialogExecBuf || pszData == pM->pszExecuteO);
 					OemToCharBuff(pszData, (TCHAR*)pszData, lstrlen(pszData));
@@ -607,6 +883,7 @@ public:
 
 			// Перечитать реестр
 			LoadMethods();
+			
 			// И обновить панель
 			#ifdef _UNICODE
 			psi.Control((HANDLE)this, FCTL_UPDATEPANEL, TRUE, 0);
@@ -622,7 +899,8 @@ public:
 	    return;
 	};
 	
-	void EditCurrentItem(BOOL abRegBrowser) {
+	void EditCurrentItem(BOOL abRegBrowser)
+	{
 		PanelInfo inf; memset(&inf, 0, sizeof(inf));
 		INT_PTR nCurLen = 0;
 		PluginPanelItem* item=NULL;
@@ -636,7 +914,8 @@ public:
 				#ifdef _UNICODE
 				nCurLen = psi.Control((HANDLE)this, FCTL_GETPANELITEM, inf.CurrentItem, NULL);
 				item = (PluginPanelItem*)calloc(nCurLen,1);
-				if (!psi.Control((HANDLE)this, FCTL_GETPANELITEM, inf.CurrentItem, (LONG_PTR)item)) {
+				if (!psi.Control((HANDLE)this, FCTL_GETPANELITEM, inf.CurrentItem, (LONG_PTR)item))
+				{
 					free(item);
 					return;
 				}
@@ -652,30 +931,38 @@ public:
 						if (pfm && pfm>=pMethods && pfm<(pMethods+nMethCount))
 							EditMethod(pfm);
 					}
-				} else {
+				}
+				else
+				{
 					// Открыть в плагине "Registry Browser"
 					TCHAR szMacro[MAX_PATH*6]; szMacro[0] = 0;
 					TCHAR szRegPath[MAX_PATH*3]; szRegPath[0] = 0;
 					if ((item->FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
 					{
 						pfm = (FileMethod*)item->UserData;
-						if (pfm && pfm>=pMethods && pfm<(pMethods+nMethCount)) {
+						if (pfm && pfm>=pMethods && pfm<(pMethods+nMethCount))
+						{
 							sTemp1[0] = _T('.');
 							lstrcpyW(sTemp1+1, pfm->pft->szExt);
-							if (0==GetString(sTemp1, L"", sTemp2, MAX_PATH)) {
+							if (0==GetString(sTemp1, L"", sTemp2, MAX_PATH))
+							{
 								lstrcpy_t(szRegPath, MAX_PATH, sTemp2);
 								lstrcpy(szRegPath+lstrlen(szRegPath), _T("\\\\shell\\\\"));							
 								lstrcpy_t(szRegPath+lstrlen(szRegPath), MAX_PATH, pfm->pszRealName);
 							}
 						}
-					} else {
+					}
+					else
+					{
 						pft = (FileType*)item->UserData;
-						if (pft && pft>=pTypes && pft<(pTypes+nFileTypesCount)) {
+						if (pft && pft>=pTypes && pft<(pTypes+nFileTypesCount))
+						{
 							szRegPath[0] = _T('.');
 							lstrcpy_t(szRegPath+1, MAX_PATH, pft->szExt);
 						}
 					}
-					if (szRegPath[0]) {
+					if (szRegPath[0])
+					{
 						wsprintf(szMacro,
 						#ifdef _UNICODE
 							GetMsg(FTMacro2)
@@ -685,7 +972,8 @@ public:
 							, szRegPath);
 					}
 
-					if (szMacro[0]) {
+					if (szMacro[0])
+					{
 						ActlKeyMacro km = {MCMD_POSTMACROSTRING};
 						km.Param.PlainText.SequenceText = szMacro;
 						psi.AdvControl(psi.ModuleNumber, ACTL_KEYMACRO, &km);
@@ -695,14 +983,16 @@ public:
 		}
 
 #ifdef _UNICODE
-		if (item) {
+		if (item)
+		{
 			free(item); item = NULL;
 		}
 #endif
 	};
 	
 public:	
-	~FTPlugin() {
+	~FTPlugin()
+	{
 		FreeTypeList();
 	};
 };
@@ -710,7 +1000,8 @@ public:
 #if defined(__GNUC__)
 BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
 {
-	switch (ul_reason_for_call) {
+	switch (ul_reason_for_call)
+	{
 		case DLL_PROCESS_ATTACH:
 			break;
 	}
@@ -797,7 +1088,8 @@ HANDLE WINAPI _export OpenPluginW(int OpenFrom,INT_PTR Item)
 	pPlugin = new FTPlugin();
 	if (!pPlugin) return INVALID_HANDLE_VALUE;
 
-	if ((OpenFrom & 0xFF) == OPEN_COMMANDLINE && Item) {
+	if ((OpenFrom & 0xFF) == OPEN_COMMANDLINE && Item)
+	{
 		SetDirectoryW ((HANDLE)pPlugin, (LPCTSTR)Item, 0);
 	}
 
@@ -810,12 +1102,16 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 	int nCount = 0, i;
 	PluginPanelItem* ppi = NULL;
 
-	if (pPlugin->szDir[0]) {
+	if (pPlugin->szDir[0] != 0)
+	{
 		// Показать настроенные методы запуска
-		if (!pPlugin->LoadMethods()) {
+		if (!pPlugin->LoadMethods())
+		{
 			*pItemsNumber = 0;
 			_ASSERTE(*pPanelItem == NULL);
-		} else {
+		}
+		else
+		{
 			nCount = pPlugin->nMethCount;
 			*pItemsNumber = nCount;
 			ppi = (PluginPanelItem*)calloc(nCount, sizeof(PluginPanelItem));
@@ -823,7 +1119,8 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 
 			MCHKHEAP
 
-			for (i=0; i<nCount; i++) {
+			for (i=0; i<nCount; i++)
+			{
 				ppi[i].UserData = (DWORD_PTR)(pPlugin->pMethods+i);
 				ppi[i].FindData.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
 				ppi[i].FindData.ftCreationTime = pPlugin->pMethods[i].ftModified;
@@ -838,11 +1135,14 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 				ppi[i].Description = pPlugin->pMethods[i].pszExecuteO;
 				ppi[i].FindData.nFileSizeLow = lstrlen(pPlugin->pMethods[i].pszExecuteO);
 #endif
+				ppi[i].Owner = pPlugin->pMethods[i].szSort;
 			}
 		}
 		
 		
-	} else {
+	}
+	else
+	{
 		nCount = pPlugin->nFileTypesCount;
 		*pItemsNumber = nCount;
 		ppi = (PluginPanelItem*)calloc(nCount, sizeof(PluginPanelItem));
@@ -850,7 +1150,8 @@ int WINAPI _export GetFindDataW(HANDLE hPlugin,struct PluginPanelItem **pPanelIt
 
 		MCHKHEAP
 
-		for (i=0; i<nCount; i++) {
+		for (i=0; i<nCount; i++)
+		{
 			ppi[i].UserData = (DWORD_PTR)(pPlugin->pTypes+i);
 			ppi[i].FindData.dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
 			ppi[i].FindData.ftCreationTime = pPlugin->pTypes[i].ftModified;
@@ -901,7 +1202,8 @@ void WINAPI _export GetOpenPluginInfoW(HANDLE hPlugin,struct OpenPluginInfo *Inf
 void WINAPI _export ClosePluginW(HANDLE hPlugin)
 {
 	FTPlugin* pPlugin = (FTPlugin*)hPlugin;
-	if (pPlugin) {
+	if (pPlugin)
+	{
 		delete pPlugin;
 	}
 }
@@ -913,7 +1215,8 @@ int WINAPI _export SetDirectoryW ( HANDLE hPlugin, LPCTSTR Dir, int OpMode )
 	if (!pPlugin)
 		return FALSE;
 
-	if (Dir[0] == _T('\\')) {
+	if (Dir[0] == _T('\\'))
+	{
 		pPlugin->szDir[0] = 0;
 		pPlugin->UpdateTitle();
 		while (*Dir == _T('\\'))
@@ -921,9 +1224,11 @@ int WINAPI _export SetDirectoryW ( HANDLE hPlugin, LPCTSTR Dir, int OpMode )
 	}
 
 	const TCHAR *pszSlash = _tcschr(Dir, _T('\\'));
-	if (pszSlash) {
+	if (pszSlash)
+	{
 		TCHAR szToken[MAX_PATH];
-		while (pszSlash && Dir[0]) {
+		while (pszSlash && Dir[0])
+		{
 			if ((pszSlash - Dir) >= MAX_PATH)
 				return FALSE;
 
@@ -965,24 +1270,54 @@ int WINAPI _export SetDirectoryW ( HANDLE hPlugin, LPCTSTR Dir, int OpMode )
 
 int WINAPI _export ProcessKeyW(HANDLE hPlugin,int Key,unsigned int ControlState)
 {
-	if (((Key & 0xFF) == VK_F4) && ControlState == 0) {
+	if (((Key & 0xFF) == VK_F4) && ControlState == 0)
+	{
 		FTPlugin* pPlugin = (FTPlugin*)hPlugin;
-		if (pPlugin->szDir[0]) {
+		if (pPlugin->szDir[0])
+		{
 			pPlugin->EditCurrentItem(FALSE);
 			return TRUE;
 		}
-	} else
-	if (((Key & 0xFF) == 'J') && ControlState == PKF_CONTROL) {
+	}
+	else if (((Key & 0xFF) == 'J') && ControlState == PKF_CONTROL)
+	{
 		FTPlugin* pPlugin = (FTPlugin*)hPlugin;
 		pPlugin->EditCurrentItem(TRUE);
 		return TRUE;
-	} else
-	if (((Key & 0xFF) == 'R') && ControlState == PKF_CONTROL) {
+	}
+	else if (((Key & 0xFF) == 'R') && ControlState == PKF_CONTROL)
+	{
 		FTPlugin* pPlugin = (FTPlugin*)hPlugin;
-		if (pPlugin->szDir[0]) {
+		if (pPlugin->szDir[0])
+		{
 			pPlugin->LoadMethods();
 			return FALSE; // продолжить в фаре
 		}
 	}
 	return FALSE;
+}
+
+int WINAPI CompareW(HANDLE hPlugin,const struct PluginPanelItem *Item1,const struct PluginPanelItem *Item2,unsigned int Mode)
+{
+	//if (Mode == SM_OWNER)
+	{
+		if (Item1->UserData && Item2->UserData)
+		{
+			FileMethod *p1 = (FileMethod*)Item1->UserData;
+			FileMethod *p2 = (FileMethod*)Item2->UserData;
+			if (p1->nMagic == FTMAGIC_METH && p2->nMagic == FTMAGIC_METH)
+			{
+				if (p1->szSort[0] == _T('*') && p2->szSort[0] != _T('*'))
+					return -1;
+				if (p1->szSort[0] != _T('*') && p2->szSort[0] == _T('*'))
+					return 1;
+			}
+		}
+	}
+	//if (!_tcscmp(FILENAMEPTR(Item1->FindData), DUMP_FILE_NAME))
+	//	return -1;
+	//else if (!_tcscmp(FILENAMEPTR(Item2->FindData), DUMP_FILE_NAME))
+	//	return 1;
+
+	return -2; // использовать внутреннюю сортировку
 }

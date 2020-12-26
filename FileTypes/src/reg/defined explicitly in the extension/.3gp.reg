@@ -1,0 +1,17 @@
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\.3gp]
+"Content Type"="video/3gpp"
+"PerceivedType"="video"
+
+[HKEY_CLASSES_ROOT\.3gp\DefaultIcon]
+@="C:\\Program Files\\K-Lite Codec Pack\\icons\\quicktime.ico"
+
+[HKEY_CLASSES_ROOT\.3gp\Shell]
+@="open"
+
+[HKEY_CLASSES_ROOT\.3gp\Shell\Open]
+@=""
+
+[HKEY_CLASSES_ROOT\.3gp\Shell\Open\Command]
+@="\"C:\\Program Files\\K-Lite Codec Pack\\Media Player Classic\\mplayerc.exe\" \"%1\""

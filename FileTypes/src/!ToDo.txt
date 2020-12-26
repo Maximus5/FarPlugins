@@ -1,3 +1,74 @@
+г====================T=T= FileTypes:reg =====================21:05
+¦n       Name        ¦#¦                 Command                 ¦
+¦..                  ¦ ¦                                         ¦
+¦edit                ¦ ¦%SystemRoot%\system32\notepad.exe "%1"   ¦
+¦open                ¦ ¦regedit.exe "%1"                         ¦
+¦print               ¦ ¦%SystemRoot%\system32\notepad.exe /p "%1"¦
+¦                    ¦ ¦                                         ¦
+¦                    ¦ ¦                                         ¦
+¦                                                                 
+¦    г================================================= Regedit Do
+¦    ¦                                                            
+¦    ¦ Method name: Merge                                         
+¦    ¦                                                            
+¦    ¦ Execution string:                                          
+¦    ¦ regedit.exe "%1"                                           
+¦    ¦                                                            
+¦    ¦                                                            
+¦    ¦                                                  { OK } [ C
+¦    ¦                                                            
+¦    L============================================================
+
+чё за хня?    Method name: Merge
+
+
+
+
+
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.bat\OpenWithProgids
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.bat
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap\.bat
+? HKCU\Software\Classes\Wow6432Node\CLSID\{7B8A2D94-0AC9-11D1-896C-00C04FB6BFC4}
+? HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\AppCompatFlags
+? HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers
+
+
+TODO: Помимо путей - редактировать и путь к связанной иконке.
+
+TODO: Редактирование протоколов (mailto, ftp, http, https, ldap, mms, search, ...)
+
+Есть интересный раздел 
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts
+функции которого некоторым образом дублируют HKCR. 
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.jpg\UserChoice]
+"Progid"="Applications\\FarS.exe"
+[HKEY_CLASSES_ROOT\Applications\FarS.exe\shell\open\command]
+@="\"T:\\Far3\\FarS.exe\" \"%1\""
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pbw\OpenWithList]
+"a"="pb90.exe"
+"MRUList"="ba"
+"b"="PB120.EXE"
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pbw\OpenWithProgids]
+"pbw_auto_file"=hex(0):
+
+[HKEY_CLASSES_ROOT\pbw_auto_file]
+@="PowerBuilder Workspace"
+[HKEY_CLASSES_ROOT\pbw_auto_file\DefaultIcon]
+@="C:\\Program Files (x86)\\Sybase\\Shared\\PowerBuilder\\PBSYS120.DLL,31"
+[HKEY_CLASSES_ROOT\pbw_auto_file\shell]
+[HKEY_CLASSES_ROOT\pbw_auto_file\shell\open]
+@=""
+[HKEY_CLASSES_ROOT\pbw_auto_file\shell\open\command]
+@="\"C:\\Programs\\PowerBuilder 9.0\\pb90.exe\" /workspace \"%1\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\pb90.exe]
+"Path"="C:\\Program Files (x86)\\Sybase;C:\\Program Files (x86)\\Sybase\\PowerBuilder 9.0;C:\\Program Files (x86)\\Sybase\\Shared\\PowerBuilder;C:\\Program Files (x86)\\Sybase\\SQL Anywhere 8\\win32;C:\\Program Files (x86)\\Sybase\\PowerBuilder 9.0\\Help;"
+@="C:\\Programs\\PowerBuilder 9.0\\PB90.EXE"
+
+
+
 Редактирование лучше реализовать через диалог.
 Там будет можно и DDE легко прикрутить.
 Опять таки создение нового метода без проблем (можно еще добавить поле "Описание метода", если

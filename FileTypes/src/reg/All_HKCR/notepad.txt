@@ -1,0 +1,2 @@
+"C:\Program Files\Windows NT\Accessories\WORDPAD.EXE"
+%SystemRoot%\system32\NOTEPAD.EXE

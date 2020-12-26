@@ -1,3 +1,6 @@
+v1.0.?
+* Поддержка ключика "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.*\UserChoice".
+
 v1.0.1
 * Редактирование пути метода запуска через диалог.
 * Префикс. Например: "ftypes:", или "ftypes:jpg".

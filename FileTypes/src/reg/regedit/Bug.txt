@@ -1,0 +1,22 @@
+ã====================T=T= FileTypes:reg =====================21:05
+¦n       Name        ¦#¦                 Command                 ¦
+¦..                  ¦ ¦                                         ¦
+¦edit                ¦ ¦%SystemRoot%\system32\notepad.exe "%1"   ¦
+¦open                ¦ ¦regedit.exe "%1"                         ¦
+¦print               ¦ ¦%SystemRoot%\system32\notepad.exe /p "%1"¦
+¦                    ¦ ¦                                         ¦
+¦                    ¦ ¦                                         ¦
+¦                                                                 
+¦    ã================================================= Regedit Do
+¦    ¦                                                            
+¦    ¦ Method name: Merge                                         
+¦    ¦                                                            
+¦    ¦ Execution string:                                          
+¦    ¦ regedit.exe "%1"                                           
+¦    ¦                                                            
+¦    ¦                                                            
+¦    ¦                                                  { OK } [ C
+¦    ¦                                                            
+¦    L============================================================
+
+÷¸ çà õíÿ?    Method name: Merge

@@ -12,7 +12,7 @@ $^#Contents#
  #Column 1# ^<wrap>Registry place, where item information was found.
           ^<wrap>In x86 OS it is HKLM or HKCU, x64 OS - Mx86, Mx64, HKCU.
  #Column 2# ^<wrap>Program install date.
- #Column 3# ^<wrap>Flags. «W» - MSI, «M» «Modify» allowed, «R» repair,
+ #Column 3# ^<wrap>Flags. «W» - MSI, «M» - «Modify» allowed, «R» - repair,
           ^<wrap>«-» marks "hidden" elements.
  #Column 4# ^<wrap>Program name.
 

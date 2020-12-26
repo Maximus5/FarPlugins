@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="Debug\UnInstall.dll"
+				OutputFile="..\Debug\UnInstallW.dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="UnInstallW.def"
 				GenerateDebugInformation="true"

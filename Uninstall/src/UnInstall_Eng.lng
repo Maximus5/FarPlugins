@@ -1,12 +1,31 @@
 ﻿.Language=English,English
 
+// Plugin title
 "UnInstall"
-
-"Ok"
-
+// Buttons
+"OK"
+"Cancel"
+// Waiting for UnInstall complete
+"Waiting for the command completion"
+// Configuration dialog
+"Show in the &Editor"
+"Show in the &Viewer"
+"Enter: &wait for completion"
+"&Use elevation"
+"Start with &low priority"
+"Ente&r:      "
+"Shif&t-Enter:"
+"Uninstall (wait)"
+"Uninstall"
+"Modify (wait)"
+"Modify"
+"Repair (wait)"
+"Repair"
+"Menu"
+// Entry info dialog title
 "Uninstall Entry"
 "Uninstall Entry (Windows Installer)"
-
+// Entry info labels
 "&Name:"
 "Sub&key name:"
 "&Install location:"
@@ -18,23 +37,19 @@
 "&Comments:"
 "&Version:"
 "Install &date:"
-
+// Menu's top and bottom lines
+"[Shift-]Enter: run, F8: del entry, F3: info, Ctrl-R: update"
+"Filter: [%s], Entries: [%d/%d]"
+"{Normal priority} F7"
+"{Low priority} F7"
+"Select action"
+// Install location (registry)
 "Mx86"
 "Mx64"
 "HKLM"
 "HKCU"
-
+// Error messages and confirmations
 "Error of running program"
 "Cancelled by user"
 "Error of deleting uninstall info"
 "UnInstall\nDo you wish to delete the uninstall entry?\n%s\nOk\nCancel"
-"[Shift-]Enter: run, F8: del entry, F3: info, Ctrl-R: update"
-"Filter: [%s], Entries: [%d/%d]"
-"Waiting for the command completion"
-
-"Show in the &Editor"
-"Show in the &Viewer"
-"Enter: &wait for completion"
-"&Use elevation"
-"OK"
-"Cancel"

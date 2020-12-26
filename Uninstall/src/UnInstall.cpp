@@ -119,10 +119,10 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
       for (int i=0;i<nCount;i++)
       {
         const TCHAR* DispName = p[i].Keys[DisplayName];
-        if (strstri(DispName,Filter)) //без учета регистра в OEM кодировке
+        if (strstri(DispName,Filter)) //схч єўхЄр ЁхушёЄЁр т OEM ъюфшЁютъх
         {
           FLI[i].Flags &= ~LIF_HIDDEN;
-          //без учета регистра - а кодировка ANSI
+          //схч єўхЄр ЁхушёЄЁр - р ъюфшЁютър ANSI
           if (NewPos == -1 && strstri(DispName,Filter) == DispName)
             NewPos = i;
           ListSize++;
@@ -158,11 +158,11 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
       ListTitle.Bottom = const_cast<TCHAR*>(GetMsg(MBottomLine));
       ListTitle.BottomLen = lstrlen(GetMsg(MBottomLine));
 
-      //подстраиваемся под размеры консоли
+      //яюфёЄЁрштрхьё  яюф ЁрчьхЁ√ ъюэёюыш
       Info.SendDlgMessage(hDlg,DM_ENABLEREDRAW,FALSE,0);
       ResizeDialog(hDlg);
       Info.SendDlgMessage(hDlg,DM_ENABLEREDRAW,TRUE,0);
-      //заполняем диалог
+      //чряюыэ хь фшрыюу
       Info.SendDlgMessage(hDlg,DMU_UPDATE,1,0);
     }
     break;
@@ -203,7 +203,7 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
             if (EMessage((const TCHAR * const *) DlgText, 0, 2) == 0)
             {
               if (!DeleteEntry(static_cast<int>(Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL))))
-                DrawMessage(FMSG_WARNING, 1, "%s",GetMsg(MPlugIn),GetMsg(MDelRegErr),GetMsg(MOK),NULL);
+                DrawMessage(FMSG_WARNING, 1, "%s",GetMsg(MPlugIn),GetMsg(MDelRegErr),GetMsg(MBtnOk),NULL);
               Info.SendDlgMessage(hDlg,DMU_UPDATE,1,0);
             }
           }
@@ -225,15 +225,16 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
         case KEY_ENTER:
         case KEY_SHIFTENTER:
         {
-          if (ListSize) {
+          if (ListSize)
+          {
+            int liChanged = 0;
             int pos = static_cast<int>(Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL));
-            if (((Param2==KEY_ENTER) && Opt.EnterFunction) || ((Param2==KEY_SHIFTENTER) && !Opt.EnterFunction)) {
-              ExecuteEntry(pos, true);
+            if (Param2 == KEY_ENTER)
+              liChanged = ExecuteEntry(pos, Opt.EnterAction, (Opt.RunLowPriority!=0));
+            else if (Param2 == KEY_SHIFTENTER)
+              liChanged = ExecuteEntry(pos, Opt.ShiftEnterAction, (Opt.RunLowPriority!=0));
+            if (liChanged == 1)
               Info.SendDlgMessage(hDlg,DMU_UPDATE,1,0);
-            }
-            else {
-              ExecuteEntry(pos, false);
-            }
           }
         }
         return TRUE;
@@ -364,28 +365,58 @@ HANDLE WINAPI OpenPlugin(int /*OpenFrom*/, INT_PTR /*Item*/)
 int WINAPI Configure(int ItemNumber)
 {
   PluginDialogBuilder Config(Info, MPlugIn, _T("Configuration"));
+  FarDialogItem *p1, *p2;
 
   BOOL bShowInViewer = (Opt.WhereWork & 1) != 0;
   BOOL bShowInEditor = (Opt.WhereWork & 2) != 0;
-  BOOL bEnterWaitCompletion = (Opt.EnterFunction != 0);
+  //BOOL bEnterWaitCompletion = (Opt.EnterFunction != 0);
   BOOL bUseElevation = (Opt.UseElevation != 0);
+  BOOL bLowPriority = (Opt.RunLowPriority != 0);
 
   Config.AddCheckbox(MShowInEditor, &bShowInEditor);
   Config.AddCheckbox(MShowInViewer, &bShowInViewer);
-  Config.AddCheckbox(MEnterWaitCompletion, &bEnterWaitCompletion);
+  //Config.AddCheckbox(MEnterWaitCompletion, &bEnterWaitCompletion);
   Config.AddCheckbox(MUseElevation, &bUseElevation);
+  Config.AddCheckbox(MLowPriority, &bUseElevation);
+
+  Config.AddSeparator();
+  
+  FarList AEnter, AShiftEnter;
+  AEnter.ItemsNumber = AShiftEnter.ItemsNumber = 7;
+  AEnter.Items = (FarListItem*)calloc(AEnter.ItemsNumber,sizeof(FarListItem));
+  AShiftEnter.Items = (FarListItem*)calloc(AEnter.ItemsNumber,sizeof(FarListItem));
+  for (int i = 0; i < AEnter.ItemsNumber; i++)
+  {
+    #ifdef FARAPI18
+    AEnter.Items[i].Text = GetMsg(MActionUninstallWait+i);
+    AShiftEnter.Items[i].Text = AEnter.Items[i].Text;
+    #else
+    StringCchCopy(AEnter.Items[i].Text,ARRAYSIZE(AEnter.Items[i].Text),GetMsg(MActionUninstallWait+i));
+    StringCchCopy(AShiftEnter.Items[i].Text,ARRAYSIZE(AShiftEnter.Items[i].Text),AEnter.Items[i].Text);
+    #endif
+  }
+
+  p1 = Config.AddText(MEnterAction); p2 = Config.AddComboBox(23, &AEnter, &Opt.EnterAction);
+  Config.MoveItemAfter(p1,p2);
+  p1 = Config.AddText(MShiftEnterAction); p2 = Config.AddComboBox(23, &AShiftEnter, &Opt.ShiftEnterAction);
+  Config.MoveItemAfter(p1,p2);
+  
+
 
   Config.AddOKCancel(MBtnOk, MBtnCancel);
 
   if (Config.ShowDialog())
   {
     Opt.WhereWork = (bShowInViewer ? 1 : 0) | (bShowInEditor ? 2 : 0);
-    Opt.EnterFunction = bEnterWaitCompletion;
+    //Opt.EnterFunction = bEnterWaitCompletion;
     Opt.UseElevation = bUseElevation;
+    Opt.RunLowPriority = bLowPriority;
 
     SetRegKey(HKCU,_T(""),_T("WhereWork"),(DWORD) Opt.WhereWork);
-    SetRegKey(HKCU,_T(""),_T("EnterFunction"),(DWORD) Opt.EnterFunction);
+    SetRegKey(HKCU,_T(""),_T("EnterAction"),(DWORD) Opt.EnterAction);
+    SetRegKey(HKCU,_T(""),_T("ShiftEnterAction"),(DWORD) Opt.ShiftEnterAction);
     SetRegKey(HKCU,_T(""),_T("UseElevation"),(DWORD) Opt.UseElevation);
+    SetRegKey(HKCU,_T(""),_T("RunLowPriority"),(DWORD) Opt.RunLowPriority);
   }
 
   return FALSE;

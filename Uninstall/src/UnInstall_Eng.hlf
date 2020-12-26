@@ -1,0 +1,56 @@
+﻿.Language=English,English
+.PluginContents=<(NAME)>
+
+@Contents
+$^#<(NAME)> <(VER_MAJOR)>.<(VER_MINOR)>.<(VER_PATCH)>#
+$^#Contents#
+
+ To add a symbol to the filter                            #Symbolical keys#
+
+ Paste to filter from clipboard                         #Shift-Ins, Ctrl-V#
+
+ Clear filter                                                         #Del#
+
+ To remove last symbol of the filter                            #BackSpace#
+
+ To remove record about uninstall of the program                       #F8#
+
+ Viewing of the information about uninstall the program                #F3#
+
+ To update the list                                                #Ctrl-R#
+
+ To choose item of a list                        #Alt-'highlighted letter'#
+
+ To start the setup program                          #Enter or Shift-Enter#
+  When checkbox '~Enter: wait for completion~@Configuration@' is checked,
+  #Enter# waits for program completion, #Shift-Enter# do not, and vice versa.
+
+ Open Configuration dialog                                   #Alt-Shift-F9#
+
+ ~Configuration~@Configuration@
+ ~Entry information~@UninstallEntry@
+ ~New versions~@http://forum.farmanager.com/viewtopic.php?t=3529@
+ ~Discussion~@http://forum.farmanager.com/viewtopic.php?t=3597@
+
+@Configuration
+$^#<(NAME)> <(VER_MAJOR)>.<(VER_MINOR)>.<(VER_PATCH)>#
+$^#Configuration#
+
+ #Show in the Editor#, #Show in the Viewer#
+ Allows plugin in Editor or Viewer. Plugin always allowed for panels.
+
+ #Enter: wait for completion#
+ When checked, #Enter# waits for program completion, #Shift-Enter# do not, and vice versa.
+
+ #Use elevation#
+ Request elevation (UAC) before starting non Windows Installer setup programs.
+
+ ~Contents~@Contents@
+
+@UninstallEntry
+$^#<(NAME)> <(VER_MAJOR)>.<(VER_MINOR)>.<(VER_PATCH)>#
+$^#Uninstall entry information#
+
+ Use #PgUp#/#PgDn# to view previous/next program
+
+ ~Contents~@Contents@

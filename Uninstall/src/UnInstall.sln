@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnInstall", "UnInstall.vcproj", "{F44C0102-6977-419D-AC2B-B682E90D55B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F44C0102-6977-419D-AC2B-B682E90D55B4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F44C0102-6977-419D-AC2B-B682E90D55B4}.Debug|Win32.Build.0 = Debug|Win32
+		{F44C0102-6977-419D-AC2B-B682E90D55B4}.Release|Win32.ActiveCfg = Release|Win32
+		{F44C0102-6977-419D-AC2B-B682E90D55B4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,14 @@
+﻿.vs
+*.7z
+*.pdb
+*.dsp
+*-del
+*.exe
+*.dsw
+*.plg
+*.opt
+/obj
+/x64
+/Debug
+/Release
+/_*

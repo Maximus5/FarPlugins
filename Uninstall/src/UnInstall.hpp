@@ -64,7 +64,8 @@ struct RegKeyPath {
   { HKEY_CURRENT_USER, _T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall") },
   { HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall") },
 };
-int nCount, nRealCount;
+int nCount; // сколько всего элементов
+int nRealCount; // сколько выделено памяти
 FarList FL;
 FarListItem* FLI = NULL;
 int ListSize;
@@ -78,6 +79,8 @@ struct Options
   int ShiftEnterAction; // enum ActionEnum
   int UseElevation; //<- TechInfo
   int RunLowPriority;
+  int ForceMsiUse;
+  bool SortByDate;
 } Opt;
 
 struct KeyInfo
@@ -90,6 +93,7 @@ struct KeyInfo
   RegKeyPath RegKey;
   FILETIME RegTime;
   TCHAR InstDate[10];
+  DWORD InstDateN;
   REGSAM RegView;
   TCHAR SubKeyName[MAX_PATH];
   bool WindowsInstaller;
@@ -158,8 +162,9 @@ bool FillReg(KeyInfo& key, TCHAR* Buf, RegKeyPath& RegKey, REGSAM RegView)
     SYSTEMTIME st; FILETIME ft;
     FileTimeToLocalFileTime(&key.RegTime, &ft);
     FileTimeToSystemTime(&ft, &st);
-    wsprintf(sKeyTime, _T(" / %02u.%02u.%04u %u:%02u:%02u"), st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond);
-    wsprintf(key.InstDate, _T("%02u.%02u.%02u"), st.wDay, st.wMonth, (st.wYear % 100));
+    StringCchPrintf(sKeyTime, ARRAYSIZE(sKeyTime), _T(" / %02u.%02u.%04u %u:%02u:%02u"), st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond);
+    StringCchPrintf(key.InstDate, ARRAYSIZE(key.InstDate), _T("%02u.%02u.%02u"), st.wDay, st.wMonth, (st.wYear % 100));
+    key.InstDateN = ((st.wYear & 0xFFFF) << 16) | ((st.wMonth & 0xFF) << 8) | (st.wDay & 0xFF);
     nKeyTimeLen = lstrlen(sKeyTime) + 1;
   }
   for (int i=0;i<KeysCount;i++)
@@ -170,13 +175,13 @@ bool FillReg(KeyInfo& key, TCHAR* Buf, RegKeyPath& RegKey, REGSAM RegView)
       ExitCode = ERROR_SUCCESS;
 	  if (RegView)
 	  {
-		  wsprintf(key.Keys[i], _T("%s[%u]\\...\\"),
+		  StringCchPrintf(key.Keys[i], ARRAYSIZE(key.Keys[i]), _T("%s[%u]\\...\\"),
 			  (RegKey.Root == HKEY_LOCAL_MACHINE) ? _T("HKLM") : _T("HKCU"),
 			  (RegView == KEY_WOW64_64KEY) ? 64 : 32);
 	  }
 	  else
 	  {
-		  wsprintf(key.Keys[i], _T("%s\\...\\"),
+		  StringCchPrintf(key.Keys[i], ARRAYSIZE(key.Keys[i]), _T("%s\\...\\"),
 			  (RegKey.Root == HKEY_LOCAL_MACHINE) ? _T("HKLM") : _T("HKCU"));
 	  }
 	  int nRootLen = lstrlen(key.Keys[i]);
@@ -224,7 +229,8 @@ bool FillReg(KeyInfo& key, TCHAR* Buf, RegKeyPath& RegKey, REGSAM RegView)
         		DWORD nMon = ulDate % 100; ulDate = (ulDate - nMon) / 100;
         		if (ulDate && nMon && nDay)
         		{
-        			wsprintf(key.InstDate, _T("%02u.%02u.%02u"), nDay, nMon, (ulDate % 100));
+        			StringCchPrintf(key.InstDate, ARRAYSIZE(key.InstDate), _T("%02u.%02u.%02u"), nDay, nMon, (ulDate % 100));
+        			key.InstDateN = ((ulDate & 0xFFFF) << 16) | ((nMon & 0xFF) << 8) | (nDay & 0xFF);
         		}
         	}
         }
@@ -277,9 +283,9 @@ LONG_PTR WINAPI EntryDlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
       {
         TCHAR sMacro[32];
         if (Param2 == KEY_PGUP)
-          lstrcpy(sMacro, _T("Esc Up F3"));
+          StringCchCopy(sMacro, ARRAYSIZE(sMacro), _T("Esc Up F3"));
         else
-          lstrcpy(sMacro, _T("Esc Down F3"));
+          StringCchCopy(sMacro, ARRAYSIZE(sMacro), _T("Esc Down F3"));
 
         ActlKeyMacro m = {MCMD_POSTMACROSTRING};
         m.Param.PlainText.SequenceText = sMacro;
@@ -538,55 +544,84 @@ BOOL FirstArg(LPCTSTR asCmdLine, TCHAR* rsArg/*[MAX_PATH+1]*/, LPCTSTR* rsNextAr
     return TRUE;
 }
 
+int EntryMenu(int Sel, int& Action, bool& LowPriority, int nChkCount = 0)
+{
+#ifdef FARAPI18
+#define SETITEM(i,s) items[i].Text = GetMsg(s)
+#else
+#define SETITEM(i,s) items[i].Text.TextPtr = GetMsg(s); items[i].Flags |= MIF_USETEXTPTR
+#endif
+  FarMenuItemEx items[6]; memset(items, 0, sizeof(items));
+  SETITEM(Action_UninstallWait, MActionUninstallWait);
+  SETITEM(Action_Uninstall, MActionUninstall);
+  if (nChkCount > 1)
+    items[Action_Uninstall].Flags |= MIF_DISABLE;
+  SETITEM(Action_ModifyWait, MActionModifyWait);
+  SETITEM(Action_Modify, MActionModify);
+  if (nChkCount > 1)
+    items[Action_Modify].Flags |= MIF_DISABLE;
+  else if (!p[Sel].CanModify)
+  {
+    items[Action_Modify].Flags |= MIF_DISABLE;
+    items[Action_ModifyWait].Flags |= MIF_DISABLE;
+  }
+  SETITEM(Action_RepairWait, MActionRepairWait);
+  SETITEM(Action_Repair, MActionRepair);
+  if (nChkCount > 1)
+    items[Action_Repair].Flags |= MIF_DISABLE;
+  else if (!p[Sel].CanRepair)
+  {
+    items[Action_Repair].Flags |= MIF_DISABLE;
+    items[Action_RepairWait].Flags |= MIF_DISABLE;
+  }
+
+  int iRc;
+  int BreakCode;
+  int BreakKeys[2]={VK_F7,0};
+  TCHAR szMenuTitle[MAX_PATH];
+
+  if (nChkCount > 1)
+    StringCchPrintf(szMenuTitle, ARRAYSIZE(szMenuTitle), GetMsg(MMenuTopLineN), nChkCount);
+  else
+    StringCchCopy(szMenuTitle, ARRAYSIZE(szMenuTitle), GetMsg(MMenuTopLine));
+
+  while (true)
+  {
+    iRc = Info.Menu(Info.ModuleNumber, -1,-1,0, FMENU_USEEXT|FMENU_WRAPMODE, szMenuTitle,
+      GetMsg(LowPriority ? MMenuBottomLine2 : MMenuBottomLine1),
+      _T("ActionMenu"), BreakKeys, &BreakCode, (struct FarMenuItem *)items, ARRAYSIZE(items));
+    if (iRc < 0)
+      return -1;
+    if (BreakCode == 0)
+    {
+      LowPriority = !LowPriority;
+      for (UINT i = 0; i < ARRAYSIZE(items); i++)
+      {
+        if (i == iRc)
+          items[i].Flags |= MIF_SELECTED;
+        else
+          items[i].Flags &= ~MIF_SELECTED;
+      }
+    }
+    else
+    {
+      Action = iRc;
+      break;
+    }
+  }
+
+  if ((Action & 0xFF) == Action_Menu)
+    return -1; // ошибка
+
+  return Action;
+}
+
 int ExecuteEntry(int Sel, int Action, bool LowPriority)
 {
   if ((Action & 0xFF) == Action_Menu)
   {
-    #ifdef FARAPI18
-      #define SETITEM(i,s) items[i].Text = GetMsg(s)
-    #else
-      #define SETITEM(i,s) items[i].Text.TextPtr = GetMsg(s); items[i].Flags |= MIF_USETEXTPTR
-    #endif
-    FarMenuItemEx items[6]; memset(items, 0, sizeof(items));
-    SETITEM(Action_UninstallWait, MActionUninstallWait);
-    SETITEM(Action_Uninstall, MActionUninstall);
-    SETITEM(Action_ModifyWait, MActionModifyWait);
-    SETITEM(Action_Modify, MActionModify);
-    if (!p[Sel].CanModify)
-    {
-    	items[Action_Modify].Flags |= MIF_DISABLE;
-    	items[Action_ModifyWait].Flags |= MIF_DISABLE;
-    }
-    SETITEM(Action_RepairWait, MActionRepairWait);
-    SETITEM(Action_Repair, MActionRepair);
-    if (!p[Sel].CanRepair)
-    {
-    	items[Action_Repair].Flags |= MIF_DISABLE;
-    	items[Action_RepairWait].Flags |= MIF_DISABLE;
-    }
-    
-    int iRc;
-    int BreakCode;
-    int BreakKeys[2]={VK_F7,0};
-
-    while (true)
-    {
-      iRc = Info.Menu(Info.ModuleNumber, -1,-1,0, FMENU_USEEXT|FMENU_WRAPMODE, GetMsg(MMenuTopLine),
-      	GetMsg(LowPriority ? MMenuBottomLine2 : MMenuBottomLine1),
-      	_T("ActionMenu"), BreakKeys, &BreakCode, (struct FarMenuItem *)items, ARRAYSIZE(items));
-      if (iRc < 0)
-        return -1;
-      if (BreakCode == 0)
-      {
-        LowPriority = !LowPriority;
-      }
-      else
-      {
-        Action = iRc;
-        break;
-      }
-    }
-
+    if (EntryMenu(Sel, Action, LowPriority) < 0)
+      return -1;
     if ((Action & 0xFF) == Action_Menu)
       return -1; // ошибка
   }
@@ -600,8 +635,17 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
   si.cb = sizeof(si);
   ZeroMemory(&pi, sizeof(pi));
 
-  TCHAR cmd_line[MAX_PATH*2+1], cmd_file[MAX_PATH+1], cmd_parm[MAX_PATH+1];
-  if (p[Sel].WindowsInstaller)
+  TCHAR cmd_line[MAX_PATH*2+1], cmd_file[MAX_PATH+1], cmd_parm[MAX_PATH*2+1];
+  LPCTSTR pszString = p[Sel].Keys[UninstallString];
+  if ((Action == Action_ModifyWait) || (Action == Action_Modify))
+    pszString = p[Sel].Keys[ModifyPath];
+  else if ((Action == Action_RepairWait) || (Action == Action_Repair))
+    pszString = NULL;
+  if (pszString && !*pszString)
+    pszString = NULL;
+
+
+  if (p[Sel].WindowsInstaller && !(!Opt.ForceMsiUse && pszString))
   {
     TCHAR szCode[5];
     if ((Action == Action_UninstallWait) || (Action == Action_Uninstall))
@@ -615,39 +659,57 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
     StringCchCat(cmd_line, ARRAYSIZE(cmd_line), szCode);
     StringCchCat(cmd_line, ARRAYSIZE(cmd_line), p[Sel].SubKeyName);
     // Для ShellExecuteEx
-    StringCchCopy(cmd_file, ARRAYSIZE(cmd_file), _T("msiexec"));
-    StringCchCopy(cmd_parm, ARRAYSIZE(cmd_parm), szCode);
-    StringCchCat(cmd_parm, ARRAYSIZE(cmd_parm), p[Sel].SubKeyName);
-  }
-  else
-  {
-    LPCTSTR pszString = p[Sel].Keys[UninstallString];
-    if ((Action == Action_ModifyWait) || (Action == Action_Modify))
-      pszString = p[Sel].Keys[ModifyPath];
-    else if ((Action == Action_RepairWait) || (Action == Action_Repair))
-      return -1;
-    // Для CreateProcess
-    StringCchCopy(cmd_line, ARRAYSIZE(cmd_line), pszString);
-    // Для ShellExecuteEx
-    LPCTSTR psNextArg = NULL;
-    if (FirstArg(pszString, cmd_file, &psNextArg)
-        && IsFilePath(cmd_file))
+    if (LowPriority)
     {
-      StringCchCopy(cmd_parm, ARRAYSIZE(cmd_parm), psNextArg);
+      StringCchCopy(cmd_file, ARRAYSIZE(cmd_parm), _T("cmd"));
+      StringCchCopy(cmd_parm, ARRAYSIZE(cmd_parm), _T("/c start /low "));
+      StringCchCat(cmd_parm, ARRAYSIZE(cmd_parm), _T("msiexec"));
+      StringCchCat(cmd_parm, ARRAYSIZE(cmd_parm), szCode);
+      StringCchCat(cmd_parm, ARRAYSIZE(cmd_parm), p[Sel].SubKeyName);
     }
     else
     {
-      StringCchCopy(cmd_file, ARRAYSIZE(cmd_file), pszString);
-      cmd_parm[0] = 0;
+      StringCchCopy(cmd_file, ARRAYSIZE(cmd_file), _T("msiexec"));
+      StringCchCopy(cmd_parm, ARRAYSIZE(cmd_parm), szCode);
+      StringCchCat(cmd_parm, ARRAYSIZE(cmd_parm), p[Sel].SubKeyName);
+    }
+  }
+  else
+  {
+    if (pszString == NULL)
+      return 0;
+    // Для CreateProcess
+    StringCchCopy(cmd_line, ARRAYSIZE(cmd_line), pszString);
+    // Для ShellExecuteEx
+    if (LowPriority)
+    {
+      StringCchCopy(cmd_file, ARRAYSIZE(cmd_parm), _T("cmd"));
+      StringCchCopy(cmd_parm, ARRAYSIZE(cmd_parm), _T("/c start /low \"\" "));
+      StringCchCat(cmd_parm, ARRAYSIZE(cmd_parm), pszString);
+    }
+    else
+    {
+      LPCTSTR psNextArg = NULL;
+      if (FirstArg(pszString, cmd_file, &psNextArg)
+          && IsFilePath(cmd_file))
+      {
+        StringCchCopy(cmd_parm, ARRAYSIZE(cmd_parm), psNextArg);
+      }
+      else
+      {
+        StringCchCopy(cmd_file, ARRAYSIZE(cmd_file), pszString);
+        cmd_parm[0] = 0;
+      }
     }
   }
 
   hScreen = Info.SaveScreen(0,0,-1,-1); //Это необходимо сделать, т.к. после запущенных программ нужно обновить окно ФАРа
   
-  BOOL ifCreate = FALSE, bElevationFailed = false;
+  BOOL ifCreate = FALSE, bElevationFailed = FALSE, bPriorityChanged = FALSE;
+  DWORD dwErr = 0;
 
   // MSI сам выполнит повышение прав когда потребуется
-  if (!p[Sel].WindowsInstaller && Opt.UseElevation)
+  if (!p[Sel].WindowsInstaller && Opt.UseElevation && !IsUserAdmin())
   {
     // Required elevation
     SHELLEXECUTEINFO sei = {sizeof(SHELLEXECUTEINFO)};
@@ -655,7 +717,7 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
     sei.lpVerb = _T("runas");
     sei.lpFile = cmd_file;
     sei.lpParameters = cmd_parm;
-    sei.nShow = SW_SHOWNORMAL;
+    sei.nShow = LowPriority ? SW_MINIMIZE : SW_SHOWNORMAL;
     ifCreate = ShellExecuteEx(&sei);
     if (ifCreate)
       pi.hProcess = sei.hProcess;
@@ -673,17 +735,19 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
       NULL,                         // Process handle not inheritable.
       NULL,                         // Thread handle not inheritable.
       FALSE,                        // Set handle inheritance to FALSE.
-      0,                            // No creation flags.
+      LowPriority ? IDLE_PRIORITY_CLASS : NORMAL_PRIORITY_CLASS, // Creation flags.
       NULL,                         // Use parent's environment block.
       NULL,                         // Use parent's starting directory.
       &si,                          // Pointer to STARTUPINFO structure.
       &pi                           // Pointer to PROCESS_INFORMATION structure.
     );
+    if (ifCreate)
+      bPriorityChanged = TRUE;
   }
 
   if (!ifCreate) //not Create
   {
-    DWORD dwErr = GetLastError();
+    dwErr = GetLastError();
     if ((dwErr == 0x2E4) && !bElevationFailed)
     {
       // Required elevation
@@ -692,7 +756,7 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
       sei.lpVerb = _T("runas");
       sei.lpFile = cmd_file;
       sei.lpParameters = cmd_parm;
-      sei.nShow = SW_SHOWNORMAL;
+      sei.nShow = LowPriority ? SW_MINIMIZE : SW_SHOWNORMAL;
       ifCreate = ShellExecuteEx(&sei);
       if (ifCreate)
         pi.hProcess = sei.hProcess;
@@ -706,7 +770,7 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
       if (dwErr == 0x000004C7)
         pszErrInfo = GetMsg(MCancelledByUser);
       else
-        wsprintf(szErrCode, _T("ErrorCode=0x%08X"), dwErr);
+        StringCchPrintf(szErrCode, ARRAYSIZE(szErrCode), _T("ErrorCode=0x%08X"), dwErr);
       if (hScreen)
         Info.RestoreScreen(hScreen);
       DrawMessage(FMSG_WARNING, 1, "%s",GetMsg(MPlugIn),GetMsg(MRunProgErr),cmd_line,pszErrInfo,GetMsg(MBtnOk),NULL);
@@ -714,10 +778,12 @@ int ExecuteEntry(int Sel, int Action, bool LowPriority)
     }
   }
 
-  if (pi.hProcess && LowPriority)
-  {
-    SetPriorityClass(pi.hProcess, IDLE_PRIORITY_CLASS);
-  }
+  // -- не может, если был сделан Elevation, а если Elevation не было - то уже в CreateProcess
+  //if (pi.hProcess && LowPriority && !bPriorityChanged)
+  //{
+  //  bPriorityChanged = SetPriorityClass(pi.hProcess, IDLE_PRIORITY_CLASS);
+  //  dwErr = GetLastError();
+  //}
 
   TCHAR SaveTitle[MAX_PATH];
   GetConsoleTitle(SaveTitle,ARRAYSIZE(SaveTitle));
@@ -787,6 +853,15 @@ int __cdecl CompareEntries(const void* item1, const void* item2)
 {
   return FSF.LStricmp(reinterpret_cast<const KeyInfo*>(item1)->Keys[DisplayName], reinterpret_cast<const KeyInfo*>(item2)->Keys[DisplayName]);
 }
+//сравнить даты
+int __cdecl CompareEntriesDate(const void* item1, const void* item2)
+{
+  if (reinterpret_cast<const KeyInfo*>(item1)->InstDateN < reinterpret_cast<const KeyInfo*>(item2)->InstDateN)
+    return 1;
+  if (reinterpret_cast<const KeyInfo*>(item1)->InstDateN > reinterpret_cast<const KeyInfo*>(item2)->InstDateN)
+    return -1;
+  return CompareEntries(item1, item2);
+}
 
 #define JUMPREALLOC 50
 void EnumKeys(RegKeyPath& RegKey, REGSAM RegView = 0) {
@@ -854,7 +929,10 @@ void UpDateInfo(void)
     }
   }
   p = (KeyInfo *) realloc(p, sizeof(KeyInfo) * nCount);
-  FSF.qsort(p, nCount, sizeof(KeyInfo), CompareEntries);
+  if (Opt.SortByDate)
+    FSF.qsort(p, nCount, sizeof(KeyInfo), CompareEntriesDate);
+  else
+    FSF.qsort(p, nCount, sizeof(KeyInfo), CompareEntries);
 
   FLI = (FarListItem *) realloc(FLI, sizeof(FarListItem) * nCount);
   ZeroMemory(FLI, sizeof(FarListItem) * nCount);
@@ -961,4 +1039,11 @@ void ReadRegistry()
     if ((Opt.RunLowPriority<0) || (Opt.RunLowPriority>1))
       Opt.RunLowPriority=0;
   SetRegKey(HKCU,_T(""),_T("RunLowPriority"),(DWORD) Opt.RunLowPriority);
+
+  if (GetRegKey(HKCU,_T(""),_T("ForceMsiUse"),Opt.ForceMsiUse,1))
+	  if ((Opt.ForceMsiUse<0) || (Opt.ForceMsiUse>1))
+		  Opt.ForceMsiUse=0;
+  SetRegKey(HKCU,_T(""),_T("ForceMsiUse"),(DWORD) Opt.ForceMsiUse);
+
+  Opt.SortByDate = false;
 }

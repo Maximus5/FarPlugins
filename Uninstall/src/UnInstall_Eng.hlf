@@ -1,10 +1,23 @@
 ﻿.Language=English,English
 .PluginContents=<(NAME)>
+.Options CtrlStartPosChar=^<wrap>
 
 @Contents
 $^#<(NAME)> <(VER_MAJOR)>.<(VER_MINOR)>.<(VER_PATCH)>#
 $^#Contents#
 
+ #Columns#
+ #1#    #2#        #3#    #4#
+ Mx86 06.11.10 WMR- Microsoft .NET Framework 4 Multi-Targeting Pack
+ #Column 1# ^<wrap>Registry place, where item information was found.
+          ^<wrap>In x86 OS it is HKLM or HKCU, x64 OS - Mx86, Mx64, HKCU.
+ #Column 2# ^<wrap>Program install date.
+ #Column 3# ^<wrap>Flags. «W» - MSI, «M» «Modify» allowed, «R» repair,
+          ^<wrap>«-» marks "hidden" elements.
+ #Column 4# ^<wrap>Program name.
+
+
+ #Controls#
  To add a symbol to the filter                            #Symbolical keys#
 
  Paste to filter from clipboard                         #Shift-Ins, Ctrl-V#
@@ -19,11 +32,15 @@ $^#Contents#
 
  To update the list                                                #Ctrl-R#
 
+ Sort items (by name/by date)                                          #F2#
+
  To choose item of a list                        #Alt-'highlighted letter'#
 
- To start the setup program                          #Enter or Shift-Enter#
-  When checkbox '~Enter: wait for completion~@Configuration@' is checked,
-  #Enter# waits for program completion, #Shift-Enter# do not, and vice versa.
+ Mark item for batch processing                             #Ins# or #RClick#
+
+ To start processing                                 #Enter or Shift-Enter#
+  Actions (Uninstall, Modify, Repair, Menu and Wait/Don't Wait)
+  are specified in ~Configuration~@Configuration@
 
  Open Configuration dialog                                   #Alt-Shift-F9#
 
@@ -39,11 +56,22 @@ $^#Configuration#
  #Show in the Editor#, #Show in the Viewer#
  Allows plugin in Editor or Viewer. Plugin always allowed for panels.
 
- #Enter: wait for completion#
- When checked, #Enter# waits for program completion, #Shift-Enter# do not, and vice versa.
-
  #Use elevation#
  Request elevation (UAC) before starting non Windows Installer setup programs.
+
+ #Start with low priority#
+ Try to start uninstall in process low priority mode.
+
+ #Force use MsiExec#
+ Has effect for MSI only. When unchecked and command line specified obviuosly
+in the registry - this command will be used instead of «msiexec /?{GUID}».
+
+ #Enter# and #Shift-Enter#
+ You may choose one of the following actions:
+ * Uninstall (wait), Uninstall - Uninstall program
+ * Modify (wait), Modify       - Modify (may be not available)
+ * Repair (wait), Repair       - Repair (only for MSI)
+ * Menu                        - Choose action in run time
 
  ~Contents~@Contents@
 

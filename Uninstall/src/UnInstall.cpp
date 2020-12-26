@@ -116,27 +116,70 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
 
       ListSize = 0;
       int NewPos = -1;
-      for (int i=0;i<nCount;i++)
+      if (OldPos >= 0 && OldPos < nCount)
       {
-        const TCHAR* DispName = p[i].Keys[DisplayName];
-        if (strstri(DispName,Filter)) //без учета регистра в OEM кодировке
+        if (!*Filter || strstri(p[OldPos].Keys[DisplayName],Filter)) //без учета регистра в OEM кодировке
+          NewPos = OldPos;
+      }
+      for (int i = 0; i < nCount; i++)
+      {
+        const TCHAR* DispName = p[i].Keys[DisplayName], *Find;
+        if (*Filter)
+          Find = strstri(DispName,Filter);
+        else
+          Find = DispName;
+        if (Find != nullptr) //без учета регистра в OEM кодировке
         {
           FLI[i].Flags &= ~LIF_HIDDEN;
+          if (Param2 && (i == OldPos))
+          {
+            if (FLI[i].Flags & LIF_CHECKED)
+            {
+              FLI[i].Flags &= ~LIF_CHECKED;
+            }
+            else
+            {
+              FLI[i].Flags |= LIF_CHECKED;
+            }
+          }
           //без учета регистра - а кодировка ANSI
-          if (NewPos == -1 && strstri(DispName,Filter) == DispName)
+          if (NewPos == -1 && Find == DispName)
             NewPos = i;
           ListSize++;
         }
         else
           FLI[i].Flags |= LIF_HIDDEN;
       }
-      if (NewPos == -1) NewPos = OldPos;
+      if (Param1 == 0 && Param2)
+      {
+        // Снятие или установка пометки (Ins)
+        if (Param2 == 1)
+        {
+          for (int i = (OldPos+1); i < nCount; i++)
+          {
+            if (!(FLI[i].Flags & LIF_HIDDEN))
+            {
+              OldPos = i; break;
+            }
+          }
+          NewPos = OldPos;
+        }
+        // Снятие или установка пометки (RClick)
+        else if (Param2 == 2)
+        {
+          NewPos = OldPos;
+        }
+      }
+      else if (NewPos == -1)
+      {
+        NewPos = OldPos;
+      }
 
       Info.SendDlgMessage(hDlg,DM_ENABLEREDRAW,FALSE,0);
 
       Info.SendDlgMessage(hDlg,DM_LISTSET,LIST_BOX,reinterpret_cast<LONG_PTR>(&FL));
 
-      FSF.sprintf(spFilter,GetMsg(MFilter),Filter,ListSize,nCount);
+      StringCchPrintf(spFilter,ARRAYSIZE(spFilter), GetMsg(MFilter),Filter,ListSize,nCount);
       ListTitle.Title = spFilter;
       ListTitle.TitleLen = lstrlen(spFilter);
       Info.SendDlgMessage(hDlg,DM_LISTSETTITLES,LIST_BOX,reinterpret_cast<LONG_PTR>(&ListTitle));
@@ -169,9 +212,11 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
 
     case DN_MOUSECLICK:
     {
-      if (Param1 == LIST_BOX) {
+      if (Param1 == LIST_BOX)
+      {
         MOUSE_EVENT_RECORD *mer = (MOUSE_EVENT_RECORD *)Param2;
-        if (mer->dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED) {
+        if (mer->dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
+        {
           // find list on-screen coords (excluding frame and border)
           SMALL_RECT list_rect;
           Info.SendDlgMessage(hDlg, DM_GETDLGRECT, 0, reinterpret_cast<LONG_PTR>(&list_rect));
@@ -179,12 +224,18 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
           list_rect.Top += 1;
           list_rect.Right -= 2;
           list_rect.Bottom -= 1;
-          if ((mer->dwEventFlags == 0) && (mer->dwMousePosition.X > list_rect.Left) && (mer->dwMousePosition.X < list_rect.Right) && (mer->dwMousePosition.Y > list_rect.Top) && (mer->dwMousePosition.Y < list_rect.Bottom)) {
+          if ((mer->dwEventFlags == 0) && (mer->dwMousePosition.X > list_rect.Left) && (mer->dwMousePosition.X < list_rect.Right) && (mer->dwMousePosition.Y > list_rect.Top) && (mer->dwMousePosition.Y < list_rect.Bottom))
+          {
             DlgProc(hDlg, DN_KEY, LIST_BOX, KEY_ENTER);
             return TRUE;
           }
           // pass message to scrollbar if needed
           if ((mer->dwMousePosition.X == list_rect.Right) && (mer->dwMousePosition.Y > list_rect.Top) && (mer->dwMousePosition.Y < list_rect.Bottom)) return FALSE;
+          return TRUE;
+        }
+        else if (mer->dwButtonState == RIGHTMOST_BUTTON_PRESSED)
+        {
+          Info.SendDlgMessage(hDlg,DMU_UPDATE,0,2);
           return TRUE;
         }
       }
@@ -199,7 +250,7 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
           if (ListSize)
           {
             TCHAR DlgText[MAX_PATH + 200];
-            FSF.sprintf(DlgText, GetMsg(MConfirm), p[Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL)].Keys[DisplayName]);
+            StringCchPrintf(DlgText, ARRAYSIZE(DlgText), GetMsg(MConfirm), p[Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL)].Keys[DisplayName]);
             if (EMessage((const TCHAR * const *) DlgText, 0, 2) == 0)
             {
               if (!DeleteEntry(static_cast<int>(Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL))))
@@ -211,6 +262,7 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
         return TRUE;
 
         case (KEY_F9|KEY_SHIFT|KEY_ALT):
+        case (KEY_F9):
         {
           Configure(0);
         }
@@ -222,19 +274,74 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
         }
         return TRUE;
 
+        case KEY_INS:
+        {
+          Info.SendDlgMessage(hDlg,DMU_UPDATE,0,1);
+        }
+        return TRUE;
+
         case KEY_ENTER:
         case KEY_SHIFTENTER:
         {
           if (ListSize)
           {
             int liChanged = 0;
-            int pos = static_cast<int>(Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL));
-            if (Param2 == KEY_ENTER)
-              liChanged = ExecuteEntry(pos, Opt.EnterAction, (Opt.RunLowPriority!=0));
-            else if (Param2 == KEY_SHIFTENTER)
-              liChanged = ExecuteEntry(pos, Opt.ShiftEnterAction, (Opt.RunLowPriority!=0));
+            int liSelected = 0, liFirst = -1;
+
+            for (int i = 0; i < nCount; i++)
+            {
+               if (FLI[i].Flags & LIF_CHECKED)
+               {
+                 if (liFirst == -1)
+                   liFirst = i;
+                 liSelected++;
+               }
+            }
+
+            if (liSelected <= 1)
+            {
+              int liAction = (Param2 == KEY_ENTER) ? Opt.EnterAction : Opt.ShiftEnterAction;
+              int pos = (liFirst == -1) ? static_cast<int>(Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL)) : liFirst;
+              liChanged = ExecuteEntry(pos, liAction, (Opt.RunLowPriority!=0));
+            }
+            else
+            {
+              int liAction = (Param2 == KEY_ENTER) ? Opt.EnterAction : Opt.ShiftEnterAction;
+              bool LowPriority = (Opt.RunLowPriority!=0);
+
+              // Обязательно ожидание - два инсталлятора сразу недопускаются
+              if (liAction == Action_Menu)
+              {
+                if (EntryMenu(0, liAction, LowPriority, liSelected) < 0)
+                  return TRUE;
+              }
+              else if (liAction == Action_Uninstall)
+                liAction = Action_UninstallWait;
+              else if (liAction == Action_Modify)
+                liAction = Action_ModifyWait;
+              else if (liAction == Action_Repair)
+                liAction = Action_RepairWait;
+              
+              for (int pos = 0; pos < nCount; pos++)
+              {
+                if (!(FLI[pos].Flags & LIF_CHECKED))
+                  continue;
+                struct FarListPos FLP;
+                FLP.SelectPos = pos;
+                FLP.TopPos = -1;
+                Info.SendDlgMessage(hDlg,DM_LISTSETCURPOS,LIST_BOX,reinterpret_cast<LONG_PTR>(&FLP));
+                int li = ExecuteEntry(pos, liAction, LowPriority);
+                if (li == -1)
+                  break; // отмена
+                if (li == 1)
+                  liChanged = 1;
+              }
+            }
+
             if (liChanged == 1)
+            {
               Info.SendDlgMessage(hDlg,DMU_UPDATE,1,0);
+            }
           }
         }
         return TRUE;
@@ -273,12 +380,20 @@ static LONG_PTR WINAPI DlgProc(HANDLE hDlg,int Msg,int Param1,LONG_PTR Param2)
         return TRUE;
 
         case KEY_F3:
+        case KEY_F4:
         {
           if (ListSize)
           {
             DisplayEntry(static_cast<int>(Info.SendDlgMessage(hDlg,DM_LISTGETCURPOS,LIST_BOX,NULL)));
             Info.SendDlgMessage(hDlg,DM_REDRAW,NULL,NULL);
           }
+        }
+        return TRUE;
+
+        case KEY_F2:
+        {
+          Opt.SortByDate = !Opt.SortByDate;
+          Info.SendDlgMessage(hDlg,DMU_UPDATE,1,0);
         }
         return TRUE;
 
@@ -372,12 +487,14 @@ int WINAPI Configure(int ItemNumber)
   //BOOL bEnterWaitCompletion = (Opt.EnterFunction != 0);
   BOOL bUseElevation = (Opt.UseElevation != 0);
   BOOL bLowPriority = (Opt.RunLowPriority != 0);
+  BOOL bForceMsiUse = (Opt.ForceMsiUse != 0);
 
   Config.AddCheckbox(MShowInEditor, &bShowInEditor);
   Config.AddCheckbox(MShowInViewer, &bShowInViewer);
   //Config.AddCheckbox(MEnterWaitCompletion, &bEnterWaitCompletion);
   Config.AddCheckbox(MUseElevation, &bUseElevation);
   Config.AddCheckbox(MLowPriority, &bUseElevation);
+  Config.AddCheckbox(MForceMsiUse, &bForceMsiUse);
 
   Config.AddSeparator();
   
@@ -411,12 +528,14 @@ int WINAPI Configure(int ItemNumber)
     //Opt.EnterFunction = bEnterWaitCompletion;
     Opt.UseElevation = bUseElevation;
     Opt.RunLowPriority = bLowPriority;
+    Opt.ForceMsiUse = bForceMsiUse;
 
     SetRegKey(HKCU,_T(""),_T("WhereWork"),(DWORD) Opt.WhereWork);
     SetRegKey(HKCU,_T(""),_T("EnterAction"),(DWORD) Opt.EnterAction);
     SetRegKey(HKCU,_T(""),_T("ShiftEnterAction"),(DWORD) Opt.ShiftEnterAction);
     SetRegKey(HKCU,_T(""),_T("UseElevation"),(DWORD) Opt.UseElevation);
     SetRegKey(HKCU,_T(""),_T("RunLowPriority"),(DWORD) Opt.RunLowPriority);
+    SetRegKey(HKCU,_T(""),_T("ForceMsiUse"),(DWORD) Opt.ForceMsiUse);
   }
 
   return FALSE;

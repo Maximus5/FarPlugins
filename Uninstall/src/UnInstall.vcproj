@@ -325,6 +325,14 @@
 				</FileConfiguration>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Lang.templ"
+			>
+		</File>
+		<File
+			RelativePath=".\WhatsNew.Rus.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

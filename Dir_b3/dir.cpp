@@ -5,6 +5,8 @@
    2) MultiArc module (*.fmt)
  * ************************** */
 
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+#include <stdlib.h>
 #include "plugin.hpp"
 #include "fmt.hpp"
 #include <crtdbg.h>
@@ -117,7 +119,7 @@ struct DirInfo
 		return Ret;
 	};
 
-	bool Compare(char *Str, char *Mask, bool NonEng = false, int Len=-1)
+	bool Compare(const char *Str, const char *Mask, bool NonEng = false, int Len=-1)
 	{
 		int nCmp = (Len==-1) ? lstrlenA(Mask) : Len;
 
@@ -218,10 +220,10 @@ struct DirInfo
 
 	int getArcItem(struct PluginPanelItem *Item, struct ArcItemInfo *Info)
 	{
-		static char *LabelHeader[]={ " Том", " Volume in" };
-		static char *SerialHeader[]={ " Серийный", " Volume Serial" };
-		static char *DirHeader[]={ " Содержимое папки", " Directory of" };
-		static char *DirEndHeader[]={ "     Всего файлов:", "     Total Files" };
+		static const char *LabelHeader[]={ " Том", " Volume in" };
+		static const char *SerialHeader[]={ " Серийный", " Volume Serial" };
+		static const char *DirHeader[]={ " Содержимое папки", " Directory of" };
+		static const char *DirEndHeader[]={ "     Всего файлов:", "     Total Files" };
 		static char  DirID[]="<DIR>";
 		static char  JunID[]="<JUNCTION>";
 		//char* Buf = (char*)malloc(4096);
@@ -412,7 +414,7 @@ struct DirInfo
 BOOL WINAPI _export IsArchive(char *Name, const unsigned char *Data, int DataSize)
 {
 	_ASSERTE(gpCur!=NULL);
-	static char *ID[]={ " Том в устройстве ", " Volume in drive ", "Queued to drive " };
+	static const char *ID[]={ " Том в устройстве ", " Volume in drive ", "Queued to drive " };
 	BOOL lbRc =
 		gpCur->Compare((char *)Data, ID[0], true, min(lstrlen(ID[0]), DataSize)) ||
 		gpCur->Compare((char *)Data, ID[1], false, min(lstrlen(ID[1]), DataSize)) ||
@@ -543,18 +545,29 @@ int MODULE_EXPORT ExtractItem(HANDLE storage, ExtractOperationParams params)
 	return SER_ERROR_SYSTEM;
 }
 
+int MODULE_EXPORT PrepareFiles(HANDLE storage)
+{
+	return SER_ERROR_SYSTEM;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Exported Functions
 //////////////////////////////////////////////////////////////////////////
 
+// {C0651C24-3DCA-441C-8A42-C73664F942CF}
+static const GUID MODULE_GUID = { 0xc0651c24, 0x3dca, 0x441c, { 0x8a, 0x42, 0xc7, 0x36, 0x64, 0xf9, 0x42, 0xcf } };;
+
 int MODULE_EXPORT LoadSubModule(ModuleLoadParameters* LoadParams)
 {
+	LoadParams->ModuleId = MODULE_GUID;
 	LoadParams->ModuleVersion = MAKEMODULEVERSION(1, 0);
 	LoadParams->ApiVersion = ACTUAL_API_VERSION;
-	LoadParams->OpenStorage = OpenStorage;
-	LoadParams->CloseStorage = CloseStorage;
-	LoadParams->GetItem = GetStorageItem;
-	LoadParams->ExtractItem = ExtractItem;
+
+	LoadParams->ApiFuncs.OpenStorage = OpenStorage;
+	LoadParams->ApiFuncs.CloseStorage = CloseStorage;
+	LoadParams->ApiFuncs.GetItem = GetStorageItem;
+	LoadParams->ApiFuncs.ExtractItem = ExtractItem;
+	LoadParams->ApiFuncs.PrepareFiles = PrepareFiles;
 
 	return TRUE;
 }

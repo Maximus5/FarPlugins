@@ -24,6 +24,11 @@
 *.ncb
 *.ilk
 *.aps
+*.iobj
+*.ipdb
+*.plg
+*.opt
+.vs
 
 # Visual studio temp folders
 _build

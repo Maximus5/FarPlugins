@@ -1,8 +1,12 @@
 @echo off
 
+setlocal
 call "%~dp0vc.build.set.any.bat" %*
 
-if exist "%VS_COMNTOOLS%..\..\VC\BIN\x86_amd64\vcvarsx86_amd64.bat" (
+if defined VSInstallDir (
+  echo calling "%VSInstallDir%\VC\Auxiliary\Build\vcvars64.bat"
+  endlocal && call "%VSInstallDir%\VC\Auxiliary\Build\vcvars64.bat"
+) else if exist "%VS_COMNTOOLS%..\..\VC\BIN\x86_amd64\vcvarsx86_amd64.bat" (
   call "%VS_COMNTOOLS%..\..\VC\BIN\x86_amd64\vcvarsx86_amd64.bat"
 ) else if exist "%VS_COMNTOOLS%..\..\VC\BIN\vcvarsx86_amd64.bat" (
   call "%VS_COMNTOOLS%..\..\VC\BIN\vcvarsx86_amd64.bat"
@@ -12,6 +16,7 @@ if exist "%VS_COMNTOOLS%..\..\VC\BIN\x86_amd64\vcvarsx86_amd64.bat" (
   goto :EOF
 )
 
+where cl.exe
 if errorlevel 1 (
 echo !!! x64 build failed !!!
 exit /B 1

@@ -1,8 +1,12 @@
 @echo off
 
+setlocal
 call "%~dp0vc.build.set.any.bat" %*
 
-if exist "%VS_COMNTOOLS%..\..\VC\BIN\vcvars32.bat" (
+if defined VSInstallDir (
+  echo calling "%VSInstallDir%\VC\Auxiliary\Build\vcvars32.bat"
+  endlocal && call "%VSInstallDir%\VC\Auxiliary\Build\vcvars32.bat"
+) else if exist "%VS_COMNTOOLS%..\..\VC\BIN\vcvars32.bat" (
   call "%VS_COMNTOOLS%..\..\VC\BIN\vcvars32.bat"
 ) else (
   echo VS_COMNTOOLS NOT DEFINED!
@@ -10,6 +14,8 @@ if exist "%VS_COMNTOOLS%..\..\VC\BIN\vcvars32.bat" (
   goto :EOF
 )
 
+set VS
+where cl.exe
 if errorlevel 1 (
 echo !!! x86 build failed !!!
 exit /B 1

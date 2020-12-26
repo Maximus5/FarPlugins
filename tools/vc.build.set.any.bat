@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 
 rem if "%VS90COMNTOOLS%"=="" if exist "C:\Program Files\Microsoft Visual Studio 9.0\VC\bin" set VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\VC\bin\
 rem if "%VS90COMNTOOLS%"=="" if exist "C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\vsvars32.bat" set VS90COMNTOOLS=C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\
@@ -10,12 +10,25 @@ rem VS100COMNTOOLS=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\T
 rem VS90COMNTOOLS=C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\
 
 set VS_VERSION=%~1
-if "%VS_VERSION%" == "" set VS_VERSION=9
+set VSInstallDir=
+if "%VS_VERSION%" == "" set VS_VERSION=15
 
 if "%VS_VERSION%" == "9"  goto ver_9
 if "%VS_VERSION%" == "10" goto ver_10
 if "%VS_VERSION%" == "11" goto ver_11
 if "%VS_VERSION%" == "12" goto ver_12
+if "%VS_VERSION%" == "15" goto ver_15
+
+:ver_15
+set VSInstallDir=
+for /f "usebackq tokens=1* delims=: " %%i in (`"%~dp0vswhere.exe" -latest -requires Microsoft.Component.MSBuild`) do (
+  if /i "%%i"=="installationPath" set VSInstallDir=%%j
+)
+if not defined VSInstallDir (
+  echo Visual Studio was not found
+  exit /b 100
+)
+goto done
 
 :ver_9
 if "%VS90COMNTOOLS%"=="" if "%PROCESSOR_ARCHITEW6432%"=="AMD64" set VS90COMNTOOLS=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\

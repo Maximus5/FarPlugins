@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dir_b3.def" />
+    <None Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="dir_b3.rc" />
@@ -175,6 +176,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ModuleDefinitionFile>dir_b3.def</ModuleDefinitionFile>
+      <OutputFile>C:\Users\Maksim.Moisiuk\AppData\Local\Far Manager x64\Plugins\Observer\modules\dir64.so</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

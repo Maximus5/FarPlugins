@@ -65,6 +65,7 @@ struct KeyInfo
   bool Avail[KeysCount];
   RegKeyPath RegKey;
   FILETIME RegTime;
+  TCHAR InstDate[10];
   REGSAM RegView;
   TCHAR SubKeyName[MAX_PATH];
   bool WindowsInstaller;
@@ -73,7 +74,8 @@ struct KeyInfo
   bool CanModify, CanRepair;
 } *p = NULL;
 
-bool ValidGuid(const TCHAR* guid) {
+bool ValidGuid(const TCHAR* guid)
+{
   const unsigned c_max_guid_len = 38;
   wchar_t buf[c_max_guid_len + 1];
   ZeroMemory(buf, sizeof(buf));
@@ -133,6 +135,7 @@ bool FillReg(KeyInfo& key, TCHAR* Buf, RegKeyPath& RegKey, REGSAM RegView)
     FileTimeToLocalFileTime(&key.RegTime, &ft);
     FileTimeToSystemTime(&ft, &st);
     wsprintf(sKeyTime, _T(" / %02u.%02u.%04u %u:%02u:%02u"), st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond);
+    wsprintf(key.InstDate, _T("%02u.%02u.%02u"), st.wDay, st.wMonth, (st.wYear % 100));
     nKeyTimeLen = lstrlen(sKeyTime) + 1;
   }
   for (int i=0;i<KeysCount;i++)
@@ -184,6 +187,24 @@ bool FillReg(KeyInfo& key, TCHAR* Buf, RegKeyPath& RegKey, REGSAM RegView)
     else
     {
       key.Avail[i] = TRUE;
+      if (i == InstallDate)
+      {
+        // 20101105
+        if (lstrlen(key.Keys[i]) == 8)
+        {
+        	TCHAR *pszEnd = 0;
+        	DWORD ulDate = _tcstoul(key.Keys[i], &pszEnd, 10);
+        	if (ulDate)
+        	{
+        		DWORD nDay = ulDate % 100; ulDate = (ulDate - nDay) / 100;
+        		DWORD nMon = ulDate % 100; ulDate = (ulDate - nMon) / 100;
+        		if (ulDate && nMon && nDay)
+        		{
+        			wsprintf(key.InstDate, _T("%02u.%02u.%02u"), nDay, nMon, (ulDate % 100));
+        		}
+        	}
+        }
+      }
       if (i == InstallDate && nKeyTimeLen) StringCchCat(key.Keys[i], ARRAYSIZE(key.Keys[i]), sKeyTime);
 	}
   }
@@ -191,6 +212,9 @@ bool FillReg(KeyInfo& key, TCHAR* Buf, RegKeyPath& RegKey, REGSAM RegView)
 
   if ((key.Keys[ModifyPath][0] == 0) && (key.Keys[UninstallString][0] == 0))
     key.Hidden = true;
+
+  if (key.InstDate[0] == 0)
+    StringCchCopy(key.InstDate, ARRAYSIZE(key.InstDate), _T("        "));
 
   if (key.WindowsInstaller)
   {
@@ -306,8 +330,10 @@ void DisplayEntry(int Sel)
   FarDialogItem* DialogItems = new FarDialogItem[di_cnt];
   unsigned y = 2;
   unsigned idx = 1;
-  for (int i=0;i<KeysCount;i++) {
-    if (p[Sel].Avail[i]) {
+  for (int i=0;i<KeysCount;i++)
+  {
+    if (p[Sel].Avail[i])
+    {
       FillDialog(DialogItems[idx], DI_TEXT, 5, y, 0, y, 0, MName + i);
       idx++;
       y++;
@@ -673,6 +699,8 @@ void UpDateInfo(void)
     else
       StringCchCat(text, MaxSize, sHKCU);
     
+    StringCchCat(text, MaxSize, _T(" "));
+    StringCchCat(text, MaxSize, p[i].InstDate);
     StringCchCat(text, MaxSize, _T(" "));
     StringCchCat(text, MaxSize, (p[i].WindowsInstaller) ? _T("W") : _T(" "));
     StringCchCat(text, MaxSize, (p[i].CanModify) ? _T("M") : _T(" "));

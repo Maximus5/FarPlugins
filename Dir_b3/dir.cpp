@@ -11,6 +11,9 @@
 #include "plugin.hpp"
 #include "fmt.hpp"
 #include <crtdbg.h>
+#include <cstdint>
+#include <vector>
+#include <string>
 
 /******************************************************
  Том в устройстве D имеет метку DIST_ALX
@@ -79,81 +82,145 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 }
 */
 
-enum {  // смещение для WIN XP/2003/VISTA:
-	DATA_DISP = 0,
-	TIME_DISP = 12,
-	SIZE_DISP = 19,
-	NAME_DISP = 36,
-
-	ID_DIR_DISP = 21,
-};
-
 struct DirInfo;
 DirInfo* gpCur = nullptr;
 
 //static struct PluginStartupInfo Info;
 struct DirInfo
 {
+private:
 	HANDLE Handle, MapHandle;
-	char *Data, *Pos, *Edge, Prefix[MAX_PATH-2], Descrip[80], Oem2Ansi[4096];
+	char* Data;
+	char* Pos;
+	char* Edge;
+	char Prefix[MAX_PATH - 2];
+	char Descrip[80];
+	char Oem2Ansi[4096];
 	int nPrefixLen;
-	wchar_t Utf8[4096], Wide[MAX_PATH];
-	char Buf[8192]; // Для получения строчки
-	size_t nStrLen, nSkipLen;
+	wchar_t Utf8[4096];
+	wchar_t Wide[MAX_PATH];
+	char Buf[8192]; // To get a line
+	size_t nStrLen;
+	size_t nSkipLen;
 	bool FormatOk;
-	//bool isBtanch;
-	enum
-	{
-	  cp_NonChecked = 0,
-	  cp_OEM = 1,
-	  cp_ANSI = 2,
-	  cp_UTF8 = 3,
-	} CP_Check;
-	bool isRus;
 
-	__int64 AtoI(char *Str, int Len)
+	enum class CodePages
 	{
-		__int64 Ret=0;
+		NotChecked = 0,
+		OEM = 1,
+		ANSI = 2,
+		UTF8 = 3,
+	};
+	CodePages CP_Check;
+
+	bool isRus = false;
+
+	// offsets for WIN XP/2003/VISTA:
+	size_t DATA_DISP; // = 0;
+	size_t TIME_DISP; // = 12;
+	size_t SIZE_DISP; // = 19;
+	size_t NAME_DISP; // = 36;
+	size_t ID_DIR_DISP; // = 21;
+	bool offsetsChecked;
+
+	enum class DateFormat
+	{
+		NotChecked = 0,
+		DD_MM_YYYY = 1,
+		MM_DD_YYYY = 2,
+	};
+	DateFormat dfCheck;
+
+	enum class TimeFormat
+	{
+		NotChecked = 0,
+		Time24H = 1,
+		Time12H_AM_PM = 2,
+	};
+	TimeFormat tfCheck;
+
+public:
+	static DirInfo* Create()
+	{
+		auto* obj = static_cast<DirInfo*>(calloc(1, sizeof(DirInfo)));;
+		if (!obj)
+			return nullptr;
+		obj->DATA_DISP = 0;
+		obj->TIME_DISP = 12;
+		obj->SIZE_DISP = 19;
+		obj->NAME_DISP = 36;
+		obj->ID_DIR_DISP = 21;
+		return obj;
+	}
+
+	static int64_t AtoI(char *Str, int Len)
+	{
+		int64_t Ret=0;
 		for (; Len && *Str; Len--, Str++)
 			if (*Str>='0' && *Str<='9')
 				(Ret*=10)+=*Str-'0';
 		return Ret;
-	};
+	}
 
-	bool Compare(const char *Str, const char *Mask, bool NonEng = false, int Len=-1)
+	bool IsUtf8File() const
 	{
-		int nCmp = (Len==-1) ? lstrlenA(Mask) : Len;
+		return CP_Check == CodePages::UTF8;
+	}
 
-		if (CompareString(LOCALE_USER_DEFAULT, 0, Str, nCmp, Mask, nCmp)==CSTR_EQUAL)
-			return true;
-
-		if (NonEng)
+	// Returns: 0 if no match, or 1-based index of matched Mask
+	int Compare(const char* Str, const char** MaskList, bool MaskHasNonEng = false, int StrMaxLen = -1)
+	{
+		for (int i = 0; MaskList[i] != nullptr; ++i)
 		{
-			if ((CP_Check == cp_NonChecked) && (nCmp < ARRAYSIZE(Oem2Ansi)))
+			const char* mask = MaskList[i];
+			const int maskLen = lstrlenA(mask);
+
+			auto compareWith = [&](const char* cmpWith)
 			{
-				CharToOemBuff(Mask, Oem2Ansi, nCmp);
-				if (CompareString(LOCALE_USER_DEFAULT, 0, Str, nCmp, Oem2Ansi, nCmp)==CSTR_EQUAL)
-				{
-					CP_Check = cp_OEM;
-					return true;
-				}
+				const int cmpLen = (StrMaxLen < 0) ? maskLen : min(StrMaxLen, maskLen);
+				const auto iCmp = CompareString(LOCALE_USER_DEFAULT, 0, Str, cmpLen, mask, cmpLen);
+				return (iCmp == CSTR_EQUAL);
+			};
+
+			if (compareWith(mask))
+			{
+				return (i + 1);
 			}
-			if ((CP_Check == cp_NonChecked || CP_Check == cp_UTF8) && (nCmp < ARRAYSIZE(Oem2Ansi)))
+
+			if (MaskHasNonEng && (i > 0))
 			{
-				int nWide = MultiByteToWideChar(CP_ACP, 0, Mask, nCmp, Utf8, ARRAYSIZE(Utf8)-1);
-				Utf8[nWide] = 0;
-				int nUtf8 = WideCharToMultiByte(CP_UTF8, 0, Utf8, nWide+1, Oem2Ansi, ARRAYSIZE(Utf8)-1, 0, 0);
-				//BUGBUG:???
-				if (memcmp(Str, Oem2Ansi, min(nUtf8,nCmp)) == 0)
+				if ((CP_Check == CodePages::NotChecked) && (maskLen < static_cast<int>(ARRAYSIZE(Oem2Ansi))))
 				{
-					CP_Check = cp_UTF8;
-					return true;
+					CharToOemBuff(mask, Oem2Ansi, maskLen);
+					if (compareWith(Oem2Ansi))
+					{
+						CP_Check = CodePages::OEM;
+						return (i + 1);
+					}
+				}
+				if ((CP_Check == CodePages::NotChecked || CP_Check == CodePages::UTF8) && (maskLen < static_cast<int>(ARRAYSIZE(Oem2Ansi))))
+				{
+					const int nWide = MultiByteToWideChar(CP_ACP, 0, mask, maskLen, Utf8, ARRAYSIZE(Utf8) - 1);
+					if (nWide > 0)
+					{
+						Utf8[nWide] = 0;
+						const int nUtf8 = WideCharToMultiByte(CP_UTF8, 0, Utf8, nWide + 1, Oem2Ansi, ARRAYSIZE(Utf8) - 1, nullptr, nullptr);
+						if (nUtf8 > 0)
+						{
+							const size_t maxCompare = (StrMaxLen < 0) ? nUtf8 : min(nUtf8, StrMaxLen);
+							if (memcmp(Str, Oem2Ansi, maxCompare) == 0)
+							{
+								CP_Check = CodePages::UTF8;
+								return (i + 1);
+							}
+						}
+					}
 				}
 			}
 		}
 
-		return false;
-	};
+		return 0;
+	}
 
 	bool GetS(char *pBuf, DWORD nBufLen)
 	{
@@ -220,32 +287,31 @@ struct DirInfo
 
 	int getArcItem(struct PluginPanelItem* Item, struct ArcItemInfo* Info)
 	{
-		static const char* LabelHeader[] = { " Том", " Volume in" };
-		static const char* SerialHeader[] = { " Серийный", " Volume Serial" };
-		static const char* DirHeader[] = { " Содержимое папки", " Directory of" };
-		static const char* DirEndHeader[] = { "     Всего файлов:", "     Total Files" };
-		static char  DirID[] = "<DIR>";
-		static char  JunID[] = "<JUNCTION>";
-		//char* Buf = (char*)malloc(4096);
-		bool First = false;
+		const char* LabelHeader[3] = { " Volume in", " Том", nullptr };
+		const char* SerialHeader[3] = { " Volume Serial", " Серийный", nullptr };
+		const char* DirHeader[3] = { " Directory of", " Содержимое папки", nullptr  };
+		const char* DirEndHeader[3] = { "     Total Files", "     Всего файлов:", nullptr };
+		const char* DirOrJunc[3] = { "<DIR>", "<JUNCTION>", nullptr };
+
 		size_t nLines = 0;
+		int matchRc;
 
 		//if (isBtanch) nSkipLen=0;
 		while (GetS(Buf, ARRAYSIZE(Buf) - 2))
 		{
 			nLines++;
-			if (((First = Compare(Buf, LabelHeader[0], true))) || Compare(Buf, LabelHeader[1]))
+			if ((matchRc = Compare(Buf, LabelHeader, true)) > 0)
 			{
 				FormatOk = true;
-				isRus = First;
+				isRus = (matchRc >= 2);
 				//if (isRus && strncmp(Buf, LabelHeader[0], lstrlenA(LabelHeader[0])))
 				//{
 				//	OemToCharBuff(Buf, Buf, lstrlenA(Buf));
 				//}
-				if (CP_Check == cp_OEM)
+				if (CP_Check == CodePages::OEM)
 				{
 					OemToCharBuff(Buf, Buf, lstrlenA(Buf));
-					CP_Check = cp_ANSI;
+					CP_Check = CodePages::ANSI;
 				}
 
 				*Prefix = 0; nPrefixLen = 0; nSkipLen = 0;
@@ -283,7 +349,7 @@ struct DirInfo
 				lstrcpy(Info->Description, lpszPtr);
 				return GETARC_SUCCESS;
 			}
-			if (Compare(Buf, SerialHeader[0]) || Compare(Buf, SerialHeader[1]))
+			if (Compare(Buf, SerialHeader) > 0)
 			{
 				FormatOk = true;
 				/* // 26.11.2008 Maks - Volume Serial - не интересно
@@ -294,7 +360,7 @@ struct DirInfo
 				*/
 				continue;
 			}
-			if (Compare(Buf, DirHeader[0]) || Compare(Buf, DirHeader[1]))
+			if (Compare(Buf, DirHeader) > 0)
 			{
 				FormatOk = true;
 				if (!nSkipLen)
@@ -321,42 +387,103 @@ struct DirInfo
 					continue;
 			}
 
-			if ((nStrLen == NAME_DISP + 1 && *(Buf + NAME_DISP) == '.') ||
-				(nStrLen == NAME_DISP + 2 && *(Buf + NAME_DISP + 1) == '.'))
-				continue;
-			if (Compare(Buf, DirEndHeader[0]) || Compare(Buf, DirEndHeader[1]))
+			if (Compare(Buf, DirEndHeader) > 0)
 			{
 				nSkipLen = 0; *Prefix = 0; nPrefixLen = 0;
 				continue;
 			}
-			//2008-11-30 Смысла нет, если
+			//2008-11-30 check if we can continue
 			if (nStrLen > NAME_DISP && *Buf != ' ' && *(Buf + 1) != ' ')
 			{
 				memset(Item, 0, sizeof(PluginPanelItem));
 
-				//BUGBUG: заменить на LongUnicodeString
+				SYSTEMTIME st{};
+				st.wDayOfWeek = st.wSecond = st.wMilliseconds = 0;
+				st.wDay = static_cast<WORD>(AtoI(Buf + DATA_DISP, 2));
+				st.wMonth = static_cast<WORD>(AtoI(Buf + DATA_DISP + 3, 2));
+				st.wYear = static_cast<WORD>(AtoI(Buf + DATA_DISP + 6, 4));
+				st.wHour = static_cast<WORD>(AtoI(Buf + TIME_DISP, 2));
+				st.wMinute = static_cast<WORD>(AtoI(Buf + TIME_DISP + 3, 2));
+				if (dfCheck == DateFormat::NotChecked)
+				{
+					if (st.wMonth > 12 && st.wMonth <= 31 && st.wDay <= 12)
+					{
+						dfCheck = DateFormat::MM_DD_YYYY;
+					}
+					else if (st.wDay > 12 && st.wDay <= 31 && st.wMonth <= 12)
+					{
+						dfCheck = DateFormat::DD_MM_YYYY;
+					}
+				}
+				if (dfCheck == DateFormat::MM_DD_YYYY)
+				{
+					std::swap(st.wMonth, st.wDay);
+				}
+				if (tfCheck == TimeFormat::NotChecked)
+				{
+					if (st.wHour > 12 && st.wHour <= 23 && st.wMinute <= 60)
+					{
+						tfCheck = TimeFormat::Time24H;
+					}
+					else if (st.wHour <= 12 && st.wMinute <= 60
+						&& (Buf[TIME_DISP + 6] == 'A' || Buf[TIME_DISP + 6] == 'P') && Buf[TIME_DISP + 7] == 'M')
+					{
+						tfCheck = TimeFormat::Time12H_AM_PM;
+						NAME_DISP += 3;
+						ID_DIR_DISP += 3;
+						SIZE_DISP += 3;
+					}
+				}
+				if (tfCheck == TimeFormat::Time12H_AM_PM)
+				{
+					// ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
+					switch (Buf[TIME_DISP + 6])
+					{
+					case 'A':
+						if (st.wHour == 12)
+							st.wHour = 0;
+						break;
+					case 'P':
+						if (st.wHour < 12)
+							st.wHour += 12;
+						break;
+					}
+				}
+				//st.wYear+=st.wYear<50?2000:1900;
+				FILETIME ft{};
+				SystemTimeToFileTime(&st, &ft);
+				LocalFileTimeToFileTime(&ft, &Item->FindData.ftLastWriteTime);
+
+				if ((nStrLen == NAME_DISP + 1 && *(Buf + NAME_DISP) == '.') ||
+					(nStrLen == NAME_DISP + 2 && *(Buf + NAME_DISP + 1) == '.'))
+				{
+					continue;
+				}
+
+				//BUGBUG: replace with LongUnicodeString
 				if (*Prefix)
 				{
 					lstrcpy(Item->FindData.cFileName, Prefix);
 				}
-				if (CP_Check == cp_NonChecked)
+				if (CP_Check == CodePages::NotChecked)
 				{
-					//TODO: Проверить, может это UTF8?
+					//TODO: Check if it's UTF8?
 					const int iUtf = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, Buf, -1, Utf8, ARRAYSIZE(Utf8));
 					//BUGBUG: ?? OEM ?
 					const int iWide = MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, Buf, -1, Wide, ARRAYSIZE(Wide));
 					if (iUtf > 0 && iWide > 0 && iUtf < iWide)
 					{
-						CP_Check = cp_UTF8;
+						CP_Check = CodePages::UTF8;
 					}
 				}
 
 				bool copied = false;
 				const int cchMaxLen = ARRAYSIZE(Item->FindData.cFileName) - nPrefixLen;
-				if (CP_Check == cp_UTF8)
+				if (CP_Check == CodePages::UTF8)
 				{
 					const int iUtf = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, Buf, -1, Utf8, ARRAYSIZE(Utf8));
-					if (iUtf > NAME_DISP) {
+					if (iUtf > static_cast<int>(NAME_DISP))
+					{
 						const int iWide = WideCharToMultiByte(CP_UTF8, 0, Utf8 + NAME_DISP, -1,
 							Item->FindData.cFileName + nPrefixLen, cchMaxLen, nullptr, nullptr);
 						copied = (iWide > 0 && iWide < cchMaxLen);
@@ -369,18 +496,20 @@ struct DirInfo
 
 				switch (CP_Check)
 				{
-				case cp_ANSI:
+				case CodePages::ANSI:
 					Item->UserData = CP_ACP; break;
-				case cp_OEM:
+				case CodePages::OEM:
 					Item->UserData = CP_OEMCP; break;
-				case cp_UTF8:
+				case CodePages::UTF8:
 					Item->UserData = CP_UTF8; break;
-				default:
+				case CodePages::NotChecked:
 					Item->UserData = 0;
 				}
 
-				if (Compare(Buf + ID_DIR_DISP, DirID) || Compare(Buf + ID_DIR_DISP, JunID))
+				if (Compare(Buf + ID_DIR_DISP, DirOrJunc) > 0)
+				{
 					Item->FindData.dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
+				}
 				else
 				{
 					FARINT64 nFileSize;
@@ -389,30 +518,41 @@ struct DirInfo
 					Item->FindData.nFileSizeHigh = nFileSize.Part.HighPart;
 				}
 
-				SYSTEMTIME st;
-				st.wDayOfWeek = st.wSecond = st.wMilliseconds = 0;
-				st.wDay = (WORD)AtoI(Buf + DATA_DISP, 2);
-				st.wMonth = (WORD)AtoI(Buf + DATA_DISP + 3, 2);
-				st.wYear = (WORD)AtoI(Buf + DATA_DISP + 6, 4);
-				st.wHour = (WORD)AtoI(Buf + TIME_DISP, 2);
-				st.wMinute = (WORD)AtoI(Buf + TIME_DISP + 3, 2);
-				//st.wYear+=st.wYear<50?2000:1900;
-				FILETIME ft;
-				SystemTimeToFileTime(&st, &ft);
-				LocalFileTimeToFileTime(&ft, &Item->FindData.ftLastWriteTime);
-
-				//lstrcpy(Info->Description, Descrip); -- Maks поставить VolumeID в Description
-				char* Temp = Pos; //дурацкая поддержка описаний внутри DIR файла
+				//lstrcpy(Info->Description, Descrip); -- Maks put VolumeID in Description
+				char* Temp = Pos; // support of embedded descriptions inside DIR file
 				if (GetS(Buf, 4095))
-					if (Compare(Buf, " @"))
+				{
+					static const char* MaskList[] = { " @", nullptr };
+					if (Compare(Buf, MaskList) > 0)
+					{
 						lstrcpyn(Info->Description, Buf + 2, 256);
+					}
 					else
+					{
 						Pos = Temp;
-
+					}
+				}
 				return GETARC_SUCCESS;
 			}
 		}
 		return GETARC_EOF;
+	}
+
+	bool SetFileHandle(HANDLE handle)
+	{
+		if (Handle != nullptr)
+		{
+			_ASSERTE(Handle == nullptr);
+			return false;
+		}
+		if (handle == nullptr || handle == INVALID_HANDLE_VALUE)
+		{
+			return false;
+		}
+
+		Handle = handle;
+
+		return true;
 	}
 
 	BOOL closeArchive()
@@ -443,28 +583,21 @@ struct DirInfo
 BOOL WINAPI _export IsArchive(char* Name, const unsigned char* Data, int DataSize)
 {
 	_ASSERTE(gpCur != nullptr);
-	static const char* ID[] = { " Том в устройстве ", " Volume in drive ", "Queued to drive " };
-	BOOL lbRc = FALSE;
+	static const char* ID[] = { " Volume in drive ", "Queued to drive ", " Том в устройстве ", nullptr };
 	const char* strData = reinterpret_cast<const char*>(Data);
-	for (const auto* id : ID) {
-		if (gpCur->Compare(strData, id, true, min(lstrlen(id), DataSize)))
-		{
-			lbRc = TRUE;
-			break;
-		}
-
-	}
-	return lbRc;
+	const int cmpRc = gpCur->Compare(strData, ID, true, DataSize);
+	return (cmpRc > 0);
 }
 
 BOOL WINAPI _export OpenArchive(char* Name, int* Type)
 {
 	_ASSERTE(gpCur == nullptr);
-	gpCur = static_cast<DirInfo*>(calloc(1, sizeof(DirInfo)));
+	gpCur = DirInfo::Create();
 	if (!gpCur)
 		return FALSE;
-	gpCur->Handle = CreateFile(Name, GENERIC_READ, FILE_SHARE_READ, nullptr,
-		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+	if (!gpCur->SetFileHandle(CreateFile(Name, GENERIC_READ, FILE_SHARE_READ, nullptr,
+		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr)))
+		return FALSE;
 	return gpCur->openArchive(Type);
 }
 
@@ -527,11 +660,12 @@ int nLastItemIndex = -1;
 int MODULE_EXPORT OpenStorage(StorageOpenParams params, HANDLE* storage, StorageGeneralInfo* info)
 {
 	nLastItemIndex = -1;
-	gpCur = static_cast<DirInfo*>(calloc(1, sizeof(DirInfo)));
+	gpCur = DirInfo::Create();
 	if (!gpCur)
 		return SOR_INVALID_FILE;
-	gpCur->Handle = CreateFileW(params.FilePath, GENERIC_READ, FILE_SHARE_READ, nullptr,
-		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+	if (!gpCur->SetFileHandle(CreateFileW(params.FilePath, GENERIC_READ, FILE_SHARE_READ, nullptr,
+		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr)))
+		return SOR_INVALID_FILE;
 	int Type = 0;
 	if (gpCur->openArchive(&Type))
 	{
@@ -567,7 +701,8 @@ int MODULE_EXPORT GetStorageItem(HANDLE storage, int item_index, StorageItemInfo
 		item_info->Size = li.QuadPart;
 		item_info->CreationTime = Item.FindData.ftLastWriteTime;
 		item_info->ModificationTime = Item.FindData.ftLastWriteTime;
-		MultiByteToWideChar((p->CP_Check == p->cp_UTF8) ? CP_UTF8 : CP_OEMCP, 0, Item.FindData.cFileName, -1, item_info->Path, ARRAYSIZE(item_info->Path));
+		MultiByteToWideChar(p->IsUtf8File() ? CP_UTF8 : CP_OEMCP, 0,
+			Item.FindData.cFileName, -1, item_info->Path, ARRAYSIZE(item_info->Path));
 		iRc = GET_ITEM_OK;
 	}
 	return iRc;

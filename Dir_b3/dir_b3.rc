@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "resource."
+#include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 
 1 TEXTINCLUDE 
 BEGIN
-    "resource.\0"
+    "resource.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -48,7 +48,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,0,7
+ FILEVERSION 3,0,0,8
  PRODUCTVERSION 1,71,0,0
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
@@ -66,9 +66,9 @@ BEGIN
         BEGIN
             VALUE "Comments", "Current developer: ConEmu.Maximus5@gmail.com"
             VALUE "FileDescription", "DIR XP/2003/Vista/7 parse for FAR Manager"
-            VALUE "FileVersion", "3.0 build 7"
+            VALUE "FileVersion", "3.0 build 8"
             VALUE "InternalName", "Dir"
-            VALUE "LegalCopyright", "© Alexander Arefiev 2001, © Maximus5 2012"
+            VALUE "LegalCopyright", "© Alexander Arefiev 2001, © Maximus5 2022"
             VALUE "OriginalFilename", "dir.so"
             VALUE "ProductName", "FAR Manager"
             VALUE "ProductVersion", "1.71"

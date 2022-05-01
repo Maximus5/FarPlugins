@@ -5,16 +5,21 @@ rem =============== Use Microsoft Visual Studio .NET 2003 ======================
 
 rem @call "%VS60COMN%\..\VC98\Bin\VCVARS32.BAT"
 rem if exist "%VS71COMNTOOLS%\vsvars32.bat" call "%VS71COMNTOOLS%\vsvars32.bat"
+if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" (
+  call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
+  goto :start_build
+)
 if exist "%VS90COMNTOOLS%..\..\VC\BIN\vcvars32.bat" call "%VS90COMNTOOLS%..\..\VC\BIN\vcvars32.bat"
 
 rem  ======================== Set name and version ... =========================
 
-@set PlugName=Dir
-@set fileversion=3,0,0,5
-@set fileversion_str=3.0 build 5
+:start_build
+@set PlugName=dir
+@set fileversion=3,0,0,8
+@set fileversion_str=3.0 build 8
 @set comments=Current developer: ConEmu.Maximus5@gmail.com
-@set filedescription=DIR XP/2003/Vista/7 parse for FAR Manager
-@set legalcopyright=© Alexander Arefiev 2001, @ Maximus5 2012
+@set filedescription=DIR XP/2003/Vista/7/10 parse for FAR Manager
+@set legalcopyright=© Alexander Arefiev 2001, @ Maximus5 2022
 
 rem  ==================== remove temp files ====================================
 
@@ -94,12 +99,17 @@ rem @echo !!!!!!!  Compile %PlugName%.fmt with MSVCRT.dll ...  !!!!!!!
 @echo ***************
 set libcrt=
 if exist libCRT.lib set libcrt=/nodefaultlib libCRT.lib
-@cl /Zp8 /O2 /GF /Gr /GR- /EHs-c- /MT %PlugName%.cpp /link /DLL /RELEASE /subsystem:console /machine:I386 /noentry /def:%PlugName%.def %libcrt% kernel32.lib User32.lib %PlugName%.res /map:"%PlugName%.map" /out:"%PlugName%.so" /merge:.rdata=.text
+@cl /Zp8 /O2 /GF /Gr /GS- /GR- /EHs-c- /MT %PlugName%.cpp /link /DLL /RELEASE /subsystem:console /machine:I386 /noentry /def:%PlugName%.def %libcrt% kernel32.lib User32.lib %PlugName%.res /map:"%PlugName%.map" /out:"%PlugName%.so" /merge:.rdata=.text
 if errorlevel 1 goto err1
 
+if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" (
+  call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+  goto :start_build_x64
+)
 if not exist "%VS90COMNTOOLS%..\..\VC\BIN\x86_amd64\vcvarsx86_amd64.bat" goto no_x64
 call "%VS90COMNTOOLS%..\..\VC\BIN\x86_amd64\vcvarsx86_amd64.bat"
 
+:start_build_x64
 if exist %PlugName%.exp del %PlugName%.exp>nul
 if exist %PlugName%.obj del %PlugName%.obj>nul
 if exist %PlugName%.lib del %PlugName%.lib>nul
@@ -113,7 +123,7 @@ if errorlevel 1 goto err1
 
 set libcrt=
 if exist libCRT64.lib set libcrt=/nodefaultlib libCRT64.lib
-@cl /Zp8 /O2 /GF /Gr /GR- /EHs-c- /MT %PlugName%.cpp /link /DLL /RELEASE /subsystem:console /machine:X64 /noentry /def:%PlugName%.def %libcrt% kernel32.lib User32.lib %PlugName%.res /map:"%PlugName%64.map" /out:"%PlugName%64.so" /merge:.rdata=.text
+@cl /Zp8 /O2 /GF /Gr /GS- /GR- /EHs-c- /MT %PlugName%.cpp /link /DLL /RELEASE /subsystem:console /machine:X64 /noentry /def:%PlugName%.def %libcrt% kernel32.lib User32.lib %PlugName%.res /map:"%PlugName%64.map" /out:"%PlugName%64.so" /merge:.rdata=.text
 if errorlevel 1 goto err1
 
 :no_x64
@@ -135,7 +145,7 @@ rem if not exist dir.fmt goto err1
 rem if exist E:\Far\Plugins\MultiArc\Formats\Dir.fm_ del E:\Far\Plugins\MultiArc\Formats\Dir.fm_
 rem if exist E:\Far\Plugins\MultiArc\Formats\Dir.fmt ren E:\Far\Plugins\MultiArc\Formats\Dir.fmt Dir.fm_
 rem copy dir.fmt E:\Far\Plugins\MultiArc\Formats\Dir.fmt
-rem 
+rem
 rem if exist E:\Far\Unicode\Plugins\MultiArc\Formats\Dir.fm_ del E:\Far\Unicode\Plugins\MultiArc\Formats\Dir.fm_
 rem if exist E:\Far\Unicode\Plugins\MultiArc\Formats\Dir.fmt ren E:\Far\Unicode\Plugins\MultiArc\Formats\Dir.fmt Dir.fm_
 rem copy dir.fmt E:\Far\Unicode\Plugins\MultiArc\Formats\Dir.fmt
